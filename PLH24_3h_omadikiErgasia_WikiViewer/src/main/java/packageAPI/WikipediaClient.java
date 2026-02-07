@@ -1,69 +1,37 @@
-package packageAPI;
+
 
 /**
- * WikipediaClient
+ * 
+ *  packageAPI (Wikipedia API Client) — καλείται από Service, κάνει HTTP/JSON
+ * Σημαντικό: για καθαρό design, προτείνω ο client να επιστρέφει DTOs και το mapping σε Entities να γίνεται στο Service. 
+ * (Αν δεν θέλεις DTOs, πες μου και το γυρνάμε σε “επιστρέφει Entities”.)
+ * 
  *
- * Ρόλος / Σκοπός:
- * - Είναι ο “API Client” της εφαρμογής: κάνει HTTP κλήσεις προς το Wikipedia API και
- *   μετατρέπει τις απαντήσεις (συνήθως JSON) σε αντικείμενα που μπορεί να χρησιμοποιήσει
- *   η εφαρμογή (DTOs ή/και Entities).
+ * packageAPI (Wikipedia API Client)
  *
- * Γιατί υπάρχει (στόχοι σχεδίασης):
- * 1) Διαχωρισμός ευθυνών (Separation of Concerns):
- *    - Όλος ο κώδικας δικτύου/HTTP/JSON συγκεντρώνεται εδώ.
- *    - Το GUI μένει “καθαρό” (δεν ξέρει endpoints, JSON parsing κ.λπ.).
+ * Ρόλος:
+ * - Κάνει HTTP κλήσεις προς το Wikipedia API.
+ * - Παίρνει απαντήσεις (συνήθως JSON) και τις μετατρέπει σε DTOs (ή/και απλά objects μεταφοράς).
  *
- * 2) Επεκτασιμότητα:
- *    - Αν αλλάξει ο τρόπος κλήσης του API (endpoint, format), αλλάζεις μόνο εδώ
- *      και στα DTOs του packageAPI, όχι στο GUI/Controller.
+ * Γιατί υπάρχει:
+ * - Διαχωρισμός ευθυνών: όλος ο κώδικας δικτύου/HTTP/JSON εδώ.
+ * - Το GUI/Controller/Service δεν ασχολούνται με endpoints και JSON parsing.
  *
- * 3) Απόδοση & UX:
- *    - Οι κλήσεις API μπορεί να καθυστερούν. Ο client είναι “blocking” από τη φύση του,
- *      άρα πρέπει να καλείται σε background thread (SwingWorker / Executor), ώστε να μην
- *      παγώνει το GUI.
+ * Ποιος το καλεί:
+ * - Καλείται από packageService (όχι από GUI/Controller).
  *
- * 4) Ευκολία testing:
- *    - Μπορεί να αντικατασταθεί από mock/stub σε tests (π.χ. Service tests) χωρίς GUI.
- *
- * Ποιος το καλεί (και γιατί):
- * - packageGUI: ΔΕΝ το καλεί απευθείας.
- *   Γιατί; Το GUI δεν πρέπει να περιέχει HTTP/JSON λογική και δεν πρέπει να μπλοκάρει το EDT.
- *
- * - packageController: Συνήθως καλεί Services (όχι απευθείας τον client).
- *   Γιατί; Ο controller συντονίζει ροές (DB-first, background refresh), όχι HTTP λεπτομέρειες.
- *
- * - packageService: Είναι ο κύριος “χρήστης” του WikipediaClient.
- *   Γιατί; Τα Services υλοποιούν τη λειτουργικότητα (αναζήτηση/συγχρονισμός) και επιλέγουν
- *   πότε θα χρησιμοποιήσουν DB (Repository) και πότε API (WikipediaClient).
- *
- * Ενδεικτική ροή κλήσης (call chain):
- * 1) GUI: ο χρήστης γράφει query και πατάει Search
- * 2) GUI handler -> SearchController.search(query)
- * 3) SearchController -> SearchService.search(query)
- * 4) SearchService:
- *    - (policy DB-first) ρωτάει πρώτα Repository
- *    - αν δεν βρει, τότε καλεί WikipediaClient.search(query)
- * 5) Επιστροφή results -> GUI τα εμφανίζει (JTable/JList)
- * 6) Όταν ο χρήστης πατήσει View Details:
- *    - Controller/Service καλεί WikipediaClient.getDetails(pageId)
- *    - και επιστρέφει περιεχόμενο/metadata για εμφάνιση στο Details Dialog
- *
- * Τι ΔΕΝ κάνει (κανόνες):
- * - Δεν κάνει πρόσβαση στη Βάση (Repository/DAO είναι αλλού).
+ * Τι ΔΕΝ κάνει:
+ * - Δεν κάνει πρόσβαση στη DB (αυτό είναι packageRepository).
  * - Δεν ενημερώνει Swing components.
- * - Δεν εφαρμόζει πολιτικές DB-first / background refresh (αυτά είναι Controller/Service).
+ * - Δεν εφαρμόζει πολιτικές DB-first/refresh (αυτά είναι στο Service).
  *
  * Σημείωση για threads:
- * - Ο WikipediaClient δεν “δημιουργεί” threads. Εκτελείται στο thread που τον καλεί.
- * - Η ευθύνη για background εκτέλεση είναι του GUI (SwingWorker) ή/και του Service/Controller.
+ * - Ο client είναι blocking και εκτελείται στο thread που τον καλεί.
+ * - Το GUI τρέχει τα requests σε background (SwingWorker) ώστε να μη μπλοκάρει το EDT.
  */
+package packageAPI;
 public class WikipediaClient {
-
-    // TODO: Σταθερές endpoints / config (π.χ. baseUrl, timeouts)
-
-    // TODO: Μέθοδοι π.χ.
-    // - search(String query) -> List<SearchResultDTO>
-    // - getDetails(long pageId) -> ArticleDetailsDTO
-    //
-    // (Οι ακριβείς signatures θα οριστούν όταν κλειδώσει το μοντέλο δεδομένων.)
+    // TODO: baseUrl, timeouts, endpoints
+    // TODO: search(String query) -> List<SearchResultDto>
+    // TODO: getDetails(long pageId) -> ArticleDetailsDto
 }

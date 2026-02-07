@@ -1,14 +1,20 @@
 /**
- * packageController
+ * packageController (Control) — μιλάει με GUI και Service (όχι DB/HTTP)
+ * packageController (Control)
  *
- * Controllers που συνδέουν GUI με Services/Repositories/API.
- * Εφαρμόζουν τους κανόνες ροής της εφαρμογής.
+ * Controllers που συνδέουν το GUI με τα Services και συντονίζουν τη ροή.
  *
- * Πολιτικές:
- * - DB-first: πρώτα αναζήτηση στη DB, αν δεν βρεθεί τότε αναζήτηση στο API.
- * - Background refresh: αν βρεθεί στη DB, γίνεται έλεγχος στο API για νεότερη έκδοση.
- * - Update policy: ενημερώνονται μόνο τα fetched fields του Article.
- *   Τα τοπικά δεδομένα (σχόλια/βαθμολογία) δεν διαγράφονται (ArticleNote/Metadata).
+ * Ρόλος:
+ * - Δέχεται αιτήματα από το GUI (π.χ. search(query), viewDetails(id), saveArticle(...)).
+ * - Καλεί τα Services και επιστρέφει αποτελέσματα προς εμφάνιση στο GUI.
+ * - Εφαρμόζει/ενεργοποιεί πολιτικές ροής σε επίπεδο orchestration
+ *   (π.χ. ποια service μέθοδος θα κληθεί για κάθε ενέργεια).
+ *
+ * Κανόνες:
+ * - Δεν κάνει SQL/DB (αυτό είναι Repository).
+ * - Δεν κάνει HTTP/JSON (αυτό είναι API Client).
+ * - Δεν μιλάει απευθείας με Repository ή API Client.
+ * - Μιλάει με Services και με Entities/DTOs ως δεδομένα μεταφοράς.
  */
 
 package packageController;

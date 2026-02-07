@@ -1,15 +1,20 @@
 /**
- * packageRepository
+ * 
+ *  packageRepository (DAO / DB) — καλείται από Service, μιλάει με Entities
+ * packageRepository (DAO / Repository - DB Access)
  *
- * Πρόσβαση στη Βάση Δεδομένων (DAO/Repository).
+ * Πρόσβαση στη Βάση Δεδομένων (CRUD + queries).
+ *
  * Περιλαμβάνει:
- * - DataSource / σύνδεση DB (π.χ. DerbyDataSource)
+ * - DataSource/Connection (π.χ. DerbyDataSource)
  * - Repositories (ArticleRepository, CategoryRepository, ArticleNoteRepository)
  * - SQL/CRUD, queries, mapping ResultSet -> Entities
  *
  * Κανόνες:
- * - Καμία κλήση Swing.Καμία UI λογική.(Είναι στο GUI)
- * - Καμία HTTP κλήση προς Wikipedia.Καμία HTTP κλήση προς Wikipedia.(Είναι στο API)
+ * - Καλείται από Services (όχι απευθείας από Controllers/GUI).
+ * - Καμία Swing/UI λογική.
+ * - Καμία HTTP κλήση προς Wikipedia.
+ * - Επιστρέφει/δέχεται Entities (domain objects).
  */
 
 package packageRepository;

@@ -1,30 +1,41 @@
-/**
- * WikipediaClient
+/*
+ * 
+ *  packageAPI (Wikipedia API Client) — καλείται από Service, κάνει HTTP/JSON
+ * Σημαντικό: για καθαρό design, προτείνω ο client να επιστρέφει DTOs και το mapping σε Entities να γίνεται στο Service. 
+ * (Αν δεν θέλεις DTOs, πες μου και το γυρνάμε σε “επιστρέφει Entities”.)
+ * 
+ *
+ * packageAPI (Wikipedia API Client)
  *
  * Ρόλος:
- * - Κάνει HTTP κλήσεις προς το Wikipedia API και επιστρέφει αποτελέσματα (DTOs).
+ * - Κάνει HTTP κλήσεις προς το Wikipedia API.
+ * - Παίρνει απαντήσεις (συνήθως JSON) και τις μετατρέπει σε DTOs (ή/και απλά objects μεταφοράς).
  *
- * Παρέχει (ενδεικτικά):
- * - search(query): λίστα αποτελεσμάτων (id, title, snippet)
- * - getDetails(pageId): λεπτομέρειες άρθρου (content/extract, revision info)
+ * Γιατί υπάρχει:
+ * - Διαχωρισμός ευθυνών: όλος ο κώδικας δικτύου/HTTP/JSON εδώ.
+ * - Το GUI/Controller/Service δεν ασχολούνται με endpoints και JSON parsing.
  *
- * Κανόνες:
- * - Δεν μιλάει με DB (αυτό είναι του packageRepository/packageService).
- * - Δεν κάνει Swing/UI ενημερώσεις.
- * - Δεν περιέχει business rules (π.χ. DB-first). Αυτό είναι του Controller/Service.
- */
-/**
- * packageAPI
+ * Ποιος το καλεί:
+ * - Καλείται από packageService (όχι από GUI/Controller).
  *
- * Client για Wikipedia API.
- * Περιλαμβάνει:
- * - WikipediaClient (HTTP requests)
- * - DTOs/Response models για JSON parsing
- * - JSON mapping (π.χ. Gson/Jackson helpers)
+ * Τι ΔΕΝ κάνει:
+ * - Δεν κάνει πρόσβαση στη DB (αυτό είναι packageRepository).
+ * - Δεν ενημερώνει Swing components.
+ * - Δεν εφαρμόζει πολιτικές DB-first/refresh (αυτά είναι στο Service).
  *
- * Κανόνες:
- * - Καμία πρόσβαση στη DB (αυτό είναι του repository/service).
- * - Καμία UI λογική.
+ * Σημείωση για threads:
+ * - Ο client είναι blocking και εκτελείται στο thread που τον καλεί.
+ * - Το GUI τρέχει τα requests σε background (SwingWorker) ώστε να μη μπλοκάρει το EDT.
+ *
+ * 
+*
+
+ * public class WikipediaClient {
+ *   // TODO: baseUrl, timeouts, endpoints
+ *   // TODO: search(String query) -> List<SearchResultDto>
+ *   // TODO: getDetails(long pageId) -> ArticleDetailsDto
+ * }
+ * 
  */
 
 package packageAPI;
