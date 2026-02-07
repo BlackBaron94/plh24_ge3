@@ -45,15 +45,14 @@ public class DevPackageInfoApp {
             return """
                    Πληροφορίες Packages - Δομή Πακέτων [packages]
 Για περισσότερες λεπτομέρειες ΔΕΙΤΕ τους Σχολιασμούς στα package-info.java\n
-                   \nΜοντέλο (BCE + Layers)\n
+    \nΜοντέλο (BCE + Layers)\n                  
+        Ροή αιτήματος (request):\n
+            packageGUI (Border) → packageController → packageService → (packageRepository / packageAPI) → packageEntities\n
                    
-                   Ροή αιτήματος (request):\n
-                   packageGUI (Border) → packageController → packageService → (packageRepository / packageAPI) → packageEntities\n
+        \nΡοή αποτελέσματος (response):\n
+        packageEntities → (packageRepository / packageAPI) → packageService → packageController → packageGUI (Border)\n\n
                    
-                   \nΡοή αποτελέσματος (response):\n
-                   packageEntities → (packageRepository / packageAPI) → packageService → packageController → packageGUI (Border)\n\n
-                   
-                   Κανόνας: Τα Entities είναι μόνο δεδομένα (δεν “καλούν” τίποτα). Τα υπόλοιπα layers τα χρησιμοποιούν.\n\n
+        Κανόνας: Τα Entities είναι μόνο δεδομένα (δεν “καλούν” τίποτα). Τα υπόλοιπα layers τα χρησιμοποιούν.\n
     
                    1) packageGUI
                       - Swing UI: JFrame/JPanel/JDialog, handlers, UI models (TableModel)
