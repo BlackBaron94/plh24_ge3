@@ -1,30 +1,45 @@
 
 package packageGUI;
-import java.awt.BorderLayout;
-import java.awt.Desktop;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
-import java.net.URI;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+
+import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import java.net.URI;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
-
+/**
+ * MainFrame – UI shell (Builder) + UI content (postInit).
+ */
 public class MainFrame extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
 
-    /**
-     * Creates new form MainFrame
-     */
+    private static final java.util.logging.Logger logger =
+            java.util.logging.Logger.getLogger(MainFrame.class.getName());
+
     public MainFrame() {
-           initComponents();
-           postInit();//διευκολύνει διότι δεν είναι δεσμευτικός απο τα components του 
-                      //Swing Pallete
-}
-    
+        initComponents();   // εδώ αφήνω μόνο τον “σκελετό” που φτιάχνει ο Builder
+        postInit();         // εδώ χτίζω Εικόνα 1–2–3 + listeners, ώστε να μην με δένει το initComponents()
+    }  
     
     /**
      * μετά την εκτέλεση - ολοκλήρωση των δοκιμών αφαιρούμε την main
@@ -185,585 +200,1138 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+ // =========================================================
+    // 1) UI fields (χτίζω τα components μόνος μου στο postInit)
+    // =========================================================
 
-  //Ο κωδικας δεν είναι δέσμιος από την σχεδίαση του SWing
-  //Τροποποιείται πίο εύκολα
+    // ---- Top controls (Εικόνα 1)
+    private JTextField txtKeywords;
+    private JButton btnSearch;
+    private JButton btnClear;
+    private JRadioButton rbDbOnly;
+    private JRadioButton rbDbApi;
+    private ButtonGroup bgSearchMode;
+
+    // ---- Shared category model (κοινό για Search + Saved)
+    private final DefaultComboBoxModel<String> categoriesComboModel = new DefaultComboBoxModel<>();
+    private final Map<String, Boolean> categoryChecked = new LinkedHashMap<>(); // κρατάω checked state για τις checkbox λίστες
+
+    // ---- Search tab (Εικόνα 1) (placeholder απλό)
+    private CategoryCheckList listCategoriesSearch;
+    private JTable tblResults;
+    private DefaultTableModel resultsModel;
+    private JTextArea txtPreview;
+    private JButton btnViewDetails;
+    private JButton btnSave;
+    private JButton btnOpenInBrowser;
+
+    // ---- Saved tab (Εικόνα 2) (placeholder απλό)
+    private CategoryCheckList listCategoriesSaved;
+    private JTable tblSaved;
+    private DefaultTableModel savedModel;
+    private JTextArea txtSavedPreview;
+    private JButton btnLoadArticle;
+    private JButton btnDelete;
+    private JButton btnClearList;
+    private JLabel lblSavedCount;
+
+    // ---- Stats tab (Εικόνα 3)
+    private JTable tblKeywordStats;                 // πίνακας keyword/count
+    private DefaultTableModel keywordStatsModel;
+
+    private JTable tblCategoryLegend;               // legend (category -> articles)
+    private DefaultTableModel categoryLegendModel;
+
+    private JLabel lblStatsSelected;                // "Selected: ..."
+    private JLabel lblStatsSavedCount;              // "4 saved articles ▼"
+
+    private HorizontalBarsPanel pnlKeywordBarsSmall;
+    private HorizontalBarsPanel pnlKeywordBarsBig;
+
+    private PieChartPanel pnlCategoryPie;
+    private VerticalBarsPanel pnlCategoryBars;
+
+    // ---- Status bar (κάτω στο frame)
+    private JLabel lblStatus;
+    private JProgressBar progress;
+
  
-// ====== UI fields (built in postInit) ======
-private JTextField txtKeywords;
-private JButton btnSearch, btnClear, btnViewDetails, btnSave, btnOpenInBrowser;
-private JRadioButton rbDbOnly, rbDbApi;
-private ButtonGroup bgSearchMode;
+    // =========================================================
+    // 2) postInit = ΟΛΟ το UI των Εικόνων 1–2–3 + listeners
+    // =========================================================
+    private void postInit() {
+        // Φτιάχνω κοινές κατηγορίες (από εδώ θα “ταΐζονται” sidebar + dialogs).
+        initCategories();
 
-private JTable tblResults;
-private JTextArea txtPreview;
+        // Χτίζω Top (Εικόνα 1).
+        buildTopWrapper();
 
-private JLabel lblStatus;
-private JProgressBar progress;
-private JTable tblSaved;
-private JTextArea txtSavedPreview;
-private JButton btnLoadArticle, btnDeleteSaved, btnClearList;
-private JLabel lblSavedCount;
+        // Χτίζω tabs:
+        buildSearchTabUI(); // Εικόνα 1 (placeholder)
+        buildSavedTabUI();  // Εικόνα 2 (placeholder)
+        buildStatsTabUI();  // Εικόνα 3 (το ζητούμενο)
 
-// ==============================
-// postInit(): Εικόνα 1 + 1.1/1.2/1.3
-// ==============================
-private void postInit() {
-    buildTopWrapper();   // Εικόνα 1: Keywords/Search/Clear + mode
-    buildSearchTabUI();  // Εικόνα 1: Results + Preview + buttons
-    buildSavedTabUI();  // Εικόνα 2: Saved Articles
+        // Χτίζω status bar κάτω.
+        buildStatusBar();
 
-    buildStatusBar();    // Εικόνα 1: lblStatus κάτω δεξιά
+        // Δένω menu navigation στα tabs.
+        wireMenuNavigation();
 
-    wireMenuNavigation();
+        // Default επιλογές.
+        setStatus("Ready", false);
+        tabsMain.setSelectedComponent(tabSearch);
 
-    setStatus("Ready", false);
-    tabsMain.setSelectedComponent(tabSearch);
+        // Ρυθμίζω μέγεθος παραθύρου.
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int w = (int) (screen.width * 0.85);
+        int h = (int) (screen.height * 0.78);
+        setSize(w, h);
+        setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(1000, 650));
+    }
 
-    // ---- Window size + center (≈ μισή οθόνη 24") ----
-    java.awt.Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-    int w = (int) (screen.width * 0.80);
-    int h = (int) (screen.height * 0.75);
-    setSize(w, h);
-    setLocationRelativeTo(null); // κέντρο οθόνης
-    setMinimumSize(new java.awt.Dimension(900,600)); // προαιρετικό
-}
+    // =========================================================
+    // 3) Categories – κοινή πηγή αλήθειας για UI
+    // =========================================================
+    private void initCategories() {
+        categoriesComboModel.removeAllElements();
+        categoryChecked.clear();
 
+        addCategoryInternal("Όλες οι κατηγορίες");
+        addCategoryInternal("Χωρίς Κατηγορία");
+        addCategoryInternal("Πολιτισμός");
+        addCategoryInternal("Ιστορία");
+        addCategoryInternal("Υπολογιστές");
+    }
 
-private void buildTopWrapper() {
-    // Panel με controls (αριστερά)
-    JPanel topControls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+    private void addCategoryInternal(String name) {
+        categoriesComboModel.addElement(name);
+        categoryChecked.put(name, "Όλες οι κατηγορίες".equals(name));
+    }
 
-    JLabel lbl = new JLabel("Keywords");
-    lbl.setFont(new java.awt.Font("Arial", 0, 14));
+    private void addNewCategoryFromUser(String name) {
+        String n = (name == null) ? "" : name.trim();
+        if (n.isEmpty()) return;
 
-    txtKeywords = new JTextField(28);
-    txtKeywords.setFont(new java.awt.Font("Arial", 0, 14));
+        for (int i = 0; i < categoriesComboModel.getSize(); i++) {
+            if (n.equalsIgnoreCase(categoriesComboModel.getElementAt(i))) {
+                setStatus("Η κατηγορία υπάρχει ήδη: " + n, false);
+                return;
+            }
+        }
 
-    btnSearch = new JButton("Search");
-    btnSearch.setFont(new java.awt.Font("Arial", 0, 14));
+        categoriesComboModel.addElement(n);
+        categoryChecked.put(n, false);
 
-    btnClear = new JButton("Clear");
-    btnClear.setFont(new java.awt.Font("Arial", 0, 14));
+        if (listCategoriesSearch != null) listCategoriesSearch.refreshFromModel();
+        if (listCategoriesSaved != null) listCategoriesSaved.refreshFromModel();
 
-    rbDbOnly = new JRadioButton("DB only");
-    rbDbOnly.setFont(new java.awt.Font("Arial", 0, 14));
-    rbDbOnly.setActionCommand("DB_ONLY");
+        setStatus("Πρόσθεσα νέα κατηγορία: " + n, false);
+    }
 
-    rbDbApi = new JRadioButton("DB/API");
-    rbDbApi.setFont(new java.awt.Font("Arial", 0, 14));
-    rbDbApi.setActionCommand("DB_API");
+    private List<String> getCheckedCategories() {
+        List<String> out = new ArrayList<>();
+        for (Map.Entry<String, Boolean> e : categoryChecked.entrySet()) {
+            if (Boolean.TRUE.equals(e.getValue())) out.add(e.getKey());
+        }
+        return out;
+    }
 
-    bgSearchMode = new ButtonGroup();
-    bgSearchMode.add(rbDbOnly);
-    bgSearchMode.add(rbDbApi);
-    rbDbApi.setSelected(true);
+    // =========================================================
+    // 4) Top wrapper (Εικόνα 1)
+    // =========================================================
+    private void buildTopWrapper() {
+        JPanel topControls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
 
-    topControls.add(lbl);
-    topControls.add(txtKeywords);
-    topControls.add(btnSearch);
-    topControls.add(btnClear);
-    topControls.add(rbDbOnly);
-    topControls.add(rbDbApi);
+        JLabel lbl = new JLabel("Keywords");
+        lbl.setFont(new Font("Arial", Font.PLAIN, 14));
 
-    // Wrapper (για να ΜΗΝ πειράξουμε το GroupLayout του pnlTop)
-    JPanel pnlTopWrapper = new JPanel(new BorderLayout());
-    pnlTopWrapper.add(pnlTop, BorderLayout.CENTER);     // το generated panel μένει
-    pnlTopWrapper.add(topControls, BorderLayout.WEST);  // τα controls “κάθονται” πάνω
+        txtKeywords = new JTextField(30);
+        txtKeywords.setFont(new Font("Arial", Font.PLAIN, 14));
 
-    // Αντικατάσταση στο PAGE_START
-    Container content = getContentPane();
-    content.remove(pnlTop);
-    content.add(pnlTopWrapper, BorderLayout.PAGE_START);
+        btnSearch = new JButton("Search");
+        btnSearch.setFont(new Font("Arial", Font.PLAIN, 14));
 
-    // Handlers
-    btnSearch.addActionListener(e -> onSearch());
-    txtKeywords.addActionListener(e -> onSearch());
-    btnClear.addActionListener(e -> clearSearchUI());
+        btnClear = new JButton("Clear");
+        btnClear.setFont(new Font("Arial", Font.PLAIN, 14));
 
-    content.revalidate();
-    content.repaint();
-}
+        rbDbOnly = new JRadioButton("DB only");
+        rbDbOnly.setFont(new Font("Arial", Font.PLAIN, 14));
+        rbDbOnly.setActionCommand("DB_ONLY");
 
-private void buildSearchTabUI() {
-    tabSearch.removeAll();
-    tabSearch.setLayout(new BorderLayout());
+        rbDbApi = new JRadioButton("DB/API");
+        rbDbApi.setFont(new Font("Arial", Font.PLAIN, 14));
+        rbDbApi.setActionCommand("DB_API");
 
-    // Results table (αριστερά)
-    DefaultTableModel model = new DefaultTableModel(
-            new Object[][]{
-                    {"Java (programming language)", "DB", 12345L},
-                    {"JavaScript", "API", 23456L},
-                    {"Swing (Java)", "DB", 34567L}
-            },
-            new String[]{"Title", "Source", "PageId"}
-    ) {
-        @Override public boolean isCellEditable(int r, int c) { return false; }
-    };
+        bgSearchMode = new ButtonGroup();
+        bgSearchMode.add(rbDbOnly);
+        bgSearchMode.add(rbDbApi);
+        rbDbApi.setSelected(true);
 
-    tblResults = new JTable(model);
-    tblResults.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        topControls.add(lbl);
+        topControls.add(txtKeywords);
+        topControls.add(btnSearch);
+        topControls.add(btnClear);
+        topControls.add(rbDbOnly);
+        topControls.add(rbDbApi);
 
-    // Κρύβουμε PageId στήλη (μένει το data)
-    tblResults.getColumnModel().getColumn(2).setMinWidth(0);
-    tblResults.getColumnModel().getColumn(2).setMaxWidth(0);
-    tblResults.getColumnModel().getColumn(2).setPreferredWidth(0);
+        // Κάνω wrapper ώστε να μην πειράζω το GroupLayout του pnlTop (generated).
+        JPanel pnlTopWrapper = new JPanel(new BorderLayout());
+        pnlTopWrapper.add(topControls, BorderLayout.WEST);
 
-    JScrollPane spResults = new JScrollPane(tblResults);
+        Container content = getContentPane();
+        content.remove(pnlTop);
+        pnlTopWrapper.add(pnlTop, BorderLayout.CENTER);
+        content.add(pnlTopWrapper, BorderLayout.PAGE_START);
 
-    // Preview (δεξιά)
-    txtPreview = new JTextArea();
-    txtPreview.setEditable(false);
-    txtPreview.setLineWrap(true);
-    txtPreview.setWrapStyleWord(true);
-    txtPreview.setText("Preview εμφανίζεται εδώ όταν επιλέξεις αποτέλεσμα…");
-    JScrollPane spPreview = new JScrollPane(txtPreview);
+        // Listeners [ακροατές]
+        btnSearch.addActionListener(e -> onSearch());
+        txtKeywords.addActionListener(e -> onSearch());
+        btnClear.addActionListener(e -> clearSearchUI());
 
-    JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, spResults, spPreview);
-    split.setResizeWeight(0.45);
+        content.revalidate();
+        content.repaint();
+    }
 
-    // Buttons κάτω (View Details / Save / Open in Browser)
-    JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
-    btnViewDetails = new JButton("View Details");
-    btnSave = new JButton("Save");
-    btnOpenInBrowser = new JButton("Open in Browser");
+    // =========================================================
+    // 5) Search tab – (placeholder απλό για να “δένει” το project)
+    // =========================================================
+    private void buildSearchTabUI() {
+        tabSearch.removeAll();
+        tabSearch.setLayout(new BorderLayout(10, 10));
 
-    pnlButtons.add(btnViewDetails);
-    pnlButtons.add(btnSave);
-    pnlButtons.add(btnOpenInBrowser);
+        listCategoriesSearch = new CategoryCheckList("Κατηγορίες (Search)");
+        JScrollPane spCats = new JScrollPane(listCategoriesSearch);
+        spCats.setPreferredSize(new Dimension(220, 10));
 
-    tabSearch.add(split, BorderLayout.CENTER);
-    tabSearch.add(pnlButtons, BorderLayout.SOUTH);
+        JButton btnNewCategory = new JButton("Νέα Κατηγορία");
+        btnNewCategory.addActionListener(e -> promptNewCategory());
 
-    // Selection -> preview
-    tblResults.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-        if (!e.getValueIsAdjusting()) updatePreviewFromSelection();
-    });
+        JPanel pnlCats = new JPanel(new BorderLayout(6, 6));
+        pnlCats.add(spCats, BorderLayout.CENTER);
+        pnlCats.add(btnNewCategory, BorderLayout.SOUTH);
 
-    // Εικόνα 1.1 / 1.2 / 1.3
-    btnViewDetails.addActionListener(e -> showDetailsDialog());
-    btnSave.addActionListener(e -> showSaveConfirm());
-    btnOpenInBrowser.addActionListener(e -> openInBrowser());
+        resultsModel = new DefaultTableModel(
+                new Object[][]{
+                        {"Java (programming language)", "DB", "Υπολογιστές", 12345L},
+                        {"Deep learning", "API", "Υπολογιστές", 23456L},
+                        {"Big data", "DB", "Υπολογιστές", 34567L}
+                },
+                new String[]{"Title", "Source", "Category", "PageId"}
+        ) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        };
 
-    tabSearch.revalidate();
-    tabSearch.repaint();
-}
-// ΣΤΟ postInit() ΘΥΜΙΖΩ ότι πρέπει να κληθεί:
-// buildSavedTabUI();  // Εικόνα 2: Saved Articles
+        tblResults = new JTable(resultsModel);
+        tblResults.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblResults.setAutoCreateRowSorter(true);
 
+        // κρύβω PageId
+        tblResults.getColumnModel().getColumn(3).setMinWidth(0);
+        tblResults.getColumnModel().getColumn(3).setMaxWidth(0);
+        tblResults.getColumnModel().getColumn(3).setPreferredWidth(0);
 
-private void buildSavedTabUI() {
-    tabSaved.removeAll();
-    tabSaved.setLayout(new BorderLayout(10, 10));
+        JScrollPane spResults = new JScrollPane(tblResults);
 
-    // ===== Left: Full Table =====
-    DefaultTableModel savedModel = new DefaultTableModel(
-            new Object[][]{
-                    // Title, PageId, SavedAt, Source
-                    {"Concurrency (computer science)", 11223L, "2026-02-07 10:12", "DB"},
-                    {"Machine learning",              22345L, "2026-02-07 10:01", "DB"},
-                    {"Python (programming language)", 23465L, "2026-02-06 18:45", "API"},
-                    {"Big data",                      34567L, "2026-02-06 17:55", "DB"},
-                    {"Artificial intelligence",       45678L, "2026-02-05 15:33", "DB"},
-                    {"Natural language processing",   56789L, "2026-02-05 14:10", "DB"}
-            },
-            new String[]{"Title", "PageId", "Saved At", "Source"}
-    ) {
-        @Override public boolean isCellEditable(int r, int c) { return false; }
-        @Override public Class<?> getColumnClass(int col) {
-            return switch (col) {
-                case 1 -> Long.class;   // PageId
-                default -> String.class;
+        txtPreview = new JTextArea();
+        txtPreview.setEditable(false);
+        txtPreview.setLineWrap(true);
+        txtPreview.setWrapStyleWord(true);
+        txtPreview.setFont(new Font("Arial", Font.PLAIN, 13));
+        txtPreview.setMargin(new Insets(10, 10, 10, 10));
+        txtPreview.setText("Preview κειμένου (placeholder)…");
+        JScrollPane spPreview = new JScrollPane(txtPreview);
+
+        JSplitPane splitTablePreview = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, spResults, spPreview);
+        splitTablePreview.setResizeWeight(0.62);
+
+        JSplitPane splitMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pnlCats, splitTablePreview);
+        splitMain.setResizeWeight(0.18);
+
+        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        btnViewDetails = new JButton("View Details");
+        btnSave = new JButton("Save");
+        btnOpenInBrowser = new JButton("Open in Browser");
+        pnlButtons.add(btnViewDetails);
+        pnlButtons.add(btnSave);
+        pnlButtons.add(btnOpenInBrowser);
+
+        tabSearch.add(splitMain, BorderLayout.CENTER);
+        tabSearch.add(pnlButtons, BorderLayout.SOUTH);
+
+        tblResults.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            if (!e.getValueIsAdjusting()) updateSearchPreviewFromSelection();
+        });
+
+        btnOpenInBrowser.addActionListener(e -> openInBrowserFromSearch());
+        btnSave.addActionListener(e -> showSaveDialogForSelected());
+        btnViewDetails.addActionListener(e -> showDetailsDialogFromSearch());
+
+        listCategoriesSearch.setOnSelectionChanged(() -> setStatus("Φίλτρο κατηγοριών (Search): " + getCheckedCategories(), false));
+
+        tabSearch.revalidate();
+        tabSearch.repaint();
+    }
+
+    private void updateSearchPreviewFromSelection() {
+        int rowView = tblResults.getSelectedRow();
+        if (rowView < 0) return;
+
+        int row = tblResults.convertRowIndexToModel(rowView);
+        String title = String.valueOf(resultsModel.getValueAt(row, 0));
+        String source = String.valueOf(resultsModel.getValueAt(row, 1));
+        String category = String.valueOf(resultsModel.getValueAt(row, 2));
+
+        txtPreview.setText(
+                "Title: " + title + "\n" +
+                "Source: " + source + "\n" +
+                "Category: " + category + "\n\n" +
+                "Preview κειμένου (placeholder)…"
+        );
+
+        setStatus("Selected: " + title, false);
+    }
+
+    // =========================================================
+    // 6) Saved tab – (placeholder απλό για να “δένει” το project)
+    // =========================================================
+    private void buildSavedTabUI() {
+        tabSaved.removeAll();
+        tabSaved.setLayout(new BorderLayout(10, 10));
+
+        listCategoriesSaved = new CategoryCheckList("Κατηγορίες (Saved)");
+        JScrollPane spCats = new JScrollPane(listCategoriesSaved);
+        spCats.setPreferredSize(new Dimension(220, 10));
+
+        JButton btnNewCategory = new JButton("Νέα Κατηγορία");
+        btnNewCategory.addActionListener(e -> promptNewCategory());
+
+        JPanel pnlCats = new JPanel(new BorderLayout(6, 6));
+        pnlCats.add(spCats, BorderLayout.CENTER);
+        pnlCats.add(btnNewCategory, BorderLayout.SOUTH);
+
+        savedModel = new DefaultTableModel(
+                new Object[][]{
+                        {"Artificial intelligence", 45678L, "2026-02-05 15:33", "DB", "Υπολογιστές"},
+                        {"Machine learning", 22345L, "2026-02-07 10:01", "DB", "Υπολογιστές"},
+                        {"Deep learning", 99999L, "2026-02-07 10:02", "DB", "Υπολογιστές"},
+                        {"Big data", 34567L, "2026-02-06 17:55", "DB", "Υπολογιστές"}
+                },
+                new String[]{"Title", "PageId", "Saved At", "Source", "Category"}
+        ) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+            @Override public Class<?> getColumnClass(int col) {
+                return (col == 1) ? Long.class : String.class;
+            }
+        };
+
+        tblSaved = new JTable(savedModel);
+        tblSaved.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblSaved.setAutoCreateRowSorter(true);
+        JScrollPane spSaved = new JScrollPane(tblSaved);
+
+        txtSavedPreview = new JTextArea();
+        txtSavedPreview.setEditable(false);
+        txtSavedPreview.setLineWrap(true);
+        txtSavedPreview.setWrapStyleWord(true);
+        txtSavedPreview.setFont(new Font("Arial", Font.PLAIN, 13));
+        txtSavedPreview.setMargin(new Insets(10, 10, 10, 10));
+        txtSavedPreview.setText("Title:\n\nPreview κειμένου (placeholder)…");
+        JScrollPane spSavedPreview = new JScrollPane(txtSavedPreview);
+
+        JSplitPane splitTablePreview = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, spSaved, spSavedPreview);
+        splitTablePreview.setResizeWeight(0.62);
+
+        JSplitPane splitMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pnlCats, splitTablePreview);
+        splitMain.setResizeWeight(0.18);
+
+        JPanel pnlBottom = new JPanel(new BorderLayout());
+
+        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        btnLoadArticle = new JButton("Load Article");
+        btnDelete = new JButton("Delete");
+        btnClearList = new JButton("Clear List");
+        pnlButtons.add(btnLoadArticle);
+        pnlButtons.add(btnDelete);
+        pnlButtons.add(btnClearList);
+
+        lblSavedCount = new JLabel();
+        lblSavedCount.setFont(new Font("Arial", Font.PLAIN, 12));
+        updateSavedCount();
+
+        JPanel pnlCount = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 8));
+        pnlCount.add(lblSavedCount);
+
+        pnlBottom.add(pnlButtons, BorderLayout.WEST);
+        pnlBottom.add(pnlCount, BorderLayout.EAST);
+
+        tabSaved.add(splitMain, BorderLayout.CENTER);
+        tabSaved.add(pnlBottom, BorderLayout.SOUTH);
+
+        tblSaved.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) updateSavedPreviewFromSelection();
+        });
+
+        btnDelete.addActionListener(e -> deleteSelectedSaved());
+        btnClearList.addActionListener(e -> clearAllSaved());
+        btnLoadArticle.addActionListener(e -> showLoadDialogFromSaved());
+
+        listCategoriesSaved.setOnSelectionChanged(() -> setStatus("Φίλτρο κατηγοριών (Saved): " + getCheckedCategories(), false));
+
+        tabSaved.revalidate();
+        tabSaved.repaint();
+    }
+
+    private void updateSavedPreviewFromSelection() {
+        int rowView = tblSaved.getSelectedRow();
+        if (rowView < 0) return;
+
+        int row = tblSaved.convertRowIndexToModel(rowView);
+        String title = String.valueOf(savedModel.getValueAt(row, 0));
+        Object pageId = savedModel.getValueAt(row, 1);
+        String savedAt = String.valueOf(savedModel.getValueAt(row, 2));
+        String source = String.valueOf(savedModel.getValueAt(row, 3));
+        String category = String.valueOf(savedModel.getValueAt(row, 4));
+
+        txtSavedPreview.setText(
+                "Title: " + title + "\n" +
+                "PageId: " + pageId + "\n" +
+                "Saved At: " + savedAt + "\n" +
+                "Source: " + source + "\n" +
+                "Category: " + category + "\n\n" +
+                "Preview κειμένου (placeholder)…"
+        );
+
+        setStatus("Saved selected: " + title, false);
+    }
+
+    private void updateSavedCount() {
+        int n = (savedModel == null) ? 0 : savedModel.getRowCount();
+        lblSavedCount.setText(n + " saved articles ✓");
+    }
+
+    // =========================================================
+    // 7) Stats tab – Εικόνα 3 (όπως την εικόνα που ανέβασες)
+    // =========================================================
+    private void buildStatsTabUI() {
+        tabStats.removeAll();
+        tabStats.setLayout(new BorderLayout(12, 12));
+
+        // --- Demo data (ίδιο concept με την εικόνα 3)
+        LinkedHashMap<String, Integer> keywordCounts = new LinkedHashMap<>();
+        keywordCounts.put("Concurrency", 34);
+        keywordCounts.put("Deep learning", 29);
+        keywordCounts.put("Big data", 22);
+        keywordCounts.put("Python", 18);
+        keywordCounts.put("Machine learning", 15);
+
+        LinkedHashMap<String, Integer> categoryCounts = new LinkedHashMap<>();
+        categoryCounts.put("Χωρίς Κατηγορία", 7);
+        categoryCounts.put("Πολιτισμός", 9);
+        categoryCounts.put("Ιστορία", 11);
+        categoryCounts.put("Υπολογιστές", 13);
+
+        // =========================
+        // LEFT panel: Keywords stats
+        // =========================
+        JPanel pnlLeft = new JPanel(new BorderLayout(10, 10));
+
+        JLabel lblLeftTitle = new JLabel("Συχνότερες αναζητήσεις (Keywords)");
+        lblLeftTitle.setFont(new Font("Arial", Font.PLAIN, 16));
+        pnlLeft.add(lblLeftTitle, BorderLayout.NORTH);
+
+        keywordStatsModel = new DefaultTableModel(new Object[]{"Keyword", "Count"}, 0) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+            @Override public Class<?> getColumnClass(int columnIndex) {
+                return (columnIndex == 1) ? Integer.class : String.class;
+            }
+        };
+
+        for (Map.Entry<String, Integer> e : keywordCounts.entrySet()) {
+            keywordStatsModel.addRow(new Object[]{e.getKey(), e.getValue()});
+        }
+
+        tblKeywordStats = new JTable(keywordStatsModel);
+        tblKeywordStats.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblKeywordStats.setRowHeight(22);
+        JScrollPane spKeywords = new JScrollPane(tblKeywordStats);
+
+        // μικρό chart δεξιά του πίνακα (όπως επάνω αριστερά στην εικόνα)
+        pnlKeywordBarsSmall = new HorizontalBarsPanel(keywordCounts);
+        pnlKeywordBarsSmall.setPreferredSize(new Dimension(260, 180));
+
+        JSplitPane splitTableSmallChart = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                spKeywords,
+                wrapTitled(pnlKeywordBarsSmall, null)
+        );
+        splitTableSmallChart.setResizeWeight(0.55);
+
+        // μεγάλο οριζόντιο chart κάτω (όπως κάτω αριστερά στην εικόνα)
+        pnlKeywordBarsBig = new HorizontalBarsPanel(keywordCounts);
+        pnlKeywordBarsBig.setPreferredSize(new Dimension(10, 230));
+        JPanel pnlBigChartBox = wrapTitled(pnlKeywordBarsBig, "Συχνότερες αναζητήσεις (Keywords)");
+
+        JPanel pnlLeftCenter = new JPanel(new BorderLayout(10, 10));
+        pnlLeftCenter.add(splitTableSmallChart, BorderLayout.CENTER);
+        pnlLeftCenter.add(pnlBigChartBox, BorderLayout.SOUTH);
+
+        pnlLeft.add(pnlLeftCenter, BorderLayout.CENTER);
+
+        // =========================
+        // RIGHT panel: Category stats
+        // =========================
+        JPanel pnlRight = new JPanel(new BorderLayout(10, 10));
+
+        JLabel lblRightTitle = new JLabel("Άρθρα ανά κατηγορία");
+        lblRightTitle.setFont(new Font("Arial", Font.PLAIN, 16));
+        pnlRight.add(lblRightTitle, BorderLayout.NORTH);
+
+        pnlCategoryPie = new PieChartPanel(categoryCounts);
+        pnlCategoryBars = new VerticalBarsPanel(categoryCounts);
+
+        JPanel pnlPieBox = wrapTitled(pnlCategoryPie, null);
+        JPanel pnlBarsBox = wrapTitled(pnlCategoryBars, null);
+
+        JSplitPane splitPieBars = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pnlPieBox, pnlBarsBox);
+        splitPieBars.setResizeWeight(0.55);
+
+        // legend table κάτω δεξιά (όπως στην εικόνα)
+        categoryLegendModel = new DefaultTableModel(new Object[]{"Κατηγορία", "Articles"}, 0) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+            @Override public Class<?> getColumnClass(int columnIndex) {
+                return (columnIndex == 1) ? Integer.class : String.class;
+            }
+        };
+        for (Map.Entry<String, Integer> e : categoryCounts.entrySet()) {
+            categoryLegendModel.addRow(new Object[]{e.getKey(), e.getValue()});
+        }
+
+        tblCategoryLegend = new JTable(categoryLegendModel);
+        tblCategoryLegend.setRowHeight(22);
+        JScrollPane spLegend = new JScrollPane(tblCategoryLegend);
+        spLegend.setPreferredSize(new Dimension(10, 150));
+
+        pnlRight.add(splitPieBars, BorderLayout.CENTER);
+        pnlRight.add(spLegend, BorderLayout.SOUTH);
+
+        // =========================
+        // MAIN: Left + Right in 2 columns
+        // =========================
+        JSplitPane splitMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, pnlLeft, pnlRight);
+        splitMain.setResizeWeight(0.50);
+
+        tabStats.add(splitMain, BorderLayout.CENTER);
+
+        // =========================
+        // Bottom line inside Stats tab (όπως στην εικόνα)
+        // =========================
+        JPanel pnlTabBottom = new JPanel(new BorderLayout());
+
+        lblStatsSelected = new JLabel("Selected: Artificial intelligence");
+        lblStatsSelected.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        lblStatsSavedCount = new JLabel("4 saved articles ▼");
+        lblStatsSavedCount.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        pnlTabBottom.add(lblStatsSelected, BorderLayout.WEST);
+        pnlTabBottom.add(lblStatsSavedCount, BorderLayout.EAST);
+
+        tabStats.add(pnlTabBottom, BorderLayout.SOUTH);
+
+        // =========================
+        // Listeners: όταν επιλέγω keyword στο table, ενημερώνω "Selected: ..."
+        // =========================
+        tblKeywordStats.getSelectionModel().addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting()) return;
+            int row = tblKeywordStats.getSelectedRow();
+            if (row < 0) return;
+
+            String kw = String.valueOf(keywordStatsModel.getValueAt(row, 0));
+            lblStatsSelected.setText("Selected: " + kw);
+
+            // ανανεώνω και status bar του frame
+            setStatus("Selected keyword: " + kw, false);
+        });
+
+        tabStats.revalidate();
+        tabStats.repaint();
+    }
+
+    private JPanel wrapTitled(JComponent comp, String titleOrNull) {
+        JPanel box = new JPanel(new BorderLayout());
+        if (titleOrNull != null && !titleOrNull.isBlank()) {
+            JLabel lbl = new JLabel(titleOrNull);
+            lbl.setFont(new Font("Arial", Font.PLAIN, 14));
+            JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 6));
+            top.add(lbl);
+            box.add(top, BorderLayout.NORTH);
+        }
+        box.add(comp, BorderLayout.CENTER);
+        box.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor")));
+        return box;
+    }
+
+    // =========================================================
+    // 7.1) Simple charts (χωρίς libraries)
+    // =========================================================
+    private static class HorizontalBarsPanel extends JPanel {
+        private Map<String, Integer> data = new LinkedHashMap<>();
+
+        HorizontalBarsPanel(Map<String, Integer> data) {
+            setData(data);
+            setBackground(UIManager.getColor("Panel.background"));
+        }
+
+        void setData(Map<String, Integer> data) {
+            this.data = new LinkedHashMap<>(data);
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int w = getWidth();
+            int h = getHeight();
+
+            int left = 14;
+            int top = 14;
+            int right = 14;
+            int bottom = 14;
+
+            int innerW = Math.max(1, w - left - right);
+            int innerH = Math.max(1, h - top - bottom);
+
+            int n = data.size();
+            if (n == 0) { g2.dispose(); return; }
+
+            int max = 1;
+            for (int v : data.values()) max = Math.max(max, v);
+
+            int rowH = Math.max(22, innerH / n);
+            int y = top;
+
+            for (Map.Entry<String, Integer> e : data.entrySet()) {
+                String label = e.getKey();
+                int value = e.getValue();
+
+                int barX = left + 120;
+                int barW = innerW - 120 - 10;
+                int barH = Math.max(10, rowH - 10);
+
+                int fillW = (int) (barW * (value / (double) max));
+
+                // label
+                g2.setFont(new Font("Arial", Font.PLAIN, 12));
+                g2.setColor(UIManager.getColor("Label.foreground"));
+                g2.drawString(label, left, y + 14);
+
+                // bar background
+                g2.setColor(UIManager.getColor("Component.borderColor"));
+                g2.drawRect(barX, y + 2, barW, barH);
+
+                // bar fill (χρησιμοποιώ UI default χρώμα selection για να μοιάζει με “μπλε”)
+                g2.setColor(UIManager.getColor("Table.selectionBackground"));
+                g2.fillRect(barX + 1, y + 3, Math.max(0, fillW - 1), Math.max(0, barH - 1));
+
+                // value
+                g2.setColor(UIManager.getColor("Label.foreground"));
+                g2.drawString(String.valueOf(value), barX + barW + 6, y + 14);
+
+                y += rowH;
+            }
+
+            g2.dispose();
+        }
+    }
+
+    private static class VerticalBarsPanel extends JPanel {
+        private Map<String, Integer> data = new LinkedHashMap<>();
+
+        VerticalBarsPanel(Map<String, Integer> data) {
+            setData(data);
+            setBackground(UIManager.getColor("Panel.background"));
+        }
+
+        void setData(Map<String, Integer> data) {
+            this.data = new LinkedHashMap<>(data);
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int w = getWidth();
+            int h = getHeight();
+
+            int left = 30;
+            int top = 20;
+            int right = 16;
+            int bottom = 50;
+
+            int innerW = Math.max(1, w - left - right);
+            int innerH = Math.max(1, h - top - bottom);
+
+            int n = data.size();
+            if (n == 0) { g2.dispose(); return; }
+
+            int max = 1;
+            for (int v : data.values()) max = Math.max(max, v);
+
+            // axes
+            g2.setColor(UIManager.getColor("Component.borderColor"));
+            g2.drawLine(left, top, left, top + innerH);
+            g2.drawLine(left, top + innerH, left + innerW, top + innerH);
+
+            int gap = 12;
+            int barW = Math.max(18, (innerW - (gap * (n + 1))) / n);
+
+            int i = 0;
+            for (Map.Entry<String, Integer> e : data.entrySet()) {
+                String label = e.getKey();
+                int value = e.getValue();
+
+                int x = left + gap + i * (barW + gap);
+                int barH = (int) (innerH * (value / (double) max));
+                int y = top + innerH - barH;
+
+                // bar
+                g2.setColor(UIManager.getColor("Table.selectionBackground"));
+                g2.fillRect(x, y, barW, barH);
+
+                g2.setColor(UIManager.getColor("Component.borderColor"));
+                g2.drawRect(x, y, barW, barH);
+
+                // value on top
+                g2.setColor(UIManager.getColor("Label.foreground"));
+                g2.setFont(new Font("Arial", Font.PLAIN, 12));
+                g2.drawString(String.valueOf(value), x + (barW / 2) - 6, y - 6);
+
+                // label bottom (2 lines αν χρειαστεί)
+                g2.setFont(new Font("Arial", Font.PLAIN, 12));
+                String[] parts = label.split(" ");
+                String line1 = (parts.length >= 1) ? parts[0] : label;
+                String line2 = (parts.length >= 2) ? parts[1] : "";
+
+                int baseY = top + innerH + 18;
+                g2.drawString(line1, x - 4, baseY);
+                if (!line2.isBlank()) g2.drawString(line2, x - 4, baseY + 14);
+
+                i++;
+            }
+
+            g2.dispose();
+        }
+    }
+
+    private static class PieChartPanel extends JPanel {
+        private Map<String, Integer> data = new LinkedHashMap<>();
+
+        PieChartPanel(Map<String, Integer> data) {
+            setData(data);
+            setBackground(UIManager.getColor("Panel.background"));
+        }
+
+        void setData(Map<String, Integer> data) {
+            this.data = new LinkedHashMap<>(data);
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int w = getWidth();
+            int h = getHeight();
+
+            int size = Math.min(w, h) - 30;
+            if (size < 40) { g2.dispose(); return; }
+
+            int x = (w - size) / 2;
+            int y = (h - size) / 2;
+
+            int total = 0;
+            for (int v : data.values()) total += v;
+            if (total == 0) { g2.dispose(); return; }
+
+            // “σταθερή” παλέτα με UI-friendly χρώματα (μοιάζει με την εικόνα)
+            java.awt.Color[] palette = new java.awt.Color[]{
+                    new java.awt.Color(242, 205, 92),
+                    new java.awt.Color(224, 122, 95),
+                    new java.awt.Color(129, 178, 154),
+                    new java.awt.Color(110, 168, 255)
             };
+
+            int start = 90; // ξεκινάω από πάνω (12 η ώρα)
+            int i = 0;
+
+            for (Map.Entry<String, Integer> e : data.entrySet()) {
+                int value = e.getValue();
+                int angle = (int) Math.round(360.0 * value / total);
+
+                g2.setColor(palette[i % palette.length]);
+                g2.fillArc(x, y, size, size, start, -angle);
+
+                g2.setColor(UIManager.getColor("Component.borderColor"));
+                g2.drawArc(x, y, size, size, start, -angle);
+
+                // label μέσα (percent + articles), όπως στην εικόνα
+                double pct = (100.0 * value / total);
+                String txt = String.format("%.1f%%\n%d articles", pct, value);
+
+                // πολύ απλή τοποθέτηση: στο κέντρο (δεν είναι τέλειο, αλλά “μοιάζει”)
+                if (i == 0) {
+                    g2.setColor(UIManager.getColor("Label.foreground"));
+                    g2.setFont(new Font("Arial", Font.PLAIN, 12));
+                    drawMultiline(g2, txt, x + size / 2 - 25, y + size / 2 - 10);
+                }
+
+                start -= angle;
+                i++;
+            }
+
+            g2.dispose();
         }
-    };
 
-    tblSaved = new JTable(savedModel);
-    tblSaved.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    tblSaved.setAutoCreateRowSorter(true);
-    JScrollPane spSavedTable = new JScrollPane(tblSaved);
-
-    // ===== Right: Preview =====
-    txtSavedPreview = new JTextArea();
-    txtSavedPreview.setEditable(false);
-    txtSavedPreview.setLineWrap(true);
-    txtSavedPreview.setWrapStyleWord(true);
-    txtSavedPreview.setText("Title:\n\nPreview κειμένου\n(placeholder)…");
-    JScrollPane spSavedPreview = new JScrollPane(txtSavedPreview);
-
-    JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, spSavedTable, spSavedPreview);
-    split.setResizeWeight(0.72); // πιο μεγάλο table (εικόνα 2)
-
-    // ===== Bottom: buttons + count =====
-    JPanel pnlBottom = new JPanel(new BorderLayout());
-
-    JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
-    btnLoadArticle = new JButton("Load Article");
-    btnDeleteSaved = new JButton("Delete");
-    btnClearList   = new JButton("Clear List");
-    pnlButtons.add(btnLoadArticle);
-    pnlButtons.add(btnDeleteSaved);
-    pnlButtons.add(btnClearList);
-
-    lblSavedCount = new JLabel();
-    lblSavedCount.setFont(new java.awt.Font("Arial", 0, 12));
-    updateSavedCountLabel();
-
-    JPanel pnlCount = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 8));
-    pnlCount.add(lblSavedCount);
-
-    pnlBottom.add(pnlButtons, BorderLayout.WEST);
-    pnlBottom.add(pnlCount, BorderLayout.EAST);
-
-    // ===== Assemble tab =====
-    tabSaved.add(split, BorderLayout.CENTER);
-    tabSaved.add(pnlBottom, BorderLayout.SOUTH);
-
-    // ===== Behaviors =====
-    tblSaved.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-        if (!e.getValueIsAdjusting()) updateSavedPreviewFromSelection();
-    });
-
-    btnLoadArticle.addActionListener(e -> showLoadArticleDialog());     // Εικόνα 2.1
-    btnDeleteSaved.addActionListener(e -> deleteSelectedSavedRow());    // Delete
-    btnClearList.addActionListener(e -> clearSavedList());             // Clear List
-
-    tabSaved.revalidate();
-    tabSaved.repaint();
-}
-
-private void updateSavedPreviewFromSelection() {
-    int rowView = tblSaved.getSelectedRow();
-    if (rowView < 0) return;
-
-    int row = tblSaved.convertRowIndexToModel(rowView);
-
-    String title  = String.valueOf(tblSaved.getModel().getValueAt(row, 0));
-    Object pageId = tblSaved.getModel().getValueAt(row, 1);
-    String savedAt = String.valueOf(tblSaved.getModel().getValueAt(row, 2));
-    String source  = String.valueOf(tblSaved.getModel().getValueAt(row, 3));
-
-    txtSavedPreview.setText(
-            "Title: " + title + "\n" +
-            "PageId: " + pageId + "\n" +
-            "Saved At: " + savedAt + "\n" +
-            "Source: " + source + "\n\n" +
-            "Preview κειμένου (placeholder)…"
-    );
-
-    setStatus("Saved selected: " + title, false);
-}
-
-private String getSelectedSavedTitleOrWarn() {
-    int rowView = tblSaved.getSelectedRow();
-    if (rowView < 0) {
-        JOptionPane.showMessageDialog(this, "Select a saved article first.",
-                "No selection", JOptionPane.WARNING_MESSAGE);
-        setStatus("No saved selection", false);
-        return null;
-    }
-    int row = tblSaved.convertRowIndexToModel(rowView);
-    return String.valueOf(tblSaved.getModel().getValueAt(row, 0));
-}
-
-private Long getSelectedSavedPageIdOrNull() {
-    int rowView = tblSaved.getSelectedRow();
-    if (rowView < 0) return null;
-    int row = tblSaved.convertRowIndexToModel(rowView);
-    Object v = tblSaved.getModel().getValueAt(row, 1);
-    if (v instanceof Long l) return l;
-    try { return Long.valueOf(String.valueOf(v)); } catch (Exception ex) { return null; }
-}
-
-// ==============================
-// Εικόνα 2.1: Load Article dialog
-// ==============================
-private void showLoadArticleDialog() {
-    String title = getSelectedSavedTitleOrWarn();
-    if (title == null) return;
-
-    Long pageId = getSelectedSavedPageIdOrNull();
-
-    JDialog dlg = new JDialog(this, "Load Article", true);
-    dlg.setLayout(new BorderLayout(10, 10));
-
-    JLabel lbl = new JLabel(
-            "<html><b>Load article from saved list?</b><br><br>" +
-            "Title: " + escapeHtml(title) + "<br>" +
-            "PageId: " + (pageId == null ? "-" : pageId) + "<br><br>" +
-            "This is a demo dialog (placeholder).</html>"
-    );
-
-    JPanel center = new JPanel(new BorderLayout());
-    center.add(lbl, BorderLayout.CENTER);
-
-    JButton btnClose = new JButton("Close");
-    btnClose.addActionListener(e -> dlg.dispose());
-
-    JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 8));
-    bottom.add(btnClose);
-
-    dlg.add(center, BorderLayout.CENTER);
-    dlg.add(bottom, BorderLayout.SOUTH);
-
-    dlg.setSize(480, 260);
-    dlg.setLocationRelativeTo(this);
-    dlg.setVisible(true);
-
-    setStatus("Closed Load Article", false);
-}
-
-private void deleteSelectedSavedRow() {
-    int rowView = tblSaved.getSelectedRow();
-    if (rowView < 0) {
-        Toolkit.getDefaultToolkit().beep();
-        setStatus("No saved selection", false);
-        return;
-    }
-
-    int row = tblSaved.convertRowIndexToModel(rowView);
-    String title = String.valueOf(tblSaved.getModel().getValueAt(row, 0));
-
-    int choice = JOptionPane.showConfirmDialog(
-            this,
-            "Delete saved article?\n\n" + title,
-            "Delete",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-    );
-
-    if (choice != JOptionPane.YES_OPTION) {
-        setStatus("Delete cancelled", false);
-        return;
-    }
-
-    DefaultTableModel m = (DefaultTableModel) tblSaved.getModel();
-    m.removeRow(row);
-
-    txtSavedPreview.setText("Title:\n\nPreview κειμένου\n(placeholder)…");
-    updateSavedCountLabel();
-    setStatus("Deleted: " + title, false);
-}
-
-private void clearSavedList() {
-    DefaultTableModel m = (DefaultTableModel) tblSaved.getModel();
-    if (m.getRowCount() == 0) {
-        setStatus("Saved list already empty", false);
-        return;
-    }
-
-    int choice = JOptionPane.showConfirmDialog(
-            this,
-            "Clear the entire saved list?",
-            "Clear List",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-    );
-
-    if (choice != JOptionPane.YES_OPTION) {
-        setStatus("Clear cancelled", false);
-        return;
-    }
-
-    m.setRowCount(0);
-    txtSavedPreview.setText("Title:\n\nPreview κειμένου\n(placeholder)…");
-    updateSavedCountLabel();
-    setStatus("Saved list cleared", false);
-}
-
-private void updateSavedCountLabel() {
-    int n = (tblSaved == null) ? 0 : ((DefaultTableModel) tblSaved.getModel()).getRowCount();
-    lblSavedCount.setText(n + " saved articles  ✓");
-}
-
-private String escapeHtml(String s) {
-    if (s == null) return "";
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-}
-
-
-    
-    
-
-private void buildStatusBar() {
-    JPanel pnlStatus = new JPanel(new BorderLayout());
-
-    progress = new JProgressBar();
-    progress.setIndeterminate(true);
-    progress.setVisible(false);
-
-    lblStatus = new JLabel("Ready");
-    lblStatus.setFont(new java.awt.Font("Arial", 0, 12));
-
-    pnlStatus.add(progress, BorderLayout.WEST);
-    pnlStatus.add(lblStatus, BorderLayout.EAST); // κάτω δεξιά
-
-    getContentPane().add(pnlStatus, BorderLayout.PAGE_END);
-    getContentPane().revalidate();
-    getContentPane().repaint();
-}
-
-private void wireMenuNavigation() {
-    miOpenSavedTab.addActionListener(e -> tabsMain.setSelectedComponent(tabSaved));
-    miOpenStatsTab.addActionListener(e -> tabsMain.setSelectedComponent(tabStats));
-}
-
-// -------- behaviors --------
-private void onSearch() {
-    String q = (txtKeywords.getText() == null) ? "" : txtKeywords.getText().trim();
-    if (q.isEmpty()) {
-        Toolkit.getDefaultToolkit().beep();
-        setStatus("Enter keywords…", false);
-        return;
-    }
-    String mode = (bgSearchMode.getSelection() != null)
-            ? bgSearchMode.getSelection().getActionCommand()
-            : "DB_API";
-
-    setStatus("Searching… (" + mode + ")", true);
-
-    // Demo: εδώ θα μπει SwingWorker + Controller
-    setStatus("Found results for: " + q, false);
-}
-
-private void clearSearchUI() {
-    txtKeywords.setText("");
-    rbDbApi.setSelected(true);
-    tblResults.clearSelection();
-    txtPreview.setText("Preview εμφανίζεται εδώ όταν επιλέξεις αποτέλεσμα…");
-    setStatus("Ready", false);
-    txtKeywords.requestFocusInWindow();
-}
-
-private void updatePreviewFromSelection() {
-    int row = tblResults.getSelectedRow();
-    if (row < 0) return;
-
-    String title = String.valueOf(tblResults.getValueAt(row, 0));
-    String source = String.valueOf(tblResults.getValueAt(row, 1));
-
-    txtPreview.setText(
-            "Title: " + title + "\n" +
-            "Source: " + source + "\n\n" +
-            "Preview κειμένου (placeholder)…"
-    );
-    setStatus("Selected: " + title, false);
-}
-
-private String getSelectedTitleOrWarn() {
-    int row = tblResults.getSelectedRow();
-    if (row < 0) {
-        JOptionPane.showMessageDialog(this, "Select a result first.",
-                "No selection", JOptionPane.WARNING_MESSAGE);
-        setStatus("No selection", false);
-        return null;
-    }
-    return String.valueOf(tblResults.getValueAt(row, 0));
-}
-
-// ==============================
-// Εικόνα 1.1: View Details dialog
-// ==============================
-private void showDetailsDialog() {
-    String title = getSelectedTitleOrWarn();
-    if (title == null) return;
-
-    JDialog dlg = new JDialog(this, "Article Details", true);
-    dlg.setLayout(new BorderLayout());
-
-    JTextArea area = new JTextArea();
-    area.setEditable(false);
-    area.setLineWrap(true);
-    area.setWrapStyleWord(true);
-    area.setText(
-            "Article: " + title + "\n\n" +
-            "Details content (placeholder)…\n\n" +
-            "revisionId: 123456\n" +
-            "timestamp: 2026-02-07T10:00:00Z\n"
-    );
-
-    JButton btnClose = new JButton("Close");
-    btnClose.addActionListener(e -> dlg.dispose());
-
-    dlg.add(new JScrollPane(area), BorderLayout.CENTER);
-
-    JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    bottom.add(btnClose);
-    dlg.add(bottom, BorderLayout.SOUTH);
-
-    dlg.setSize(520, 360);
-    dlg.setLocationRelativeTo(this);
-    dlg.setVisible(true);
-
-    setStatus("Closed details", false);
-}
-
-// ==============================
-// Εικόνα 1.2: Save confirm
-// ==============================
-private void showSaveConfirm() {
-    String title = getSelectedTitleOrWarn();
-    if (title == null) return;
-
-    int choice = JOptionPane.showConfirmDialog(
-            this,
-            "Save article?\n\n" + title,
-            "Save Confirmation",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE
-    );
-
-    if (choice == JOptionPane.YES_OPTION) {
-        setStatus("Saved: " + title, false);
-    } else {
-        setStatus("Save cancelled", false);
-    }
-}
-
-// ==============================
-// Εικόνα 1.3: Open in Browser
-// ==============================
-private void openInBrowser() {
-    String title = getSelectedTitleOrWarn();
-    if (title == null) return;
-
-    int choice = JOptionPane.showConfirmDialog(
-            this,
-            "Open in browser?\n\n" + title,
-            "Open in Browser",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE
-    );
-
-    if (choice != JOptionPane.YES_OPTION) {
-        setStatus("Open cancelled", false);
-        return;
-    }
-
-    try {
-        String url = "https://en.wikipedia.org/wiki/" + title.trim().replace(" ", "_");
-        if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().browse(new URI(url));
-            JOptionPane.showMessageDialog(this, "Opened:\n" + url,
-                    "Browser", JOptionPane.INFORMATION_MESSAGE);
-            setStatus("Opened in browser", false);
-        } else {
-            JOptionPane.showMessageDialog(this, "Desktop browse not supported.",
-                    "Browser", JOptionPane.WARNING_MESSAGE);
-            setStatus("Browser not supported", false);
+        private void drawMultiline(Graphics2D g2, String txt, int x, int y) {
+            String[] lines = txt.split("\n");
+            int dy = 0;
+            for (String line : lines) {
+                g2.drawString(line, x, y + dy);
+                dy += 14;
+            }
         }
-    } catch (Exception ex) {
-        logger.log(java.util.logging.Level.SEVERE, "Open in browser failed", ex);
-        JOptionPane.showMessageDialog(this, "Failed to open browser:\n" + ex.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
-        setStatus("Open failed", false);
     }
-}
 
-private void setStatus(String msg, boolean busy) {
-    if (lblStatus != null) lblStatus.setText(msg);
-    if (progress != null) progress.setVisible(busy);
-}
+    // =========================================================
+    // 8) Dialogs / actions (Search) – placeholders
+    // =========================================================
+    private void showDetailsDialogFromSearch() {
+        String title = getSelectedSearchTitleOrWarn();
+        if (title == null) return;
+
+        JDialog dlg = new JDialog(this, "Article Details", true);
+        dlg.setLayout(new BorderLayout(10, 10));
+
+        JTextArea area = new JTextArea();
+        area.setEditable(false);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setMargin(new Insets(10, 10, 10, 10));
+
+        area.setText(
+                "Article: " + title + "\n\n" +
+                "Details (placeholder)…\n\n" +
+                "revisionId: 123456\n" +
+                "timestamp: 2026-02-07T10:00:00Z\n"
+        );
+
+        JButton btnClose = new JButton("Close");
+        btnClose.addActionListener(e -> dlg.dispose());
+
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 8));
+        bottom.add(btnClose);
+
+        dlg.add(new JScrollPane(area), BorderLayout.CENTER);
+        dlg.add(bottom, BorderLayout.SOUTH);
+
+        dlg.setSize(520, 360);
+        dlg.setLocationRelativeTo(this);
+        dlg.setVisible(true);
+
+        setStatus("Closed details", false);
+    }
+
+    private void showSaveDialogForSelected() {
+        int rowView = tblResults.getSelectedRow();
+        if (rowView < 0) {
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(this, "Select a result first.", "No selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int row = tblResults.convertRowIndexToModel(rowView);
+        String title = String.valueOf(resultsModel.getValueAt(row, 0));
+
+        JOptionPane.showMessageDialog(this,
+                "Save (placeholder)\n\n" + title,
+                "Save Article",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        setStatus("Saved (placeholder): " + title, false);
+    }
+
+    private void openInBrowserFromSearch() {
+        String title = getSelectedSearchTitleOrWarn();
+        if (title == null) return;
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Open in browser?\n\n" + title,
+                "Open in Browser",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        if (choice != JOptionPane.YES_OPTION) {
+            setStatus("Open cancelled", false);
+            return;
+        }
+
+        try {
+            String url = "https://en.wikipedia.org/wiki/" + title.trim().replace(" ", "_");
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(new URI(url));
+                setStatus("Opened in browser", false);
+            } else {
+                setStatus("Desktop browse not supported", false);
+            }
+        } catch (Exception ex) {
+            logger.log(java.util.logging.Level.SEVERE, "Open in browser failed", ex);
+            JOptionPane.showMessageDialog(this, "Failed to open browser:\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            setStatus("Open failed", false);
+        }
+    }
+
+    private String getSelectedSearchTitleOrWarn() {
+        int rowView = tblResults.getSelectedRow();
+        if (rowView < 0) {
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(this, "Select a result first.", "No selection", JOptionPane.WARNING_MESSAGE);
+            setStatus("No selection", false);
+            return null;
+        }
+        int row = tblResults.convertRowIndexToModel(rowView);
+        return String.valueOf(resultsModel.getValueAt(row, 0));
+    }
+
+    // =========================================================
+    // 9) Dialogs / actions (Saved) – placeholders
+    // =========================================================
+    private void showLoadDialogFromSaved() {
+        int rowView = tblSaved.getSelectedRow();
+        if (rowView < 0) {
+            Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(this, "Select a saved article first.", "No selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int row = tblSaved.convertRowIndexToModel(rowView);
+        String title = String.valueOf(savedModel.getValueAt(row, 0));
+
+        JOptionPane.showMessageDialog(this,
+                "Load Article (placeholder)\n\n" + title,
+                "Load Article",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        setStatus("Load (placeholder): " + title, false);
+    }
+
+    private void deleteSelectedSaved() {
+        int rowView = tblSaved.getSelectedRow();
+        if (rowView < 0) {
+            Toolkit.getDefaultToolkit().beep();
+            setStatus("No saved selection", false);
+            return;
+        }
+
+        int row = tblSaved.convertRowIndexToModel(rowView);
+        String title = String.valueOf(savedModel.getValueAt(row, 0));
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Delete saved article?\n\n" + title,
+                "Delete",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (choice != JOptionPane.YES_OPTION) {
+            setStatus("Delete cancelled", false);
+            return;
+        }
+
+        savedModel.removeRow(row);
+        txtSavedPreview.setText("Title:\n\nPreview κειμένου (placeholder)…");
+        updateSavedCount();
+        setStatus("Deleted: " + title, false);
+    }
+
+    private void clearAllSaved() {
+        if (savedModel.getRowCount() == 0) {
+            setStatus("Saved list already empty", false);
+            return;
+        }
+
+        int choice = JOptionPane.showConfirmDialog(
+                this,
+                "Clear the entire saved list?",
+                "Clear List",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+        if (choice != JOptionPane.YES_OPTION) {
+            setStatus("Clear cancelled", false);
+            return;
+        }
+
+        savedModel.setRowCount(0);
+        txtSavedPreview.setText("Title:\n\nPreview κειμένου (placeholder)…");
+        updateSavedCount();
+        setStatus("Saved list cleared", false);
+    }
+
+    // =========================================================
+    // 10) Search behavior (DB/API mode – placeholder)
+    // =========================================================
+    private void onSearch() {
+        String q = (txtKeywords.getText() == null) ? "" : txtKeywords.getText().trim();
+        if (q.isEmpty()) {
+            Toolkit.getDefaultToolkit().beep();
+            setStatus("Enter keywords…", false);
+            return;
+        }
+
+        String mode = (bgSearchMode.getSelection() != null)
+                ? bgSearchMode.getSelection().getActionCommand()
+                : "DB_API";
+
+        setStatus("Searching… (" + mode + ") for: " + q, true);
+
+        // demo “finish”
+        setStatus("Found results for: " + q, false);
+        setStatus("Ready", false);
+    }
+
+    private void clearSearchUI() {
+        txtKeywords.setText("");
+        rbDbApi.setSelected(true);
+
+        if (tblResults != null) tblResults.clearSelection();
+        if (txtPreview != null) txtPreview.setText("Preview κειμένου (placeholder)…");
+
+        setStatus("Ready", false);
+        txtKeywords.requestFocusInWindow();
+    }
+
+    // =========================================================
+    // 11) Status + menu nav
+    // =========================================================
+    private void buildStatusBar() {
+        JPanel pnlStatus = new JPanel(new BorderLayout());
+
+        progress = new JProgressBar();
+        progress.setIndeterminate(true);
+        progress.setVisible(false);
+
+        lblStatus = new JLabel("Ready");
+        lblStatus.setFont(new Font("Arial", Font.PLAIN, 12));
+
+        pnlStatus.add(progress, BorderLayout.WEST);
+        pnlStatus.add(lblStatus, BorderLayout.EAST);
+
+        getContentPane().add(pnlStatus, BorderLayout.PAGE_END);
+        getContentPane().revalidate();
+        getContentPane().repaint();
+    }
+
+    private void setStatus(String msg, boolean busy) {
+        if (lblStatus != null) lblStatus.setText(msg);
+        if (progress != null) progress.setVisible(busy);
+    }
+
+    private void wireMenuNavigation() {
+        miOpenSavedTab.addActionListener(e -> tabsMain.setSelectedComponent(tabSaved));
+        miOpenStatsTab.addActionListener(e -> tabsMain.setSelectedComponent(tabStats));
+    }
+
+    // =========================================================
+    // 12) New category prompt (κοινό)
+    // =========================================================
+    private void promptNewCategory() {
+        String n = JOptionPane.showInputDialog(
+                this,
+                "Δώσε νέα κατηγορία:",
+                "Νέα Κατηγορία",
+                JOptionPane.QUESTION_MESSAGE
+        );
+        addNewCategoryFromUser(n);
+    }
+
+    // =========================================================
+    // 13) Custom checkbox list (JList with checkbox renderer)
+    // =========================================================
+    private class CategoryCheckList extends JList<String> {
+        private Runnable onSelectionChanged;
+
+        CategoryCheckList(String tooltip) {
+            super();
+            setToolTipText(tooltip);
+
+            setCellRenderer((list, value, index, isSelected, cellHasFocus) -> {
+                JCheckBox cb = new JCheckBox(value);
+                cb.setFont(new Font("Arial", Font.PLAIN, 13));
+                cb.setOpaque(true);
+                cb.setSelected(Boolean.TRUE.equals(categoryChecked.get(value)));
+
+                cb.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+                cb.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
+                return cb;
+            });
+
+            refreshFromModel();
+
+            // Με click πάνω στο item κάνω toggle checked.
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int idx = locationToIndex(e.getPoint());
+                    if (idx < 0) return;
+
+                    String name = getModel().getElementAt(idx);
+                    boolean newVal = !Boolean.TRUE.equals(categoryChecked.get(name));
+
+                    // Αν τσεκάρω “Όλες οι κατηγορίες”, ξε-τσεκάρω τα υπόλοιπα.
+                    if ("Όλες οι κατηγορίες".equals(name) && newVal) {
+                        for (String k : categoryChecked.keySet()) categoryChecked.put(k, false);
+                        categoryChecked.put(name, true);
+                    } else {
+                        if (newVal) categoryChecked.put("Όλες οι κατηγορίες", false);
+                        categoryChecked.put(name, newVal);
+                    }
+
+                    repaint();
+
+                    if (onSelectionChanged != null) onSelectionChanged.run();
+                }
+            });
+        }
+
+        void setOnSelectionChanged(Runnable r) {
+            this.onSelectionChanged = r;
+        }
+
+        void refreshFromModel() {
+            DefaultListModel<String> lm = new DefaultListModel<>();
+            for (int i = 0; i < categoriesComboModel.getSize(); i++) {
+                lm.addElement(categoriesComboModel.getElementAt(i));
+            }
+            setModel(lm);
+            repaint();
+        }
+    }
+
+
+
+
+
+
 
     
     private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
