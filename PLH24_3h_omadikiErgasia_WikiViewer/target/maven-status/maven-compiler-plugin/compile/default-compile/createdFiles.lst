@@ -4,11 +4,15 @@ packageService\package-info.class
 packageGUI\MainFrame.class
 packageMain\DevPackageInfoApp.class
 packageRepository\package-info.class
+packageAPI\dto\SearchResultDto.class
 packageUtils\package-info.class
 packageAPI\WikipediaClient.class
 packageAPI\package-info.class
 packageGUI\MainFrame$2.class
+packageGUI\MainFrame$4.class
 packageMain\App.class
 packageMain\DevPackageInfoApp$PackageInfoFrame.class
+packageGUI\MainFrame$3.class
 packageEntities\package-info.class
+packageAPI\dto\ArticleDetailsDto.class
 packageController\package-info.class

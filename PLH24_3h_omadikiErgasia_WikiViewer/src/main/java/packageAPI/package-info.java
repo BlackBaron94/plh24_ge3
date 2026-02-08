@@ -2,7 +2,7 @@
  * 
  *  packageAPI (Wikipedia API Client) — καλείται από Service, κάνει HTTP/JSON
  * Σημαντικό: για καθαρό design, προτείνω ο client να επιστρέφει DTOs και το mapping σε Entities να γίνεται στο Service. 
- * (Αν δεν θέλεις DTOs, πες μου και το γυρνάμε σε “επιστρέφει Entities”.)
+ * (Αν δεν θέλω DTOs,  το γυρνάμε σε “επιστρέφει Entities”.)
  * 
  *
  * packageAPI (Wikipedia API Client)

@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
 /**
- *
- * @author Dimitris
+ * /**
+ * Main entry point της εφαρμογής.
+ * Εκκινεί το GUI (MainFrame) στο EDT.
  */
 
+ 
 package packageMain;
 
 import javax.swing.SwingUtilities;
@@ -26,6 +24,7 @@ public final class App {
      */
     public static void main(String[] args) {
         //Για να δείς συνοπτικά τι περιέχουν τα Packages ΠΡΟΣΩΡΙΝΌ
+        //Για να μην "τρέχει" πρός το παρόν βάλτο σε σχόλια γραμμής
         SwingUtilities.invokeLater(() -> new DevPackageInfoApp().showUI());
 
         // Κανονική εκκίνηση GUI (Graphical User Interface) στο EDT (Event Dispatch Thread)
