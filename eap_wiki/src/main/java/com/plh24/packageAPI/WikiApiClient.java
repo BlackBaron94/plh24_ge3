@@ -12,8 +12,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import java.io.IOException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 public class WikiApiClient {
     private final OkHttpClient client = new OkHttpClient();
     
