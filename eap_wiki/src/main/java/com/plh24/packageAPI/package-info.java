@@ -27,4 +27,4 @@
  * - Καμία UI λογική.
  */
 
-package packageAPI;
+package com.plh24.packageAPI;
