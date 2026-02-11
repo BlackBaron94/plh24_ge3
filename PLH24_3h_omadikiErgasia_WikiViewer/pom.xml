@@ -11,4 +11,26 @@
         <exec.mainClass>gr.eap.plh24.wikiviewer.PLH24_3h_omadikiErgasia_WikiViewer</exec.mainClass>
     </properties>
     <name>WikiViewer_Maven</name>
+
+    <!-- ===========================================================
+         OPTIONAL dependencies for real PDF/DOCX export.
+         TO REMOVE: delete the <dependencies>...</dependencies> block below
+         and also delete packageAPI/export/* classes that use PDFBox/POI.
+         =========================================================== -->
+    <dependencies>
+        <!-- PDF export (PDFBox) -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.30</version>
+        </dependency>
+
+        <!-- DOCX export (Apache POI - XWPF) -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.3.0</version>
+        </dependency>
+    </dependencies>
+
 </project>
