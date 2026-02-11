@@ -1,4 +1,4 @@
-package packageAPI;
+package com.plh24.packageAPI;
 
 /**
  * WikipediaClient

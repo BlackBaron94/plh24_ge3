@@ -32,6 +32,22 @@ public class WikiApiClient {
             return response.body().string();
         }
     };
+
+    public String fetchArticle(String title) throws IOException {
+        String url = "https://el.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&rvprop=content&rvslots=main&formatversion=2&titles=" + title;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .header("User-Agent", "MyJavaWikiApp/1.0 (talepis@unipi.gr)")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Σφάλμα συστήματος: " + response);
+            }
+            return response.body().string();
+        }
+    }
     
     
 }
