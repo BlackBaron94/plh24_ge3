@@ -11,4 +11,4 @@
  *   Τα τοπικά δεδομένα (σχόλια/βαθμολογία) δεν διαγράφονται (ArticleNote/Metadata).
  */
 
-package packageController;
+package com.plh24.packageController;

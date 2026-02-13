@@ -5,14 +5,51 @@ package com.plh24.packageMain;
 import javax.swing.*;
 import java.awt.*;
 
-public class DevPackageInfoApp {
+/** 
 
+ * Εδώ ορίζω το class <b>DevPackageInfoApp</b> στην εκκίνηση εφαρμογής.
+
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+
+ */
+
+public class DevPackageInfoApp {
+/*
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>main()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @param args Παράμετρος εισόδου.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new PackageInfoFrame().setVisible(true));
     }
 
+    //Για να τρέχει μέσα απο το App.java είναι ΠΡΟΣΩΡΙΝΟ μπορέις να το αφαιρέσεις
+    //και να αφαιρέσεις και την κλήση του από το App.java
+        /**
+         * Εδώ υλοποιώ τη μέθοδο <b>showUI()</b>.
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+         */
+        public static void showUI() {
+        SwingUtilities.invokeLater(() -> new PackageInfoFrame().setVisible(true));
+    }
+
     // Μικρό παράθυρο που δείχνει τα "info" των packages
+/** 
+ * Εδώ ορίζω το class <b>PackageInfoFrame</b> στην εκκίνηση εφαρμογής.
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+ */
     private static class PackageInfoFrame extends JFrame {
+
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>PackageInfoFrame()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @return Επιστρέφω αποτέλεσμα.
+
+         */
 
         public PackageInfoFrame() {
             setTitle("PLH24_3h_omadikiErgasia_WikiViewer - Package Info");
@@ -35,10 +72,29 @@ public class DevPackageInfoApp {
             setLocationRelativeTo(null);
         }
 
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>buildText()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @return Επιστρέφω αποτέλεσμα.
+
+         */
+
         private String buildText() {
             return """
                    Πληροφορίες Packages - Δομή Πακέτων [packages]
-Για περισσότερες λεπτομέρειες ΔΕΙΤΕ τους Σχολιασμούς στα package-info.java\n 
+Για περισσότερες λεπτομέρειες ΔΕΙΤΕ τους Σχολιασμούς στα package-info.java\n
+    \nΜοντέλο (BCE + Layers)\n                  
+        Ροή αιτήματος (request):\n
+            packageGUI (Border) → packageController → packageService → (packageRepository / packageAPI) → packageEntities\n
+                   
+        \nΡοή αποτελέσματος (response):\n
+        packageEntities → (packageRepository / packageAPI) → packageService → packageController → packageGUI (Border)\n\n
+                   
+        Κανόνας: Τα Entities είναι μόνο δεδομένα (δεν “καλούν” τίποτα). Τα υπόλοιπα layers τα χρησιμοποιούν.\n
+    
                    1) packageGUI
                       - Swing UI: JFrame/JPanel/JDialog, handlers, UI models (TableModel)
                       - Κανόνας: όχι DB/API λογική. 
