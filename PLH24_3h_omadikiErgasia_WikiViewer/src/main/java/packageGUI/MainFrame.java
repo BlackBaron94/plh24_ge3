@@ -139,10 +139,6 @@ public class MainFrame extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    /**
-     * Εδώ υλοποιώ τη μέθοδο <b>initComponents()</b>.
-     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
-     */
     private void initComponents() {
 
         pnlTop = new javax.swing.JPanel();
@@ -233,11 +229,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         miClearSearch.setText("Clear Search");
         miClearSearch.addActionListener(new java.awt.event.ActionListener() {
-            /**
-             * Εδώ υλοποιώ τη μέθοδο <b>actionPerformed()</b>.
-             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
-             * @param evt Παράμετρος εισόδου.
-             */
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miClearSearchActionPerformed(evt);
             }
@@ -274,11 +265,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         miExit.setText("Exit");
         miExit.addActionListener(new java.awt.event.ActionListener() {
-            /**
-             * Εδώ υλοποιώ τη μέθοδο <b>actionPerformed()</b>.
-             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
-             * @param evt Παράμετρος εισόδου.
-             */
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miExitActionPerformed(evt);
             }
