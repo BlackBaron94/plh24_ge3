@@ -1,7 +1,7 @@
 
 package com.plh24.packageGUI;
 
-import com.plh24.packageController.*;
+import com.plh24.packageController.Controller;
 import com.plh24.packageAPI.export.DocxExporter;
 import com.plh24.packageAPI.export.PdfExporter;
 
@@ -68,10 +68,10 @@ public class MainFrame extends javax.swing.JFrame {
     // ===============================
     // Controller (GUI -> Controller)
     // ===============================
-    private final WikiController controller;
+    private final Controller.WikiController controller;
 
     // Cache για να βρίσκω metadata (rating/comments) όταν επιλέγω γραμμή στο Saved table.
-    private final Map<Long, SavedArticleRow> savedCacheById = new LinkedHashMap<>();
+    private final Map<Long, Controller.SavedArticleRow> savedCacheById = new LinkedHashMap<>();
 
     /**
 
@@ -92,7 +92,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
 
     public MainFrame() {
-        this(new WikiControllerImpl());
+        this(new Controller.WikiControllerImpl());
     }
 
     /**
@@ -117,8 +117,8 @@ public class MainFrame extends javax.swing.JFrame {
 
      */
 
-    public MainFrame(WikiController controller) {
-        this.controller = (controller == null) ? new WikiControllerImpl() : controller;
+    public MainFrame(Controller.WikiController controller) {
+        this.controller = (controller == null) ? new Controller.WikiControllerImpl() : controller;
         initComponents();   // εδώ αφήνω μόνο τον “σκελετό” που φτιάχνει ο Builder
         postInit();         // εδώ χτίζω Εικόνα 1–2–3 + listeners, ώστε να μην με δένει το initComponents()
     }
@@ -932,12 +932,12 @@ private String formatCategories(java.util.List<String> categories) {
      * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
      * @param rows Παράμετρος εισόδου.
      */
-    private void setSearchResults(List<SearchResultRow> rows) {
+    private void setSearchResults(List<Controller.SearchResultRow> rows) {
         if (resultsModel == null) return;
         resultsModel.setRowCount(0);
         if (rows == null) return;
 
-        for (SearchResultRow r : rows) {
+        for (Controller.SearchResultRow r : rows) {
             resultsModel.addRow(new Object[]{r.title(), r.source(), formatCategories(r.categories()), r.pageId()});
         }
 
@@ -955,14 +955,14 @@ private String formatCategories(java.util.List<String> categories) {
 
      */
 
-    private void setSavedRows(List<SavedArticleRow> rows) {
+    private void setSavedRows(List<Controller.SavedArticleRow> rows) {
         if (savedModel == null) return;
 
         savedCacheById.clear();
         savedModel.setRowCount(0);
 
         if (rows != null) {
-            for (SavedArticleRow r : rows) {
+            for (Controller.SavedArticleRow r : rows) {
                 savedCacheById.put(r.pageId(), r);
                 savedModel.addRow(new Object[]{r.title(), r.pageId(), r.savedAt(), r.source(), formatCategories(r.categories())});
             }
@@ -985,14 +985,14 @@ private String formatCategories(java.util.List<String> categories) {
 
     private void refreshSavedInBackground() {
         setStatus("Loading saved articles…", true);
-        new SwingWorker<List<SavedArticleRow>, Void>() {
+        new SwingWorker<List<Controller.SavedArticleRow>, Void>() {
             /**
              * Εδώ υλοποιώ τη μέθοδο <b>doInBackground()</b>.
              * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
              * @return Επιστρέφω αποτέλεσμα.
              */
             @Override
-            protected List<SavedArticleRow> doInBackground() {
+            protected List<Controller.SavedArticleRow> doInBackground() {
                 return controller.listSaved(getCheckedCategories());
             }
 
@@ -1027,14 +1027,14 @@ private String formatCategories(java.util.List<String> categories) {
 
     private void refreshStatsInBackground() {
         setStatus("Loading stats…", true);
-        new SwingWorker<StatsSnapshot, Void>() {
+        new SwingWorker<Controller.StatsSnapshot, Void>() {
             /**
              * Εδώ υλοποιώ τη μέθοδο <b>doInBackground()</b>.
              * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
              * @return Επιστρέφω αποτέλεσμα.
              */
             @Override
-            protected StatsSnapshot doInBackground() {
+            protected Controller.StatsSnapshot doInBackground() {
                 return controller.loadStats();
             }
 
@@ -1050,7 +1050,7 @@ private String formatCategories(java.util.List<String> categories) {
             protected void done() {
                 try {
                     // απλούστερο: ξαναχτίζω το Stats tab με τα νέα δεδομένα
-                    StatsSnapshot snap = get();
+                    Controller.StatsSnapshot snap = get();
                     buildStatsTabUIWithSnapshot(snap);
                     setStatus("Ready", false);
                 } catch (Exception ex) {
@@ -1082,19 +1082,19 @@ private String formatCategories(java.util.List<String> categories) {
 
      */
 
-    private void buildStatsTabUIWithSnapshot(StatsSnapshot snap) {
+    private void buildStatsTabUIWithSnapshot(Controller.StatsSnapshot snap) {
         tabStats.removeAll();
         tabStats.setLayout(new BorderLayout(12, 12));
 
         // Data από Controller (ακόμη dummy, αλλά ΔΕΝ είναι hardcoded στο GUI)
 
         LinkedHashMap<String, Integer> keywordCounts = new LinkedHashMap<>();
-        for (KeywordStatRow r : snap.keywordStats()) {
+        for (Controller.KeywordStatRow r : snap.keywordStats()) {
             keywordCounts.put(r.keyword(), r.count());
         }
 
         LinkedHashMap<String, Integer> categoryCounts = new LinkedHashMap<>();
-        for (CategoryStatRow r : snap.categoryStats()) {
+        for (Controller.CategoryStatRow r : snap.categoryStats()) {
             // Κάθε γραμμή στο CategoryStatRow αντιστοιχεί σε ΜΙΑ κατηγορία.
             categoryCounts.put(r.category(), r.articles());
         }
@@ -1925,25 +1925,24 @@ private String formatCategories(java.util.List<String> categories) {
                 ? bgSearchMode.getSelection().getActionCommand()
                 : "DB_API";
 
-        SearchMode searchMode;
+        Controller.SearchMode searchMode;
         try {
-            searchMode = SearchMode.valueOf(mode);
+            searchMode = Controller.SearchMode.valueOf(mode);
         } catch (Exception ex) {
-            searchMode = SearchMode.DB_API;
+            searchMode = Controller.SearchMode.DB_API;
         }
-
-        final SearchMode modeFinal = searchMode;
+        final Controller.SearchMode modeFinal = searchMode;
         setStatus("Searching… (" + modeFinal + ") for: " + q, true);
 
         // SwingWorker = background thread (δεν παγώνει το EDT)
-        new SwingWorker<List<SearchResultRow>, Void>() {
+        new SwingWorker<List<Controller.SearchResultRow>, Void>() {
             /**
              * Εδώ υλοποιώ τη μέθοδο <b>doInBackground()</b>.
              * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
              * @return Επιστρέφω αποτέλεσμα.
              */
             @Override
-            protected List<SearchResultRow> doInBackground() {
+            protected List<Controller.SearchResultRow> doInBackground() {
                 return controller.search(q, modeFinal, getCheckedCategories());
             }
 
@@ -2328,7 +2327,7 @@ private String formatCategories(java.util.List<String> categories) {
     private void openArticleDetails(Long pageId, String modeHint) {
         if (pageId == null) return;
 
-        ArticleDetails d = controller.getDetails(pageId);
+        Controller.ArticleDetails d = controller.getDetails(pageId);
 
         JDialog dlg = new JDialog(this, "Article Details", true);
         dlg.setLayout(new BorderLayout(10, 10));

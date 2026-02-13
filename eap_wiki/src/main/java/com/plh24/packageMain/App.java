@@ -2,8 +2,7 @@
 package com.plh24.packageMain;
 
 import javax.swing.SwingUtilities;
-import com.plh24.packageController.WikiController;
-import com.plh24.packageController.WikiControllerImpl;
+import com.plh24.packageController.Controller;
 import com.plh24.packageGUI.MainFrame;
 
 /** 
@@ -50,7 +49,7 @@ public final class App {
     public static void main(String[] args) {
         // Εκκίνηση GUI (Graphical User Interface) στο EDT (Event Dispatch Thread)
         SwingUtilities.invokeLater(() -> {
-            WikiController controller = new WikiControllerImpl();
+            Controller.WikiController controller = new Controller.WikiControllerImpl();
             new MainFrame(controller).setVisible(true);
         });
     }
