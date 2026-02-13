@@ -22,6 +22,10 @@ import java.util.stream.Collectors;
  *   - Aggregate stats from DB: keyword search counts + category article counts.
  *   - Return sorted top-N lists.
  */
+/** 
+ * Εδώ ορίζω το class <b>WikiControllerImpl</b> στον Controller [ελεγκτή] (λογική εφαρμογής).
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+ */
 public class WikiControllerImpl implements WikiController {
 
     // ---------------------------
@@ -31,6 +35,24 @@ public class WikiControllerImpl implements WikiController {
     private final List<SavedArticleRow> dummySaved;
     private final Map<Long, ArticleDetails> dummyDetailsById;
     private final StatsSnapshot dummyStats;
+
+    /**
+
+     * Εδώ αρχικοποιώ το <b>WikiControllerImpl</b>.
+
+     * Φροντίζω να στήσω την αρχική κατάσταση του αντικειμένου (fields, defaults, listeners κ.λπ.).
+
+     */
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>WikiControllerImpl()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
 
     public WikiControllerImpl() {
         // Dummy Search Pool
@@ -103,16 +125,56 @@ public class WikiControllerImpl implements WikiController {
         );
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>search()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param keywords Παράμετρος εισόδου.
+
+     * @param mode Παράμετρος εισόδου.
+
+     * @param checkedCategories Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
+
     @Override
     public List<SearchResultRow> search(String keywords, SearchMode mode, List<String> checkedCategories) {
         // In stub we ignore keywords/mode, but keep signature.
         return filterByCategories(dummySearchPool, checkedCategories);
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>listSaved()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param checkedCategories Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
+
     @Override
     public List<SavedArticleRow> listSaved(List<String> checkedCategories) {
         return filterByCategoriesSaved(dummySaved, checkedCategories);
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>getDetails()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param pageId Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
 
     @Override
     public ArticleDetails getDetails(long pageId) {
@@ -120,6 +182,22 @@ public class WikiControllerImpl implements WikiController {
                 new ArticleDetails("Unknown", pageId, "DB", List.of("Χωρίς Κατηγορία"),
                         "No text (dummy).", 0, ""));
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>saveArticle()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param pageId Παράμετρος εισόδου.
+
+     * @param title Παράμετρος εισόδου.
+
+     * @param source Παράμετρος εισόδου.
+
+     * @param categories Παράμετρος εισόδου.
+
+     */
 
     @Override
     public void saveArticle(long pageId, String title, String source, List<String> categories) {
@@ -141,6 +219,22 @@ public class WikiControllerImpl implements WikiController {
         String src = (source == null || source.isBlank()) ? "DB" : source.trim();
         dummySaved.add(new SavedArticleRow(title, pageId, savedAt, src, cats, 0, ""));
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>updateSavedMetadata()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param pageId Παράμετρος εισόδου.
+
+     * @param rating Παράμετρος εισόδου.
+
+     * @param comments Παράμετρος εισόδου.
+
+     * @param categories Παράμετρος εισόδου.
+
+     */
 
     @Override
     public void updateSavedMetadata(long pageId, int rating, String comments, List<String> categories) {
@@ -183,6 +277,16 @@ public class WikiControllerImpl implements WikiController {
         }
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>deleteSaved()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param pageId Παράμετρος εισόδου.
+
+     */
+
     @Override
     public void deleteSaved(long pageId) {
         // /**==TO DO : Εδώ θα γίνει DELETE από DB (SavedArticle + metadata) για pageId.
@@ -191,12 +295,30 @@ public class WikiControllerImpl implements WikiController {
         dummySaved.removeIf(s -> s.pageId() == pageId);
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>clearAllSaved()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
+
     @Override
     public void clearAllSaved() {
         // /**==TO DO : Εδώ θα γίνει DELETE/TRUNCATE από DB για όλα τα saved (ανά χρήστη).
         //==*/
         dummySaved.clear();
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>getStats()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
 
     @Override
     public StatsSnapshot getStats() {
@@ -206,10 +328,30 @@ public class WikiControllerImpl implements WikiController {
     // ---------------------------
     // Helpers
     // ---------------------------
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>isAllCategories()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @param checkedCategories Παράμετρος εισόδου.
+     * @return Επιστρέφω αποτέλεσμα.
+     */
     private static boolean isAllCategories(List<String> checkedCategories) {
         if (checkedCategories == null || checkedCategories.isEmpty()) return true;
         return checkedCategories.stream().anyMatch(c -> "Όλες οι κατηγορίες".equalsIgnoreCase(c));
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>filterByCategories()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param rows Παράμετρος εισόδου.
+
+     * @param checkedCategories Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
 
     private static List<SearchResultRow> filterByCategories(List<SearchResultRow> rows, List<String> checkedCategories) {
         if (isAllCategories(checkedCategories)) return rows;
@@ -224,6 +366,20 @@ public class WikiControllerImpl implements WikiController {
                 .toList();
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>filterByCategoriesSaved()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param rows Παράμετρος εισόδου.
+
+     * @param checkedCategories Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
+
     private static List<SavedArticleRow> filterByCategoriesSaved(List<SavedArticleRow> rows, List<String> checkedCategories) {
         if (isAllCategories(checkedCategories)) return rows;
 
@@ -235,6 +391,18 @@ public class WikiControllerImpl implements WikiController {
                 .filter(r -> r.categories() != null && r.categories().stream().anyMatch(checked::contains))
                 .toList();
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>makeLongText()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param title Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
 
     private static String makeLongText(String title) {
         // simple long dummy text
@@ -249,6 +417,18 @@ public class WikiControllerImpl implements WikiController {
         }
         return sb.toString();
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>clampRating()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param rating Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
 
     private static int clampRating(int rating) {
         if (rating < 0) return 0;

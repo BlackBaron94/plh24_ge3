@@ -17,9 +17,47 @@ import java.util.List;
  * - For Greek text you may need a Unicode TrueType font (PDType0Font.load)
  *   and use that font instead of PDType1Font.HELVETICA.
  */
+/** 
+ * Εδώ ορίζω το class <b>PdfExporter</b> στο API [διεπαφή υπηρεσίας].
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+ */
 public final class PdfExporter {
 
+    /**
+
+     * Εδώ αρχικοποιώ το <b>PdfExporter</b>.
+
+     * Φροντίζω να στήσω την αρχική κατάσταση του αντικειμένου (fields, defaults, listeners κ.λπ.).
+
+     */
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>PdfExporter()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
+
     private PdfExporter() { }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>export()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param outFile Παράμετρος εισόδου.
+
+     * @param title Παράμετρος εισόδου.
+
+     * @param metaLines Παράμετρος εισόδου.
+
+     * @param bodyText Παράμετρος εισόδου.
+
+     */
 
     public static void export(Path outFile, String title, List<String> metaLines, String bodyText) throws IOException {
         try (PDDocument doc = new PDDocument()) {
@@ -68,6 +106,21 @@ public final class PdfExporter {
     }
 
     // Very simple wrapping; adds new pages if needed.
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>writeWrappedLine()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @param doc Παράμετρος εισόδου.
+     * @param cs Παράμετρος εισόδου.
+     * @param page Παράμετρος εισόδου.
+     * @param x Παράμετρος εισόδου.
+     * @param y Παράμετρος εισόδου.
+     * @param width Παράμετρος εισόδου.
+     * @param leading Παράμετρος εισόδου.
+     * @param font Παράμετρος εισόδου.
+     * @param fontSize Παράμετρος εισόδου.
+     * @param text Παράμετρος εισόδου.
+     * @return Επιστρέφω αποτέλεσμα.
+     */
     private static float writeWrappedLine(PDDocument doc, PDPageContentStream cs, PDPage page,
                                          float x, float y, float width, float leading,
                                          PDType1Font font, float fontSize, String text) throws IOException {
@@ -94,6 +147,18 @@ public final class PdfExporter {
         }
         return y;
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>safe()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param s Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
 
     private static String safe(String s) {
         if (s == null) return "";

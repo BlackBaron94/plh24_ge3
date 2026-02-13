@@ -10,6 +10,10 @@ import java.util.List;
  * - CRUD σε saved articles & metadata (rating/comments/categories)
  * - Stats snapshot για το Stats tab
  */
+/** 
+ * Εδώ ορίζω το interface <b>WikiController</b> στον Controller [ελεγκτή] (λογική εφαρμογής).
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+ */
 public interface WikiController {
 
     // ===============================
@@ -76,6 +80,11 @@ public interface WikiController {
      *
      * ==TO DO : Στο επόμενο στάδιο, κράτα μόνο getStats(). Τότε στο GUI αντικατέστησε:
      *           controller.loadStats() -> controller.getStats()
+     */
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>loadStats()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @return Επιστρέφω αποτέλεσμα.
      */
     default StatsSnapshot loadStats() {
         return getStats();

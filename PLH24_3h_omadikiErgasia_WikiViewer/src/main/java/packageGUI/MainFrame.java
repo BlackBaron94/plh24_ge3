@@ -37,10 +37,28 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Καλούνται Νήματα (Treads)
+ * Threads καλούνται στο: packageGUI 
+ * Συγκεκριμένα: MainFrame.java
+ * Μηχανισμός: SwingWorker
+ * 
+ * Σκοπός να μήν "Παγώνει" το GUI όταν καθυστερούν οι απαντήσεις
+ * Για να δείς σε ποιά καλείται κάνε Ctrl + F kai βάλε SwingWorker
+ * 
+ * Γίνεται στα 
+ * Search Articles → όταν καλεί controller.search(...)
+ * Saved Articles → όταν φορτώνει αποθηκευμένα
+ * Stats → όταν καλεί controller.loadStats()
+ * 
+ * /
 
 /**
  * MainFrame – UI shell (Builder) + UI content (postInit).
+ */
+/** 
+ * Εδώ ορίζω το class <b>MainFrame</b> στο GUI [γραφικό περιβάλλον χρήστη].
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
  */
 public class MainFrame extends javax.swing.JFrame {
 
@@ -55,9 +73,49 @@ public class MainFrame extends javax.swing.JFrame {
     // Cache για να βρίσκω metadata (rating/comments) όταν επιλέγω γραμμή στο Saved table.
     private final Map<Long, SavedArticleRow> savedCacheById = new LinkedHashMap<>();
 
+    /**
+
+     * Εδώ αρχικοποιώ το <b>MainFrame</b>.
+
+     * Φροντίζω να στήσω την αρχική κατάσταση του αντικειμένου (fields, defaults, listeners κ.λπ.).
+
+     */
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>MainFrame()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
+
     public MainFrame() {
         this(new WikiControllerImpl());
     }
+
+    /**
+
+     * Εδώ αρχικοποιώ το <b>MainFrame</b>.
+
+     * Φροντίζω να στήσω την αρχική κατάσταση του αντικειμένου (fields, defaults, listeners κ.λπ.).
+
+     * @param controller Παράμετρος αρχικοποίησης.
+
+     */
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>MainFrame()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param controller Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
 
     public MainFrame(WikiController controller) {
         this.controller = (controller == null) ? new WikiControllerImpl() : controller;
@@ -70,7 +128,7 @@ public class MainFrame extends javax.swing.JFrame {
      * public static void main(String args[])  
      * Η εφαρμογή Εκκινείται από την 
      * App.java του package packageMain
-     * 
+     * Εχει ΗΔΗ ΑΦΑΙΡΕΘΕΙ
      */
 
     /**
@@ -81,6 +139,10 @@ public class MainFrame extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>initComponents()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void initComponents() {
 
         pnlTop = new javax.swing.JPanel();
@@ -171,6 +233,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         miClearSearch.setText("Clear Search");
         miClearSearch.addActionListener(new java.awt.event.ActionListener() {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>actionPerformed()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param evt Παράμετρος εισόδου.
+             */
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miClearSearchActionPerformed(evt);
             }
@@ -207,6 +274,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         miExit.setText("Exit");
         miExit.addActionListener(new java.awt.event.ActionListener() {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>actionPerformed()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param evt Παράμετρος εισόδου.
+             */
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miExitActionPerformed(evt);
             }
@@ -295,6 +367,10 @@ public class MainFrame extends javax.swing.JFrame {
     // =========================================================
     // 2) postInit = ΟΛΟ το UI των Εικόνων 1–2–3 + listeners
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>postInit()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void postInit() {
         // Φτιάχνω κοινές κατηγορίες (από εδώ θα “ταΐζονται” sidebar + dialogs).
         initCategories();
@@ -339,6 +415,10 @@ public class MainFrame extends javax.swing.JFrame {
     // =========================================================
     // 3) Categories – κοινή πηγή αλήθειας για UI
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>initCategories()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void initCategories() {
         categoriesComboModel.removeAllElements();
         categoryChecked.clear();
@@ -350,10 +430,30 @@ public class MainFrame extends javax.swing.JFrame {
         addCategoryInternal("Υπολογιστές");
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>addCategoryInternal()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param name Παράμετρος εισόδου.
+
+     */
+
     private void addCategoryInternal(String name) {
         categoriesComboModel.addElement(name);
         categoryChecked.put(name, "Όλες οι κατηγορίες".equals(name));
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>addNewCategoryFromUser()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param name Παράμετρος εισόδου.
+
+     */
 
     private void addNewCategoryFromUser(String name) {
         String n = (name == null) ? "" : name.trim();
@@ -375,6 +475,16 @@ public class MainFrame extends javax.swing.JFrame {
         setStatus("Πρόσθεσα νέα κατηγορία: " + n, false);
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>getCheckedCategories()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
+
     private List<String> getCheckedCategories() {
         List<String> out = new ArrayList<>();
         for (Map.Entry<String, Boolean> e : categoryChecked.entrySet()) {
@@ -387,6 +497,12 @@ public class MainFrame extends javax.swing.JFrame {
  * Formats categories list for table cell.
  * Example: ["Υπολογιστές","ΑΙ","Προγραμματισμός"] -> "Υπολογιστές, ΑΙ, Προγραμματισμός"
  */
+/**
+ * Εδώ υλοποιώ τη μέθοδο <b>formatCategories()</b>.
+ * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+ * @param categories Παράμετρος εισόδου.
+ * @return Επιστρέφω αποτέλεσμα.
+ */
 private String formatCategories(java.util.List<String> categories) {
     if (categories == null || categories.isEmpty()) return "Χωρίς Κατηγορία";
     return String.join(", ", categories);
@@ -396,6 +512,10 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 4) Top wrapper (Εικόνα 1)
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>buildTopWrapper()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void buildTopWrapper() {
         JPanel topControls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
 
@@ -452,6 +572,10 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 5) Search tab – (placeholder απλό για να “δένει” το project)
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>buildSearchTabUI()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void buildSearchTabUI() {
         tabSearch.removeAll();
         tabSearch.setLayout(new BorderLayout(10, 10));
@@ -471,6 +595,13 @@ private String formatCategories(java.util.List<String> categories) {
                 new Object[0][0],
                 new String[]{"Title", "Source", "Category", "PageId"}
         ) {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>isCellEditable()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param r Παράμετρος εισόδου.
+             * @param c Παράμετρος εισόδου.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
 
@@ -570,6 +701,14 @@ private String formatCategories(java.util.List<String> categories) {
         tabSearch.repaint();
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>updateSearchPreviewFromSelection()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
+
     private void updateSearchPreviewFromSelection() {
         int rowView = tblResults.getSelectedRow();
         if (rowView < 0) return;
@@ -592,6 +731,10 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 6) Saved tab – (placeholder απλό για να “δένει” το project)
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>buildSavedTabUI()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void buildSavedTabUI() {
         tabSaved.removeAll();
         tabSaved.setLayout(new BorderLayout(10, 10));
@@ -611,7 +754,20 @@ private String formatCategories(java.util.List<String> categories) {
                 new Object[0][0],
                 new String[]{"Title", "PageId", "Saved At", "Source", "Category"}
         ) {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>isCellEditable()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param r Παράμετρος εισόδου.
+             * @param c Παράμετρος εισόδου.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override public boolean isCellEditable(int r, int c) { return false; }
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>getColumnClass()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param col Παράμετρος εισόδου.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override public Class<?> getColumnClass(int col) {
                 return (col == 1) ? Long.class : String.class;
             }
@@ -716,6 +872,14 @@ private String formatCategories(java.util.List<String> categories) {
         tabSaved.repaint();
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>updateSavedPreviewFromSelection()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
+
     private void updateSavedPreviewFromSelection() {
     int rowView = tblSaved.getSelectedRow();
     if (rowView < 0) return;
@@ -743,6 +907,18 @@ private String formatCategories(java.util.List<String> categories) {
 }
 
 
+    /**
+
+
+     * Εδώ υλοποιώ τη μέθοδο <b>updateSavedCount()</b>.
+
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+
+     */
+
+
     private void updateSavedCount() {
         int n = (savedModel == null) ? 0 : savedModel.getRowCount();
         lblSavedCount.setText(n + " saved articles ✓");
@@ -751,6 +927,11 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 6.1) Data binding: Controller -> UI models
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>setSearchResults()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @param rows Παράμετρος εισόδου.
+     */
     private void setSearchResults(List<SearchResultRow> rows) {
         if (resultsModel == null) return;
         resultsModel.setRowCount(0);
@@ -763,6 +944,16 @@ private String formatCategories(java.util.List<String> categories) {
         if (tblResults != null) tblResults.clearSelection();
         if (txtPreview != null) txtPreview.setText("Preview κειμένου (placeholder)…");
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>setSavedRows()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param rows Παράμετρος εισόδου.
+
+     */
 
     private void setSavedRows(List<SavedArticleRow> rows) {
         if (savedModel == null) return;
@@ -784,13 +975,34 @@ private String formatCategories(java.util.List<String> categories) {
         }
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>refreshSavedInBackground()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
+
     private void refreshSavedInBackground() {
         setStatus("Loading saved articles…", true);
         new SwingWorker<List<SavedArticleRow>, Void>() {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>doInBackground()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override
             protected List<SavedArticleRow> doInBackground() {
                 return controller.listSaved(getCheckedCategories());
             }
+
+            /**
+
+             * Εδώ υλοποιώ τη μέθοδο <b>done()</b>.
+
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+             */
 
             @Override
             protected void done() {
@@ -805,13 +1017,34 @@ private String formatCategories(java.util.List<String> categories) {
         }.execute();
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>refreshStatsInBackground()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
+
     private void refreshStatsInBackground() {
         setStatus("Loading stats…", true);
         new SwingWorker<StatsSnapshot, Void>() {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>doInBackground()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override
             protected StatsSnapshot doInBackground() {
                 return controller.loadStats();
             }
+
+            /**
+
+             * Εδώ υλοποιώ τη μέθοδο <b>done()</b>.
+
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+             */
 
             @Override
             protected void done() {
@@ -831,9 +1064,23 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 7) Stats tab – Εικόνα 3 (όπως την εικόνα που ανέβασες)
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>buildStatsTabUI()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void buildStatsTabUI() {
         buildStatsTabUIWithSnapshot(controller.loadStats());
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>buildStatsTabUIWithSnapshot()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param snap Παράμετρος εισόδου.
+
+     */
 
     private void buildStatsTabUIWithSnapshot(StatsSnapshot snap) {
         tabStats.removeAll();
@@ -862,7 +1109,20 @@ private String formatCategories(java.util.List<String> categories) {
         pnlLeft.add(lblLeftTitle, BorderLayout.NORTH);
 
         keywordStatsModel = new DefaultTableModel(new Object[]{"Keyword", "Count"}, 0) {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>isCellEditable()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param r Παράμετρος εισόδου.
+             * @param c Παράμετρος εισόδου.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override public boolean isCellEditable(int r, int c) { return false; }
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>getColumnClass()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param columnIndex Παράμετρος εισόδου.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override public Class<?> getColumnClass(int columnIndex) {
                 return (columnIndex == 1) ? Integer.class : String.class;
             }
@@ -919,7 +1179,20 @@ private String formatCategories(java.util.List<String> categories) {
 
         // legend table κάτω δεξιά (όπως στην εικόνα)
         categoryLegendModel = new DefaultTableModel(new Object[]{"Κατηγορία", "Articles"}, 0) {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>isCellEditable()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param r Παράμετρος εισόδου.
+             * @param c Παράμετρος εισόδου.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override public boolean isCellEditable(int r, int c) { return false; }
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>getColumnClass()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @param columnIndex Παράμετρος εισόδου.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override public Class<?> getColumnClass(int columnIndex) {
                 return (columnIndex == 1) ? Integer.class : String.class;
             }
@@ -979,6 +1252,20 @@ private String formatCategories(java.util.List<String> categories) {
         tabStats.repaint();
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>wrapTitled()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param comp Παράμετρος εισόδου.
+
+     * @param titleOrNull Παράμετρος εισόδου.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
+
     private JPanel wrapTitled(JComponent comp, String titleOrNull) {
         JPanel box = new JPanel(new BorderLayout());
         if (titleOrNull != null && !titleOrNull.isBlank()) {
@@ -997,6 +1284,12 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // Rating stars helper (0..5 -> HTML colored "*****")
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>starsHtml()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @param rating Παράμετρος εισόδου.
+     * @return Επιστρέφω αποτέλεσμα.
+     */
     private String starsHtml(int rating) {
         int r = Math.max(0, Math.min(5, rating));
         StringBuilder sb = new StringBuilder("<html>");
@@ -1014,6 +1307,12 @@ private String formatCategories(java.util.List<String> categories) {
      * Used in dialogs (JTextArea) where HTML is not supported.
      * Example: rating=3 => "***.."
      */
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>stars()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @param rating Παράμετρος εισόδου.
+     * @return Επιστρέφω αποτέλεσμα.
+     */
     private static String stars(int rating) {
         int r = Math.max(0, Math.min(5, rating));
         StringBuilder sb2 = new StringBuilder(5);
@@ -1024,6 +1323,10 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 7.1) Simple charts (χωρίς libraries)
     // =========================================================
+/** 
+ * Εδώ ορίζω το class <b>HorizontalBarsPanel</b> στο GUI [γραφικό περιβάλλον χρήστη].
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+ */
     private static class HorizontalBarsPanel extends JPanel {
         private Map<String, Integer> data = new LinkedHashMap<>();
 
@@ -1032,10 +1335,32 @@ private String formatCategories(java.util.List<String> categories) {
             setBackground(UIManager.getColor("Panel.background"));
         }
 
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>setData()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @param Map<String Παράμετρος εισόδου.
+
+         * @param data Παράμετρος εισόδου.
+
+         */
+
         void setData(Map<String, Integer> data) {
             this.data = new LinkedHashMap<>(data);
             repaint();
         }
+
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>paintComponent()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @param g Παράμετρος εισόδου.
+
+         */
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -1097,6 +1422,14 @@ private String formatCategories(java.util.List<String> categories) {
         }
     }
 
+/** 
+
+ * Εδώ ορίζω το class <b>VerticalBarsPanel</b> στο GUI [γραφικό περιβάλλον χρήστη].
+
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+
+ */
+
     private static class VerticalBarsPanel extends JPanel {
         private Map<String, Integer> data = new LinkedHashMap<>();
 
@@ -1105,10 +1438,32 @@ private String formatCategories(java.util.List<String> categories) {
             setBackground(UIManager.getColor("Panel.background"));
         }
 
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>setData()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @param Map<String Παράμετρος εισόδου.
+
+         * @param data Παράμετρος εισόδου.
+
+         */
+
         void setData(Map<String, Integer> data) {
             this.data = new LinkedHashMap<>(data);
             repaint();
         }
+
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>paintComponent()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @param g Παράμετρος εισόδου.
+
+         */
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -1179,6 +1534,14 @@ private String formatCategories(java.util.List<String> categories) {
         }
     }
 
+/** 
+
+ * Εδώ ορίζω το class <b>PieChartPanel</b> στο GUI [γραφικό περιβάλλον χρήστη].
+
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+
+ */
+
     private static class PieChartPanel extends JPanel {
         private Map<String, Integer> data = new LinkedHashMap<>();
 
@@ -1187,10 +1550,32 @@ private String formatCategories(java.util.List<String> categories) {
             setBackground(UIManager.getColor("Panel.background"));
         }
 
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>setData()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @param Map<String Παράμετρος εισόδου.
+
+         * @param data Παράμετρος εισόδου.
+
+         */
+
         void setData(Map<String, Integer> data) {
             this.data = new LinkedHashMap<>(data);
             repaint();
         }
+
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>paintComponent()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @param g Παράμετρος εισόδου.
+
+         */
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -1250,6 +1635,22 @@ private String formatCategories(java.util.List<String> categories) {
             g2.dispose();
         }
 
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>drawMultiline()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @param g2 Παράμετρος εισόδου.
+
+         * @param txt Παράμετρος εισόδου.
+
+         * @param x Παράμετρος εισόδου.
+
+         * @param y Παράμετρος εισόδου.
+
+         */
+
         private void drawMultiline(Graphics2D g2, String txt, int x, int y) {
             String[] lines = txt.split("\n");
             int dy = 0;
@@ -1263,11 +1664,27 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 8) Dialogs / actions (Search) – placeholders
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>showDetailsDialogFromSearch()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void showDetailsDialogFromSearch() {
     Long pageId = getSelectedSearchPageIdOrWarn();
     if (pageId == null) return;
     openArticleDetails(pageId, "Article Details");
 }
+
+
+    /**
+
+
+     * Εδώ υλοποιώ τη μέθοδο <b>showSaveDialogForSelected()</b>.
+
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+
+     */
 
 
     private void showSaveDialogForSelected() {
@@ -1288,6 +1705,14 @@ private String formatCategories(java.util.List<String> categories) {
 
         setStatus("Saved (placeholder): " + title, false);
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>openInBrowserFromSearch()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
 
     private void openInBrowserFromSearch() {
         String title = getSelectedSearchTitleOrWarn();
@@ -1321,6 +1746,16 @@ private String formatCategories(java.util.List<String> categories) {
         }
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>getSelectedSearchTitleOrWarn()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @return Επιστρέφω αποτέλεσμα.
+
+     */
+
     private String getSelectedSearchTitleOrWarn() {
         int rowView = tblResults.getSelectedRow();
         if (rowView < 0) {
@@ -1336,11 +1771,27 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 9) Dialogs / actions (Saved) – placeholders
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>showLoadDialogFromSaved()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void showLoadDialogFromSaved() {
     Long pageId = getSelectedSavedPageIdOrWarn();
     if (pageId == null) return;
     openArticleDetails(pageId, "Saved Article");
 }
+
+
+    /**
+
+
+     * Εδώ υλοποιώ τη μέθοδο <b>deleteSelectedSaved()</b>.
+
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+
+     */
 
 
     private void deleteSelectedSaved() {
@@ -1369,11 +1820,24 @@ private String formatCategories(java.util.List<String> categories) {
 
         setStatus("Deleting…", true);
         new SwingWorker<Void, Void>() {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>doInBackground()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override
             protected Void doInBackground() {
                 controller.deleteSaved(pageId);
                 return null;
             }
+
+            /**
+
+             * Εδώ υλοποιώ τη μέθοδο <b>done()</b>.
+
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+             */
 
             @Override
             protected void done() {
@@ -1384,6 +1848,14 @@ private String formatCategories(java.util.List<String> categories) {
             }
         }.execute();
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>clearAllSaved()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
 
     private void clearAllSaved() {
         if (savedModel.getRowCount() == 0) {
@@ -1405,11 +1877,24 @@ private String formatCategories(java.util.List<String> categories) {
 
         setStatus("Clearing saved list…", true);
         new SwingWorker<Void, Void>() {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>doInBackground()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override
             protected Void doInBackground() {
                 controller.clearAllSaved();
                 return null;
             }
+
+            /**
+
+             * Εδώ υλοποιώ τη μέθοδο <b>done()</b>.
+
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+             */
 
             @Override
             protected void done() {
@@ -1424,6 +1909,10 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 10) Search behavior (DB/API mode – placeholder)
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>onSearch()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void onSearch() {
         String q = (txtKeywords.getText() == null) ? "" : txtKeywords.getText().trim();
         if (q.isEmpty()) {
@@ -1448,10 +1937,23 @@ private String formatCategories(java.util.List<String> categories) {
 
         // SwingWorker = background thread (δεν παγώνει το EDT)
         new SwingWorker<List<SearchResultRow>, Void>() {
+            /**
+             * Εδώ υλοποιώ τη μέθοδο <b>doInBackground()</b>.
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+             * @return Επιστρέφω αποτέλεσμα.
+             */
             @Override
             protected List<SearchResultRow> doInBackground() {
                 return controller.search(q, modeFinal, getCheckedCategories());
             }
+
+            /**
+
+             * Εδώ υλοποιώ τη μέθοδο <b>done()</b>.
+
+             * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+             */
 
             @Override
             protected void done() {
@@ -1469,6 +1971,14 @@ private String formatCategories(java.util.List<String> categories) {
             }
         }.execute();
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>clearSearchUI()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
 
     private void clearSearchUI() {
         txtKeywords.setText("");
@@ -1490,6 +2000,10 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 11) Status + menu nav
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>buildStatusBar()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void buildStatusBar() {
         JPanel pnlStatus = new JPanel(new BorderLayout());
 
@@ -1508,10 +2022,30 @@ private String formatCategories(java.util.List<String> categories) {
         getContentPane().repaint();
     }
 
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>setStatus()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     * @param msg Παράμετρος εισόδου.
+
+     * @param busy Παράμετρος εισόδου.
+
+     */
+
     private void setStatus(String msg, boolean busy) {
         if (lblStatus != null) lblStatus.setText(msg);
         if (progress != null) progress.setVisible(busy);
     }
+
+    /**
+
+     * Εδώ υλοποιώ τη μέθοδο <b>wireMenuNavigation()</b>.
+
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+     */
 
     private void wireMenuNavigation() {
         miOpenSavedTab.addActionListener(e -> { tabsMain.setSelectedComponent(tabSaved); reloadSavedArticles(); });
@@ -1521,6 +2055,10 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 12) New category prompt (κοινό)
     // =========================================================
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>promptNewCategory()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     */
     private void promptNewCategory() {
         String n = JOptionPane.showInputDialog(
                 this,
@@ -1534,6 +2072,10 @@ private String formatCategories(java.util.List<String> categories) {
     // =========================================================
     // 13) Custom checkbox list (JList with checkbox renderer)
     // =========================================================
+/** 
+ * Εδώ ορίζω το class <b>CategoryCheckList</b> στο GUI [γραφικό περιβάλλον χρήστη].
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+ */
     private class CategoryCheckList extends JList<String> {
         private Runnable onSelectionChanged;
 
@@ -1556,6 +2098,11 @@ private String formatCategories(java.util.List<String> categories) {
 
             // Με click πάνω στο item κάνω toggle checked.
             addMouseListener(new MouseAdapter() {
+                /**
+                 * Εδώ υλοποιώ τη μέθοδο <b>mouseClicked()</b>.
+                 * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+                 * @param e Παράμετρος εισόδου.
+                 */
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     int idx = locationToIndex(e.getPoint());
@@ -1580,9 +2127,27 @@ private String formatCategories(java.util.List<String> categories) {
             });
         }
 
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>setOnSelectionChanged()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         * @param r Παράμετρος εισόδου.
+
+         */
+
         void setOnSelectionChanged(Runnable r) {
             this.onSelectionChanged = r;
         }
+
+        /**
+
+         * Εδώ υλοποιώ τη μέθοδο <b>refreshFromModel()</b>.
+
+         * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+         */
 
         void refreshFromModel() {
             DefaultListModel<String> lm = new DefaultListModel<>();
@@ -1601,15 +2166,56 @@ private String formatCategories(java.util.List<String> categories) {
 
 
     
+    /**
+
+
+
+
+
+
+
+    
+     * Εδώ υλοποιώ τη μέθοδο <b>miExitActionPerformed()</b>.
+
+
+
+
+
+
+
+    
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+
+
+
+
+
+
+
+    
+     * @param evt Παράμετρος εισόδου.
+
+
+
+
+
+
+
+    
+     */
+
+
+
+
+
+
+
+    
     private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
         // TODO add your handling code here:
          dispose(); // κλείνει το MainFrame (close frame)
     }//GEN-LAST:event_miExitActionPerformed
-private void miClearSearchActionPerformed(java.awt.event.ActionEvent evt) {
-    if (txtKeywords == null) return; // postInit δεν έχει τρέξει ακόμη
-    clearSearchUI();
-}
-
+    // (ΣΗΜΕΙΩΣΗ) Το handler του μενού “Clear Search” βρίσκεται πιο κάτω, ώστε να μην υπάρχει διπλο-ορισμός.
     // =========================================================
     // 14) Missing helper methods – needed by the current GUI code
     // =========================================================
@@ -1617,6 +2223,10 @@ private void miClearSearchActionPerformed(java.awt.event.ActionEvent evt) {
     /**
      * Επαναφόρτωση Saved articles από τον Controller.
      * (Καλείται όταν αλλάζει το φίλτρο κατηγοριών ή μετά από ενέργειες Delete/Clear.)
+     */
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>reloadSavedArticles()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
      */
     private void reloadSavedArticles() {
         // Χρησιμοποιούμε την ήδη υπάρχουσα «σωστή» ροή με SwingWorker,
@@ -1626,6 +2236,10 @@ private void miClearSearchActionPerformed(java.awt.event.ActionEvent evt) {
 
     /**
      * Ξανατρέχει Search με το τρέχον query στο txtKeywords.
+     */
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>reloadSearchWithCurrentQuery()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
      */
     private void reloadSearchWithCurrentQuery() {
         onSearch();
@@ -1639,6 +2253,11 @@ private void miClearSearchActionPerformed(java.awt.event.ActionEvent evt) {
      * ==TO DO : Όταν τα metadata μεταφερθούν σε ξεχωριστό Entity/DB table,
      *           πρόσθεσε στον Controller μέθοδο π.χ. getSavedMetadata(pageId)
      *           και εδώ κάλεσέ την, ώστε το GUI να μην κάνει "data mining" από πίνακες.
+     */
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>loadSavedMetadata()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @param pageId Παράμετρος εισόδου.
      */
     private void loadSavedMetadata(long pageId) {
         // Βρίσκω τη γραμμή μέσα στο JTable model και ενημερώνω τα πεδία UI.
@@ -1699,6 +2318,12 @@ private void miClearSearchActionPerformed(java.awt.event.ActionEvent evt) {
     /**
      * Εμφανίζει Article Details σε μεγάλο παράθυρο (≈80% οθόνης) με scroll.
      * modeHint: "Search" ή "Saved" απλά για logging/UI.
+     */
+    /**
+     * Εδώ υλοποιώ τη μέθοδο <b>openArticleDetails()</b>.
+     * Τη χρησιμοποιώ για να εκτελέσω τη συγκεκριμένη λειτουργία με ασφαλή τρόπο.
+     * @param pageId Παράμετρος εισόδου.
+     * @param modeHint Παράμετρος εισόδου.
      */
     private void openArticleDetails(Long pageId, String modeHint) {
         if (pageId == null) return;
@@ -1782,6 +2407,22 @@ private void miClearSearchActionPerformed(java.awt.event.ActionEvent evt) {
 
         setStatus("Closed details (" + modeHint + ")", false);
     }
+
+    // Handler [χειριστής] για το μενού: File -> Clear Search
+    // (Εδώ δεν βάζω demo println. Καλώ την πραγματική μέθοδο καθαρισμού.)
+private void miClearSearchActionPerformed(java.awt.event.ActionEvent evt) {
+    if (txtKeywords == null) return; // postInit δεν έχει τρέξει ακόμη
+    clearSearchUI();
+}
+
+    // =========================================================
+    // 14) Missing helper methods – needed by the current GUI code
+    // =========================================================
+
+    /**
+     * Επαναφόρτωση Saved articles από τον Controller.
+     * (Καλείται όταν αλλάζει το φίλτρο κατηγοριών ή μετά από ενέργειες Delete/Clear.)
+     */
 
 /*Δεν μπορώ να τον διαγράψω είναι binding sto menoy File παραμένει εντός σχολίων
 ισχύει ο από eπανω δεν τρέχει αυτός

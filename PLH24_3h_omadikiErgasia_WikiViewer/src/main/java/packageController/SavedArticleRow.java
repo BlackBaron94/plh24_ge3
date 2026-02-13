@@ -7,6 +7,10 @@ import java.util.List;
  *
  * Includes Rating/Comments metadata.
  */
+/** 
+ * Εδώ ορίζω το record <b>SavedArticleRow</b> στον Controller [ελεγκτή] (λογική εφαρμογής).
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+ */
 public record SavedArticleRow(
         String title,
         long pageId,

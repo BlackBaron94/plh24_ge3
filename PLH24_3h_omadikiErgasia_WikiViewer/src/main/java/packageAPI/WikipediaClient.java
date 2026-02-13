@@ -30,6 +30,10 @@
  * - Το GUI τρέχει τα requests σε background (SwingWorker) ώστε να μη μπλοκάρει το EDT.
  */
 package packageAPI;
+/** 
+ * Εδώ ορίζω το class <b>WikipediaClient</b> στο API [διεπαφή υπηρεσίας].
+ * <p>Στόχος μου είναι να κρατήσω το κομμάτι αυτό καθαρό και καλά σχολιασμένο, ώστε να μπορεί να συνεχίσει εύκολα άλλο μέλος της ομάδας.</p>
+ */
 public class WikipediaClient {
     // TODO: baseUrl, timeouts, endpoints
     // TODO: search(String query) -> List<SearchResultDto>
