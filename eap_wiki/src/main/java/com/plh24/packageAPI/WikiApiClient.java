@@ -32,7 +32,7 @@ public class WikiApiClient {
     };
 
     public String fetchArticle(String title) throws IOException {
-        String url = "https://el.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&rvprop=content&rvslots=main&formatversion=2&titles=" + title;
+        String url = "https://el.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&rvprop=content&rvslots=main&formatversion=2&explaintext=1&titles=" + title;
 
         Request request = new Request.Builder()
                 .url(url)

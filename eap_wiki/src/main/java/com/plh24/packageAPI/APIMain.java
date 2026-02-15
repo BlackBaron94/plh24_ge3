@@ -26,6 +26,8 @@ public class APIMain {
             System.out.println(jsonResponse);
             System.out.println("--------------------------\n");
             parseAndPrintResults(jsonResponse);
+            jsonResponse = api.fetchArticle("Ιωάννης Καποδίστριας");
+            parsearticlefetchv2(jsonResponse);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -98,6 +100,17 @@ public class APIMain {
                     if (!content.isEmpty()) System.out.println(content);
                 }
             }
+        }
+    }
+    public static void parsearticlefetchv2(String jsonString) {
+        JSONObject obj = new JSONObject(jsonString);
+        JSONObject query = obj.getJSONObject("query");
+        JSONArray pages = query.getJSONArray("pages");
+        for (int i = 0; i < pages.length(); i++) {
+            JSONObject page = pages.getJSONObject(i);
+            if (!page.has("extract")) continue;
+            String cleanText = page.getString("extract");
+            System.out.println(cleanText);
         }
     }
 }
