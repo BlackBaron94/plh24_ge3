@@ -9,6 +9,8 @@ package com.plh24.packageAPI;
  * @author Equinox
  */
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 public class APIMain {
@@ -41,6 +43,7 @@ public class APIMain {
             int wordCount = item.getInt("wordcount");
             
             System.out.println((i + 1) + ". " + title + " (" + wordCount + " λέξεις)");
+            System.out.println("\tΤμήμα που ταιριάζει με την αναζήτηση: \"..." + stripSnippetHTMLTags(item.getString("snippet")) + "...\"");
         }
     }
 
@@ -57,6 +60,22 @@ public class APIMain {
         }
     }
 
+    // Αφαιρεί τα HTML Tags που εμφανίζονται στο snippet (opening & closing
+    // tags για span με class searchmatch
+    public static String stripSnippetHTMLTags(String snippet) {
+        // Pattern seeker για τα tags
+        Pattern openingTagPattern = Pattern.compile("<span class=\"searchmatch\">");
+        Pattern closingTagPattern = Pattern.compile("</span>");
+        // Matcher που βρίσκει το pattern και το αντικαθιστά με κενό String
+        Matcher openingTagMatcher = openingTagPattern.matcher(snippet);
+        // Ανανέωση του snippet
+        snippet = openingTagMatcher.replaceAll("");
+        // Το ίδιο για το closing tag
+        Matcher closingTagMatcher = closingTagPattern.matcher(snippet);
+        snippet = closingTagMatcher.replaceAll("");
+        return snippet;
+    }
+    
     public static void parsearticlefetch(String jsonString) {
         JSONObject obj = new JSONObject(jsonString);
         JSONObject query = obj.getJSONObject("query");
