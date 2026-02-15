@@ -46,6 +46,4 @@ public class WikiApiClient {
             return response.body().string();
         }
     }
-    
-    
 }

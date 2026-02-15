@@ -32,6 +32,11 @@ public class Entities {
 
         public List<Category> getCategories() { return categories; }
         public void addCategory(Category c) { if (c != null && !categories.contains(c)) categories.add(c); }
+
+        public Object getCategory() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getCategory'");
+        }
     }
 
     public static class Category {
