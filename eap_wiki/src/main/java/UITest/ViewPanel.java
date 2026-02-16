@@ -5,7 +5,7 @@
 package UITest;
 import static com.plh24.packageAPI.APIMain.parseAndPrintResults;
 import static com.plh24.packageAPI.APIMain.parsearticlefetch;
-import com.plh24.packageEntities.Entities.Category;
+import com.plh24.packageEntities.Category;
 import com.plh24.packageAPI.WikiApiClient;
 import java.io.IOException;
 import org.json.JSONArray;
@@ -82,6 +82,7 @@ public class ViewPanel extends javax.swing.JPanel {
         articleTitle.setText("Τίτλος");
 
         articleBody.setEditable(false);
+        articleBody.setFocusable(false);
         jScrollPane3.setViewportView(articleBody);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

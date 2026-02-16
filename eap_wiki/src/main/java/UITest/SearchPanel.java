@@ -66,6 +66,8 @@ public class SearchPanel extends javax.swing.JPanel {
             }
         });
 
+        searchResultOutput.setEditable(false);
+        searchResultOutput.setFocusable(false);
         jScrollPane1.setViewportView(searchResultOutput);
 
         jLabel2.setText("Αποτελέσματα:");

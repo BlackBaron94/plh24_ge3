@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package UITest;
-import com.plh24.packageEntities.Entities.Category;
+import com.plh24.packageEntities.Category;
 
 /**
  *
