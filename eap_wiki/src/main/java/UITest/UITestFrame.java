@@ -4,6 +4,12 @@
  */
 package UITest;
 import com.plh24.packageEntities.Category;
+import java.util.List;
+import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.Query;
 
 /**
  *
@@ -12,12 +18,19 @@ import com.plh24.packageEntities.Category;
 public class UITestFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UITestFrame.class.getName());
-
+    private List<Category> categoriesList;
     /**
      * Creates new form UITestFrame
      */
     public UITestFrame() {
         initComponents();
+        // TODO Εδώ μάλλον πρέπει να δημιουργεί κατηγορίες στη βάση αν δεν
+        // υπάρχουν αλλιώς όλη η εφαρμογή θα buggάρει
+        List<Category> categoriesList = grabCategories();
+        
+        viewPanel.updateCategories(categoriesList);
+        viewByCategoryPanel.updateCategories(categoriesList);
+        
     }
 
     /**
@@ -30,15 +43,17 @@ public class UITestFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         mainFrameTabbedPanel = new javax.swing.JTabbedPane();
         searchPanel1 = new UITest.SearchPanel();
-        searchPanel2 = new UITest.SearchPanel();
-        viewPanel1 = new UITest.ViewPanel();
-        viewByCategoryPanel1 = new UITest.ViewByCategoryPanel();
-        viewByCategoryPanel2 = new UITest.ViewByCategoryPanel();
+        searchPanel3 = new UITest.SearchPanel();
+        viewPanel = new UITest.ViewPanel();
         statisticsPanel1 = new UITest.StatisticsPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        viewPanel2 = new UITest.ViewPanel();
+        viewByCategoryPanel1 = new UITest.ViewByCategoryPanel();
+        viewByCategoryPanel = new UITest.ViewByCategoryPanel();
+        statisticsPanel2 = new UITest.StatisticsPanel();
+        statisticsPanel4 = new UITest.StatisticsPanel();
+        statisticsPanel3 = new UITest.StatisticsPanel();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -52,8 +67,7 @@ public class UITestFrame extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        mainFrameTabbedPanel.setAutoscrolls(true);
+        setTitle("Wiki Viewer App");
 
         javax.swing.GroupLayout searchPanel1Layout = new javax.swing.GroupLayout(searchPanel1);
         searchPanel1.setLayout(searchPanel1Layout);
@@ -61,68 +75,106 @@ public class UITestFrame extends javax.swing.JFrame {
             searchPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(searchPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(254, Short.MAX_VALUE))
+                .addComponent(searchPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(926, Short.MAX_VALUE))
         );
         searchPanel1Layout.setVerticalGroup(
             searchPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchPanel1Layout.createSequentialGroup()
-                .addComponent(searchPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 87, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(searchPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(456, Short.MAX_VALUE))
         );
 
         mainFrameTabbedPanel.addTab("Αναζήτηση", searchPanel1);
-        mainFrameTabbedPanel.addTab("Προβολή", viewPanel1);
+        mainFrameTabbedPanel.addTab("Προβολή", viewPanel);
 
         javax.swing.GroupLayout viewByCategoryPanel1Layout = new javax.swing.GroupLayout(viewByCategoryPanel1);
         viewByCategoryPanel1.setLayout(viewByCategoryPanel1Layout);
         viewByCategoryPanel1Layout.setHorizontalGroup(
             viewByCategoryPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(viewByCategoryPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(viewByCategoryPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(290, Short.MAX_VALUE))
+            .addGap(0, 831, Short.MAX_VALUE)
         );
         viewByCategoryPanel1Layout.setVerticalGroup(
             viewByCategoryPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(viewByCategoryPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(viewByCategoryPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(111, Short.MAX_VALUE))
+            .addGap(0, 326, Short.MAX_VALUE)
         );
-
-        mainFrameTabbedPanel.addTab("Προβολή Ανά Κατηγορία", viewByCategoryPanel1);
 
         javax.swing.GroupLayout statisticsPanel1Layout = new javax.swing.GroupLayout(statisticsPanel1);
         statisticsPanel1.setLayout(statisticsPanel1Layout);
         statisticsPanel1Layout.setHorizontalGroup(
             statisticsPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1094, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statisticsPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(viewByCategoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(viewByCategoryPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         statisticsPanel1Layout.setVerticalGroup(
             statisticsPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 578, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statisticsPanel1Layout.createSequentialGroup()
+                .addContainerGap(160, Short.MAX_VALUE)
+                .addComponent(viewByCategoryPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(467, 467, 467))
+            .addGroup(statisticsPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(viewByCategoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        mainFrameTabbedPanel.addTab("Στατιστικά", statisticsPanel1);
+        mainFrameTabbedPanel.addTab("Προβολή Άρθρων Ανά Κατηγορία", statisticsPanel1);
 
-        jScrollPane1.setViewportView(viewPanel2);
+        javax.swing.GroupLayout statisticsPanel4Layout = new javax.swing.GroupLayout(statisticsPanel4);
+        statisticsPanel4.setLayout(statisticsPanel4Layout);
+        statisticsPanel4Layout.setHorizontalGroup(
+            statisticsPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statisticsPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(statisticsPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        statisticsPanel4Layout.setVerticalGroup(
+            statisticsPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statisticsPanel4Layout.createSequentialGroup()
+                .addComponent(statisticsPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
-        mainFrameTabbedPanel.addTab("tab5", jScrollPane1);
+        javax.swing.GroupLayout statisticsPanel2Layout = new javax.swing.GroupLayout(statisticsPanel2);
+        statisticsPanel2.setLayout(statisticsPanel2Layout);
+        statisticsPanel2Layout.setHorizontalGroup(
+            statisticsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statisticsPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(statisticsPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(1075, Short.MAX_VALUE))
+        );
+        statisticsPanel2Layout.setVerticalGroup(
+            statisticsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statisticsPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(statisticsPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(568, Short.MAX_VALUE))
+        );
+
+        mainFrameTabbedPanel.addTab("Στατιστικά", statisticsPanel2);
+
+        jScrollPane1.setViewportView(mainFrameTabbedPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(mainFrameTabbedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1094, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1031, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(mainFrameTabbedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -151,16 +203,32 @@ public class UITestFrame extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new UITestFrame().setVisible(true));
-        updateCategoriesComboBox();
     }
     
     public void updateViewAndSwitch(String title) {
-        viewPanel1.showArticle(title);
+        viewPanel.showArticle(title);
         mainFrameTabbedPanel.setSelectedIndex(1);
     }
     
-    public static void updateCategoriesComboBox() {
-        System.out.println("UPDATED CATEGORIES, SUPPOSEDLY");
+    public static List<Category> grabCategories() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManager em = emf.createEntityManager();
+        try {
+            Query findAllCategories = em.createNamedQuery("Category.findAll");
+
+            List<Category> categoryList = findAllCategories.getResultList();
+            for (Category c : categoryList) {
+                System.out.println(c);
+            }
+            return categoryList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } finally {
+            System.out.println("GRABBED CATEGORIES, SUPPOSEDLY");
+            em.close();
+            emf.close();
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -168,11 +236,13 @@ public class UITestFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane mainFrameTabbedPanel;
     private UITest.SearchPanel searchPanel1;
-    private UITest.SearchPanel searchPanel2;
+    private UITest.SearchPanel searchPanel3;
     private UITest.StatisticsPanel statisticsPanel1;
+    private UITest.StatisticsPanel statisticsPanel2;
+    private UITest.StatisticsPanel statisticsPanel3;
+    private UITest.StatisticsPanel statisticsPanel4;
+    private UITest.ViewByCategoryPanel viewByCategoryPanel;
     private UITest.ViewByCategoryPanel viewByCategoryPanel1;
-    private UITest.ViewByCategoryPanel viewByCategoryPanel2;
-    private UITest.ViewPanel viewPanel1;
-    private UITest.ViewPanel viewPanel2;
+    private UITest.ViewPanel viewPanel;
     // End of variables declaration//GEN-END:variables
 }

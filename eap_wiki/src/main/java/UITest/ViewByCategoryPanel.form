@@ -66,12 +66,7 @@
     <Component class="javax.swing.JComboBox" name="categorySearchBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="&#x3a8;&#x3b5;&#x3c5;&#x3c4;&#x3bf;&#x3ba;&#x3b1;&#x3c4;&#x3b7;&#x3b3;&#x3bf;&#x3c1;&#x3af;&#x3b1; 1"/>
-            <StringItem index="1" value="&#x3a8;&#x3b5;&#x3c5;&#x3c4;&#x3bf;&#x3ba;&#x3b1;&#x3c4;&#x3b7;&#x3b3;&#x3bf;&#x3c1;&#x3af;&#x3b1; 2"/>
-            <StringItem index="2" value="&#x3a8;&#x3b5;&#x3c5;&#x3c4;&#x3bf;&#x3ba;&#x3b1;&#x3c4;&#x3b7;&#x3b3;&#x3bf;&#x3c1;&#x3af;&#x3b1; 3"/>
-            <StringItem index="3" value="&#x3a8;&#x3b5;&#x3c5;&#x3c4;&#x3bf;&#x3ba;&#x3b1;&#x3c4;&#x3b7;&#x3b3;&#x3bf;&#x3c1;&#x3af;&#x3b1; 4"/>
-          </StringArray>
+          <StringArray count="0"/>
         </Property>
       </Properties>
       <AuxValues>

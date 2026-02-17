@@ -1,7 +1,7 @@
-Mon Feb 16 23:28:08 EET 2026 : Apache Derby Network Server - 10.17.1.0 - (1913217) started and ready to accept connections on port 1527
+Tue Feb 17 18:42:55 EET 2026 : Apache Derby Network Server - 10.17.1.0 - (1913217) started and ready to accept connections on port 1527
 ----------------------------------------------------------------
-Mon Feb 16 23:28:10 EET 2026:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-019c-685a-8428-ffff8201d2d2 
+Tue Feb 17 18:42:56 EET 2026:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-019c-6c7b-be83-ffff8201d2d2 
 on database directory C:\Users\Black\Documents\repos\plh24_ge3\eap_wiki\db\eap_wiki with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@11a4022a 
 Loaded from file:/F:/db-derby-10.17.1.0-bin/db-derby-10.17.1.0-bin/lib/derby.jar
 java.vendor=Azul Systems, Inc.

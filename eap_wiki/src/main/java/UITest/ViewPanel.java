@@ -11,6 +11,15 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.List;
+import java.awt.Color;
+import javax.swing.JOptionPane;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import com.plh24.packageEntities.Category;
+import com.plh24.packageEntities.Article;
+import jakarta.persistence.Query;
 /**
  *
  * @author Equinox
@@ -42,14 +51,14 @@ public class ViewPanel extends javax.swing.JPanel {
         jPopupMenu5 = new javax.swing.JPopupMenu();
         jPopupMenu6 = new javax.swing.JPopupMenu();
         jPopupMenu7 = new javax.swing.JPopupMenu();
-        jButton1 = new javax.swing.JButton();
+        saveArticleButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        commentsTextArea = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         categoryComboBox = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        ratingComboBox = new javax.swing.JComboBox<>();
         articleTitle = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         articleBody = new javax.swing.JTextPane();
@@ -58,26 +67,27 @@ public class ViewPanel extends javax.swing.JPanel {
 
         popupMenu2.setLabel("popupMenu2");
 
-        jButton1.setText("Αποθήκευση");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        saveArticleButton.setText("Αποθήκευση");
+        saveArticleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                saveArticleButtonActionPerformed(evt);
             }
         });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        commentsTextArea.setEditable(false);
+        commentsTextArea.setBackground(new java.awt.Color(63, 63, 63));
+        commentsTextArea.setColumns(20);
+        commentsTextArea.setRows(5);
+        commentsTextArea.setFocusable(false);
+        jScrollPane1.setViewportView(commentsTextArea);
 
         jLabel1.setText("Σχόλια:");
-
-        categoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel2.setText("Κατηγορία:");
 
         jLabel3.setText("Βαθμολογία:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1/5 ★", "2/5 ★★", "3/5 ★★★", "4/5 ★★★★", "5/5 ★★★★★" }));
+        ratingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1/5 ★", "2/5 ★★", "3/5 ★★★", "4/5 ★★★★", "5/5 ★★★★★" }));
 
         articleTitle.setText("Τίτλος");
 
@@ -97,18 +107,17 @@ public class ViewPanel extends javax.swing.JPanel {
                         .addComponent(jLabel3)
                         .addComponent(jLabel2)
                         .addComponent(categoryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ratingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane1))
-                    .addComponent(jButton1))
+                    .addComponent(saveArticleButton))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(articleTitle)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(17, 17, 17))
+                        .addComponent(articleTitle))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,7 +132,7 @@ public class ViewPanel extends javax.swing.JPanel {
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(28, 28, 28)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ratingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addGap(12, 12, 12)
@@ -133,14 +142,52 @@ public class ViewPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
-                .addContainerGap(197, Short.MAX_VALUE))
+                        .addComponent(saveArticleButton)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void saveArticleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveArticleButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        if (articleTitle.getText().equals("Τίτλος")){
+            JOptionPane.showMessageDialog(this,
+                    "Δεν έχετε προβάλλει κάποιο άρθρο για αποθήκευση!",
+                    "Δεν υπάρχει άρθρο.",
+                    JOptionPane.WARNING_MESSAGE
+                    );
+            return;
+        }
+        int rating = ratingComboBox.getSelectedIndex() + 1;
+        System.out.println("Rating: " + rating);
+        String category = categoryComboBox.getSelectedItem().toString();
+        System.out.println("Category: " + category);
+        String comments = commentsTextArea.getText();
+        System.out.println("Comments: " + comments);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManager em = emf.createEntityManager();
+        try {
+            Query findCategoryByName = em.createNamedQuery("Category.findByName");
+            findCategoryByName.setParameter("name", category);
+            Category category_obj = (Category) findCategoryByName.getSingleResult();
+            String title = articleTitle.getText();
+            // TODO Έλεγχος αν υπάρχει ήδη στη βάση. 
+            // TODO Μάλλον βγάζει νόημα αντί για category_id να κρατάμε το 
+            // TODO Ίσως να καλεί κάποιον controller αντί να είναι όλη η λογική
+            // στο frontend
+            // category_name στο Article, πιο καλό στο μάτι, αν γίνεται
+            em.getTransaction().begin();
+            Article article = new Article(title, rating, category_obj, comments);
+            em.persist(article);
+            em.getTransaction().commit();
+            System.out.println("Saving DONE");
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+            emf.close();
+        }
+    }//GEN-LAST:event_saveArticleButtonActionPerformed
 
     public void showArticle(String title) {
         WikiApiClient api = new WikiApiClient();
@@ -156,13 +203,16 @@ public class ViewPanel extends javax.swing.JPanel {
                 System.out.println(cleanText);
                 articleTitle.setText(title);
                 articleBody.setText(cleanText);
+                commentsTextArea.setEditable(true);
+                commentsTextArea.setFocusable(true);
+                commentsTextArea.setBackground(new Color (255,255,255));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     
-    public void updateCategories(ArrayList<Category> categories){
+    public void updateCategories(List<Category> categories){
         for (Category c : categories) {
             categoryComboBox.addItem(c.toString());
         }
@@ -172,8 +222,7 @@ public class ViewPanel extends javax.swing.JPanel {
     private javax.swing.JTextPane articleBody;
     private javax.swing.JLabel articleTitle;
     private javax.swing.JComboBox<String> categoryComboBox;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JTextArea commentsTextArea;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -186,8 +235,9 @@ public class ViewPanel extends javax.swing.JPanel {
     private javax.swing.JPopupMenu jPopupMenu7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
     private java.awt.PopupMenu popupMenu1;
     private java.awt.PopupMenu popupMenu2;
+    private javax.swing.JComboBox<String> ratingComboBox;
+    private javax.swing.JButton saveArticleButton;
     // End of variables declaration//GEN-END:variables
 }

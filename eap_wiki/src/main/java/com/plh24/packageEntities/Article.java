@@ -45,11 +45,11 @@ public class Article {
     private int rating;
 
     @Column(name = "saved_at", nullable = false)
-    private LocalDateTime savedAt; //Ημερομηνί αδημιουργίας
+    private LocalDateTime savedAt; //Ημερομηνία δημιουργίας
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "category_id")
-    private Category category; //Πρέπει να υπάερχει κατηγορία
+    private Category category; //Πρέπει να υπάρχει κατηγορία
 
     @Column(name = "comments", nullable = true)
     private String comments;

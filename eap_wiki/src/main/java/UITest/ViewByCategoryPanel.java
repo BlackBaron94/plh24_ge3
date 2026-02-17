@@ -4,6 +4,8 @@
  */
 package UITest;
 
+import com.plh24.packageEntities.Category;
+import java.util.List;
 /**
  *
  * @author Equinox
@@ -34,8 +36,6 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
 
         jLabel1.setText("Κατηγορίες");
-
-        categorySearchBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ψευτοκατηγορία 1", "Ψευτοκατηγορία 2", "Ψευτοκατηγορία 3", "Ψευτοκατηγορία 4" }));
 
         showCategoryArticlesBtn.setText("Εμφάνιση Άρθρων");
         showCategoryArticlesBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -93,6 +93,11 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
         articleTitleByCategory.setText("Ο ΧΡΗΣΤΗΣ ΔΙΑΛΕΞΕ: " + selectedCategory + "\nΕΜΦΑΝΙΖΩ ΑΡΘΡΑ ΚΑΙ ΚΑΛΑ\nΆρθρο 1\nΆρθρο 135");
     }//GEN-LAST:event_showCategoryArticlesBtnActionPerformed
 
+    public void updateCategories(List<Category> categoriesList){
+        for (Category c : categoriesList) {
+            categorySearchBox.addItem(c.toString());
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane articleTitleByCategory;
