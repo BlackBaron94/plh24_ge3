@@ -1,6 +1,5 @@
 package com.plh24.packageUtils;
 
-import com.plh24.packageEntities.Entities.Article;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class StatisticsCalc {
 
-    public static Map<String, Object> calcStatistics(List<Article> articles, List<String> searchKeywords, int topCategories, int topKeywords) {
+    public static Map<String, Object> calcStatistics(List<?> articles, List<String> searchKeywords, int topCategories, int topKeywords) {
         Map<String, Object> stats = new LinkedHashMap<>();
 
         int total = (articles == null) ? 0 : articles.size();
@@ -18,7 +17,7 @@ public class StatisticsCalc {
 
         Map<String, Long> perCategory = new HashMap<>();
         if (articles != null) {
-            for (Article a : articles) {
+            for (Object a : articles) {
                 String cname = getFirstCategoryName(a);
                 perCategory.put(cname, perCategory.getOrDefault(cname, 0L) + 1L);
             }
@@ -33,7 +32,7 @@ public class StatisticsCalc {
         if (articles != null && !articles.isEmpty()) {
             double sum = 0.0;
             int cnt = 0;
-            for (Article a : articles) {
+            for (Object a : articles) {
                 int r = getRating(a);
                 if (r >= 0) {
                     sum += r;
@@ -46,7 +45,7 @@ public class StatisticsCalc {
 
         Map<String, List<Integer>> categoryRatings = new HashMap<>();
         if (articles != null) {
-            for (Article a : articles) {
+            for (Object a : articles) {
                 String cname = getFirstCategoryName(a);
                 categoryRatings.computeIfAbsent(cname, k -> new ArrayList<>()).add(getRating(a));
             }
@@ -87,25 +86,34 @@ public class StatisticsCalc {
         Files.write(out, json.getBytes(StandardCharsets.UTF_8));
     }
 
-    private static String getFirstCategoryName(Article a) {
+    private static String getFirstCategoryName(Object a) {
         if (a == null) return "Uncategorized";
         try {
-            List<?> cats = a.getCategories();
-            if (cats != null && !cats.isEmpty() && cats.get(0) != null) {
-                Object c = cats.get(0);
-                try {
-                    java.lang.reflect.Method m = c.getClass().getMethod("getName");
-                    Object name = m.invoke(c);
-                    return (name == null) ? "Uncategorized" : String.valueOf(name);
-                } catch (NoSuchMethodException nsme) {
-                    return String.valueOf(c);
+            Object catsObj = null;
+            try {
+                java.lang.reflect.Method gm = a.getClass().getMethod("getCategories");
+                catsObj = gm.invoke(a);
+            } catch (NoSuchMethodException nsme) {
+                return "Uncategorized";
+            }
+            if (catsObj instanceof List) {
+                List<?> cats = (List<?>) catsObj;
+                if (cats != null && !cats.isEmpty() && cats.get(0) != null) {
+                    Object c = cats.get(0);
+                    try {
+                        java.lang.reflect.Method m = c.getClass().getMethod("getName");
+                        Object name = m.invoke(c);
+                        return (name == null) ? "Uncategorized" : String.valueOf(name);
+                    } catch (NoSuchMethodException nsme) {
+                        return String.valueOf(c);
+                    }
                 }
             }
         } catch (Exception ex) {}
         return "Uncategorized";
     }
 
-    private static int getRating(Article a) {
+    private static int getRating(Object a) {
         if (a == null) return 0;
         try {
             java.lang.reflect.Method m = a.getClass().getMethod("getRating");
@@ -161,7 +169,7 @@ public class StatisticsCalc {
         return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
 
-    public static void generateAndWrite(List<Article> articles, List<String> searches, Path outFile) throws IOException {
+    public static void generateAndWrite(List<?> articles, List<String> searches, Path outFile) throws IOException {
         Map<String, Object> stats = calcStatistics(articles, searches, 10, 20);
         writeStatisticsJson(stats, outFile);
     }
