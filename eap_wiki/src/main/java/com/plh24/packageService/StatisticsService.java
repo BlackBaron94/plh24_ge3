@@ -12,7 +12,7 @@ public class StatisticsService {
             try {
                 // try the original unit name first, then fall back to the project's PU name
                 try {
-                    emf = Persistence.createEntityManagerFactory("WikiPU");
+                    emf = Persistence.createEntityManagerFactory("EapWikiPU");
                 } catch (PersistenceException pe1) {
                     emf = Persistence.createEntityManagerFactory("EapWikiPU");
                 }

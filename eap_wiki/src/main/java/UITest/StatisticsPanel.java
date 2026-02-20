@@ -202,6 +202,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
             jLabel1.setText("Total Searches: " + totalSearches);
             jLabel2.setText("Total Articles: " + totalArticles);
             jLabel3.setText("Total Categories: " + totalCategories);
+            System.out.println("Stats refreshed: " + totalArticles + " articles, " + totalCategories + " categories, " + totalSearches + " searches");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Failed to load statistics: " + ex.getMessage(), "Statistics Error", JOptionPane.ERROR_MESSAGE);
         }
