@@ -1,14 +1,20 @@
-Thu Feb 19 13:49:53 EET 2026 : Apache Derby Network Server - 10.17.1.0 - (1913217) started and ready to accept connections on port 1527
+Fri Feb 20 11:59:30 EET 2026 : Apache Derby Network Server - 10.17.1.0 - (1913217) started and ready to accept connections on port 1527
 ----------------------------------------------------------------
-Thu Feb 19 13:51:27 EET 2026:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-019c-75bc-2e40-ffffe72b4779 
-on database directory C:\Users\softa\appsimade\plh24_ge3\eap_wiki\db\eap_wiki with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@105be200 
-Loaded from file:/C:/Users/softa/Downloads/db-derby-10.17.1.0-bin/db-derby-10.17.1.0-bin/lib/derby.jar
-java.vendor=Oracle Corporation
-java.runtime.version=25.0.2+10-LTS-69
-user.dir=C:\Users\softa\Downloads\db-derby-10.17.1.0-bin\db-derby-10.17.1.0-bin\lib
+Fri Feb 20 11:59:34 EET 2026:
+Booting Derby (version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217)) instance a816c00e-019c-7a7d-7d6e-ffffe72b4779 
+on database directory C:\Users\softa\appsimade\plh24_ge3\eap_wiki\db\eap_wiki in READ ONLY mode with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@105be200. 
+Loaded from file:/C:/Users/softa/Downloads/db-derby-10.17.1.0-bin/db-derby-10.17.1.0-bin/lib/derby.jar.
+java.vendor=Azul Systems, Inc.
+java.runtime.version=25.0.2+10-LTS
+user.dir=C:\Users\softa\Downloads\db-derby-10.17.1.0-bin\db-derby-10.17.1.0-bin
 os.name=Windows 11
 os.arch=amd64
 os.version=10.0
 derby.system.home=C:\Users\softa\appsimade\plh24_ge3\eap_wiki\db
 Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Fri Feb 20 12:00:52 EET 2026: Shutting down Derby engine
+----------------------------------------------------------------
+Fri Feb 20 12:00:52 EET 2026:
+Shutting down instance a816c00e-019c-7a7d-7d6e-ffffe72b4779 on database directory C:\Users\softa\appsimade\plh24_ge3\eap_wiki\db\eap_wiki with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@105be200 
+----------------------------------------------------------------

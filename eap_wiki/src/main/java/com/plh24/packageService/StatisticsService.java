@@ -5,12 +5,31 @@ import jakarta.persistence.*;
 
 public class StatisticsService {
 
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("WikiPU");
+    private EntityManagerFactory emf;
+
+    private EntityManagerFactory getEmf() {
+        if (emf == null) {
+            try {
+                // try the original unit name first, then fall back to the project's PU name
+                try {
+                    emf = Persistence.createEntityManagerFactory("WikiPU");
+                } catch (PersistenceException pe1) {
+                    emf = Persistence.createEntityManagerFactory("EapWikiPU");
+                }
+            } catch (PersistenceException pe) {
+                // persistence not available in this runtime (e.g. running UI without persistence)
+                return null;
+            }
+        }
+        return emf;
+    }
 
     public long getTotalSavedArticles() {
-        EntityManager em = emf.createEntityManager();
+        EntityManagerFactory emfLocal = getEmf();
+        if (emfLocal == null) return 0L;
+        EntityManager em = emfLocal.createEntityManager();
         try {
-            Long c = em.createQuery("SELECT COUNT(a) FROM Article a", Long.class).getSingleResult();
+            Long c = em.createQuery("SELECT COUNT(a.title) FROM Article a", Long.class).getSingleResult();
             return (c == null) ? 0L : c;
         } finally {
             em.close();
@@ -18,10 +37,12 @@ public class StatisticsService {
     }
 
     public Map<String, Long> getArticlesPerCategory(int limit) {
-        EntityManager em = emf.createEntityManager();
+        EntityManagerFactory emfLocal = getEmf();
+        if (emfLocal == null) return Collections.emptyMap();
+        EntityManager em = emfLocal.createEntityManager();
         try {
-            List<Object[]> rows = em.createQuery(
-                    "SELECT a.category.name, COUNT(a) FROM Article a GROUP BY a.category.name ORDER BY COUNT(a) DESC", Object[].class)
+                List<Object[]> rows = em.createQuery(
+                    "SELECT a.category.name, COUNT(a.title) FROM Article a GROUP BY a.category.name ORDER BY COUNT(a.title) DESC", Object[].class)
                     .getResultList();
             LinkedHashMap<String, Long> map = new LinkedHashMap<>();
             int i = 0;
@@ -38,7 +59,9 @@ public class StatisticsService {
     }
 
     public double getAverageRating() {
-        EntityManager em = emf.createEntityManager();
+        EntityManagerFactory emfLocal = getEmf();
+        if (emfLocal == null) return 0.0;
+        EntityManager em = emfLocal.createEntityManager();
         try {
             Double d = em.createQuery("SELECT AVG(a.rating) FROM Article a", Double.class).getSingleResult();
             return (d == null) ? 0.0 : d;
@@ -47,10 +70,24 @@ public class StatisticsService {
         }
     }
 
-    public Map<String, Double> getTopRatedCategories(int limit) {
-        EntityManager em = emf.createEntityManager();
+    public long getTotalCategories() {
+        EntityManagerFactory emfLocal = getEmf();
+        if (emfLocal == null) return 0L;
+        EntityManager em = emfLocal.createEntityManager();
         try {
-            List<Object[]> rows = em.createQuery(
+            Long c = em.createQuery("SELECT COUNT(c) FROM Category c", Long.class).getSingleResult();
+            return (c == null) ? 0L : c;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Map<String, Double> getTopRatedCategories(int limit) {
+        EntityManagerFactory emfLocal = getEmf();
+        if (emfLocal == null) return Collections.emptyMap();
+        EntityManager em = emfLocal.createEntityManager();
+        try {
+                List<Object[]> rows = em.createQuery(
                     "SELECT a.category.name, AVG(a.rating) FROM Article a GROUP BY a.category.name ORDER BY AVG(a.rating) DESC", Object[].class)
                     .getResultList();
             LinkedHashMap<String, Double> map = new LinkedHashMap<>();
@@ -68,11 +105,13 @@ public class StatisticsService {
     }
 
     public Map<String, Long> getTopSearchKeywords(int limit) {
-        EntityManager em = emf.createEntityManager();
+        EntityManagerFactory emfLocal = getEmf();
+        if (emfLocal == null) return Collections.emptyMap();
+        EntityManager em = emfLocal.createEntityManager();
         try {
             try {
                 List<Object[]> rows = em.createQuery(
-                        "SELECT s.keyword, COUNT(s) FROM SearchLog s GROUP BY s.keyword ORDER BY COUNT(s) DESC", Object[].class)
+                    "SELECT s.searchTerm, COUNT(s.searchTerm) FROM SearchLog s GROUP BY s.searchTerm ORDER BY COUNT(s.searchTerm) DESC", Object[].class)
                         .getResultList();
                 LinkedHashMap<String, Long> map = new LinkedHashMap<>();
                 int i = 0;
@@ -92,6 +131,6 @@ public class StatisticsService {
     }
 
     public void close() {
-        if (emf.isOpen()) emf.close();
+        if (emf != null && emf.isOpen()) emf.close();
     }
 }
