@@ -6,12 +6,26 @@ package UITest;
 
 import com.plh24.packageEntities.Category;
 import java.util.List;
+
+
+import com.plh24.packageEntities.Article;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+
+
 /**
  *
  * @author Equinox
  */
 public class ViewByCategoryPanel extends javax.swing.JPanel {
 
+    //δημιουργία συνδεσης με βαση
+    private final EntityManagerFactory emf =
+        Persistence.createEntityManagerFactory("EapWikiPU");
+    
+    
     /**
      * Creates new form ViewByCategoryPanel
      */
@@ -86,12 +100,75 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /*
     private void showCategoryArticlesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showCategoryArticlesBtnActionPerformed
         // TODO add your handling code here:
         System.out.println("ΝΟΜΙΖΕΣ ΘΑ ΕΜΦΑΝΙΖΩ ΑΡΘΡΑ Ε? ΟΥΤΕ ΚΑΝ");
         String selectedCategory = categorySearchBox.getSelectedItem().toString();
         articleTitleByCategory.setText("Ο ΧΡΗΣΤΗΣ ΔΙΑΛΕΞΕ: " + selectedCategory + "\nΕΜΦΑΝΙΖΩ ΑΡΘΡΑ ΚΑΙ ΚΑΛΑ\nΆρθρο 1\nΆρθρο 135");
     }//GEN-LAST:event_showCategoryArticlesBtnActionPerformed
+*/
+    
+    
+    
+    
+    //μεθοδος που καλειται όταν ο χρησητης πατήσει το κουμπί "Εμφανιση Άθρων"
+    private void showCategoryArticlesBtnActionPerformed(java.awt.event.ActionEvent evt) {                                                        
+
+        
+    // Παίρνουμε όνομα κατηγορίας (String) γιατί στο updateCategories έχουμε c.toString()
+    String selectedCategory = categorySearchBox.getSelectedItem().toString();
+
+    EntityManager em = emf.createEntityManager();
+
+    try {
+
+        // Query με βάση το ΟΝΟΜΑ κατηγορίας.Φέρε τα αθρα που είναι στη κατηγορία που διάλεξε
+        //ο χρήστης
+        List<Article> articles = em.createQuery(
+                "SELECT a FROM Article a WHERE a.category.name = :catName ORDER BY a.title",
+                Article.class
+        )
+        .setParameter("catName", selectedCategory)
+        .getResultList();
+
+        
+        //Αν η λίστα αθρών σε αυτή τη κατηγορία είναι άδεια
+        if (articles.isEmpty()) {
+            articleTitleByCategory.setText(
+                    "Δεν βρέθηκαν άρθρα στη κατηγορία: " + selectedCategory
+            );
+            return;
+        }
+
+        
+        //Δημιουργία κειμενου εμφάνισης
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Κατηγορία: ").append(selectedCategory).append("\n\n");
+
+        
+        //Για κάθε άθρο περνουμε το τίτλο, τον ένα κατω απο τον άλλο 
+        for (Article a : articles) {
+            sb.append("• ").append(a.getTitle()).append("\n");
+        }
+
+        
+        //Βάζουμε το τελικο κειμενο στο panel
+        articleTitleByCategory.setText(sb.toString());
+
+    
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        articleTitleByCategory.setText("Σφάλμα κατά την ευρεση άρθρων!");
+    } finally {
+        em.close();
+    }
+}
+
+    
+    
 
     public void updateCategories(List<Category> categoriesList){
         for (Category c : categoriesList) {
