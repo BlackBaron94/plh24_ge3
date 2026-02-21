@@ -16,6 +16,8 @@ import java.awt.geom.Arc2D;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableModel;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import com.plh24.packageUtils.StatisticsCalc;
 import com.plh24.packageService.StatisticsService;
 
@@ -61,8 +71,17 @@ public class StatisticsPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -77,9 +96,9 @@ public class StatisticsPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        jTabbedPane1.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                jTabbedPane1ComponentShown(evt);
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
             }
         });
 
@@ -124,41 +143,141 @@ public class StatisticsPanel extends javax.swing.JPanel {
 
         jTabbedPane1.addTab("Overview", jPanel1);
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jButton1.setText("Export");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1036, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 717, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(380, 380, 380)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(259, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 581, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1)
+                .addContainerGap(103, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Articles Per Category", jPanel2);
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable3);
+
+        jButton2.setText("Export");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1036, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 717, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(380, 380, 380)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(259, 259, 259))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 581, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2)
+                .addContainerGap(103, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Top Rated Categories", jPanel3);
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable2);
+
+        jButton3.setText("Export");
+        jButton3.setAlignmentY(0.0F);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1036, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 717, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(380, 380, 380)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(259, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 581, Short.MAX_VALUE)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton3)
+                .addContainerGap(103, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Top Searched Keywords", jPanel4);
@@ -166,12 +285,57 @@ public class StatisticsPanel extends javax.swing.JPanel {
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTabbedPane1ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jTabbedPane1ComponentShown
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        // TODO add your handling code here:
         refreshStats();
-    }//GEN-LAST:event_jTabbedPane1ComponentShown
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (confirmExport()) {
+            File out = choosePdfFile();
+            if (out != null) {
+                try {
+                    exportTableToPdf(jTable1, out);
+                    JOptionPane.showMessageDialog(this, "Exported to: " + out.getAbsolutePath());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (confirmExport()) {
+            File out = choosePdfFile();
+            if (out != null) {
+                try {
+                    exportTableToPdf(jTable3, out);
+                    JOptionPane.showMessageDialog(this, "Exported to: " + out.getAbsolutePath());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (confirmExport()) {
+            File out = choosePdfFile();
+            if (out != null) {
+                try {
+                    exportTableToPdf(jTable2, out);
+                    JOptionPane.showMessageDialog(this, "Exported to: " + out.getAbsolutePath());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -180,8 +344,14 @@ public class StatisticsPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
     // End of variables declaration//GEN-END:variables
 
     private StatisticsService statsService;
@@ -193,6 +363,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
             java.util.Map<String, Long> perCat = statsService.getArticlesPerCategory(0);
             long totalCategories = statsService.getTotalCategories();
             java.util.Map<String, Long> topKeywords = statsService.getTopSearchKeywords(0);
+            java.util.Map<String, Double> topRated = statsService.getTopRatedCategories(0);
             long totalSearches = 0L;
             if (topKeywords != null) {
                 for (Long v : topKeywords.values()) {
@@ -203,8 +374,126 @@ public class StatisticsPanel extends javax.swing.JPanel {
             jLabel2.setText("Total Articles: " + totalArticles);
             jLabel3.setText("Total Categories: " + totalCategories);
             System.out.println("Stats refreshed: " + totalArticles + " articles, " + totalCategories + " categories, " + totalSearches + " searches");
+            if (perCat == null) perCat = new java.util.LinkedHashMap<>();
+            DefaultTableModel m1 = new DefaultTableModel(new Object[]{"Category","Articles"}, 0) {
+                @Override public boolean isCellEditable(int row, int col) { return false; }
+            };
+            for (java.util.Map.Entry<String, Long> e : perCat.entrySet()) {
+                m1.addRow(new Object[]{ e.getKey(), e.getValue() });
+            }
+            jTable1.setModel(m1);
+            if (topRated == null) topRated = new java.util.LinkedHashMap<>();
+            DefaultTableModel m2 = new DefaultTableModel(new Object[]{"Category","Avg Rating"}, 0) {
+                @Override public boolean isCellEditable(int row, int col) { return false; }
+            };
+            for (java.util.Map.Entry<String, Double> e : topRated.entrySet()) {
+                String name = e.getKey();
+                Double avg = e.getValue();
+                m2.addRow(new Object[]{ name, (avg == null) ? null : String.format("%.2f", avg) });
+            }
+            jTable3.setModel(m2);
+            if (topKeywords == null) topKeywords = new java.util.LinkedHashMap<>();
+            DefaultTableModel m3 = new DefaultTableModel(new Object[]{"Keyword","Searches"}, 0) {
+                @Override public boolean isCellEditable(int row, int col) { return false; }
+            };
+            for (java.util.Map.Entry<String, Long> e : topKeywords.entrySet()) {
+                m3.addRow(new Object[]{ e.getKey(), e.getValue() });
+            }
+            jTable2.setModel(m3);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Failed to load statistics: " + ex.getMessage(), "Statistics Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private boolean confirmExport() {
+        int res = JOptionPane.showConfirmDialog(this,
+                "Είστε σίγουροι πως θέλετε να κάνετε Export σε PDF?",
+                "Confirm Export",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        return res == JOptionPane.YES_OPTION;
+    }
+
+    private File choosePdfFile() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save PDF");
+        if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return null;
+        File f = chooser.getSelectedFile();
+        if (!f.getName().toLowerCase().endsWith(".pdf")) {
+            f = new File(f.getParentFile(), f.getName() + ".pdf");
+        }
+        return f;
+    }
+
+    private void exportTableToPdf(javax.swing.JTable table, File outFile) throws IOException {
+        try (PDDocument doc = new PDDocument()) {
+            PDPage page = new PDPage(PDRectangle.LETTER);
+            doc.addPage(page);
+            PDPageContentStream cs = new PDPageContentStream(doc, page);
+            PDFont pdfFont;
+            String os = System.getProperty("os.name").toLowerCase();
+            String fontPath;
+            if (os.contains("win")) {
+                fontPath = "C:\\Windows\\Fonts\\segoeui.ttf";
+            } else if (os.contains("mac")) {
+                fontPath = "/Library/Fonts/Arial Unicode.ttf";
+            } else {
+                fontPath = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
+            }
+            File fontFile = new File(fontPath);
+            if (fontFile.exists()) {
+                try {
+                    pdfFont = PDType0Font.load(doc, fontFile);
+                } catch (Exception ex) {
+                    pdfFont = PDType1Font.HELVETICA;
+                }
+            } else {
+                pdfFont = PDType1Font.HELVETICA;
+            }
+            float fontSize = 10f;
+            float leading = 1.2f * fontSize;
+            PDRectangle media = page.getMediaBox();
+            float margin = 50;
+            float startX = margin;
+            float startY = media.getHeight() - margin;
+            cs.beginText();
+            cs.setFont(pdfFont, fontSize);
+            cs.newLineAtOffset(startX, startY);
+            int cols = table.getColumnCount();
+            StringBuilder header = new StringBuilder();
+            for (int c = 0; c < cols; c++) {
+                header.append(table.getColumnName(c));
+                if (c < cols - 1) header.append("  |  ");
+            }
+            cs.showText(header.toString());
+            cs.newLineAtOffset(0, -leading);
+            int rows = table.getRowCount();
+            float y = startY - leading;
+            for (int r = 0; r < rows; r++) {
+                StringBuilder row = new StringBuilder();
+                for (int c = 0; c < cols; c++) {
+                    Object val = table.getValueAt(r, c);
+                    row.append(val == null ? "" : String.valueOf(val));
+                    if (c < cols - 1) row.append("  |  ");
+                }
+                if (y - leading < margin) {
+                    cs.endText();
+                    cs.close();
+                    page = new PDPage(PDRectangle.LETTER);
+                    doc.addPage(page);
+                    cs = new PDPageContentStream(doc, page);
+                    cs.beginText();
+                    cs.setFont(pdfFont, fontSize);
+                    cs.newLineAtOffset(startX, startY);
+                    y = startY;
+                }
+                cs.showText(row.toString());
+                cs.newLineAtOffset(0, -leading);
+                y -= leading;
+            }
+            cs.endText();
+            cs.close();
+            doc.save(outFile);
         }
     }
 }
