@@ -13,6 +13,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
+import javax.swing.DefaultListModel;
+
 
 
 /**
@@ -48,6 +50,8 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         articleTitleByCategory = new javax.swing.JTextPane();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
 
         jLabel1.setText("Κατηγορίες");
 
@@ -64,21 +68,32 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
 
         jLabel2.setText("Τίτλοι Άρθρων Ανά Κατηγορία");
 
+        jList1.setToolTipText("");
+        jList1.setAutoscrolls(false);
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jList1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1)
-                    .addComponent(showCategoryArticlesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(categorySearchBox, 0, 212, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel1)
+                        .addComponent(showCategoryArticlesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(categorySearchBox, 0, 212, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
-                        .addGap(0, 392, Short.MAX_VALUE))
+                        .addGap(0, 398, Short.MAX_VALUE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -95,93 +110,91 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
                         .addComponent(categorySearchBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(showCategoryArticlesBtn)
-                        .addContainerGap(364, Short.MAX_VALUE))
+                        .addGap(36, 36, 36)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(198, Short.MAX_VALUE))
                     .addComponent(jScrollPane1)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     
-    /*
+    
+    //Όταν πατηθεί το κουμπί καλείται
     private void showCategoryArticlesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showCategoryArticlesBtnActionPerformed
-        // TODO add your handling code here:
-        System.out.println("ΝΟΜΙΖΕΣ ΘΑ ΕΜΦΑΝΙΖΩ ΑΡΘΡΑ Ε? ΟΥΤΕ ΚΑΝ");
-        String selectedCategory = categorySearchBox.getSelectedItem().toString();
-        articleTitleByCategory.setText("Ο ΧΡΗΣΤΗΣ ΔΙΑΛΕΞΕ: " + selectedCategory + "\nΕΜΦΑΝΙΖΩ ΑΡΘΡΑ ΚΑΙ ΚΑΛΑ\nΆρθρο 1\nΆρθρο 135");
-    }//GEN-LAST:event_showCategoryArticlesBtnActionPerformed
-*/
-    
-    
-    
-    
-    //μεθοδος που καλειται όταν ο χρησητης πατήσει το κουμπί "Εμφανιση Άθρων"
-    private void showCategoryArticlesBtnActionPerformed(java.awt.event.ActionEvent evt) {                                                        
+    String selectedCategory =
+            categorySearchBox.getSelectedItem().toString(); //πέρνει την επιλεγμένη κατηγορία απο ComboBox
 
-        
-    // Παίρνουμε όνομα κατηγορίας (String) γιατί στο updateCategories έχουμε c.toString()
-    String selectedCategory = categorySearchBox.getSelectedItem().toString();
-
-    EntityManager em = emf.createEntityManager();
+   
+    EntityManager em = emf.createEntityManager();//δημιουργεί σύνδεση με βάση
 
     try {
 
-        // Query με βάση το ΟΝΟΜΑ κατηγορίας.Φέρε τα αθρα που είναι στη κατηγορία που διάλεξε
-        //ο χρήστης
-        List<Article> articles = em.createQuery(
-                "SELECT a FROM Article a WHERE a.category.name = :catName ORDER BY a.title",
-                Article.class
-        )
-        .setParameter("catName", selectedCategory)
-        .getResultList();
+        List<Article> articles = em.createQuery(//φέρε όλα τα άθρα που η κατηγορία ταιριάζει, ταξινόμηση με βάση το τιτλο
+                "SELECT a FROM Article a WHERE a.category.name = :cat ORDER BY a.title",
+                Article.class)
+                .setParameter("cat", selectedCategory)
+                .getResultList();
 
-        
-        //Αν η λίστα αθρών σε αυτή τη κατηγορία είναι άδεια
-        if (articles.isEmpty()) {
-            articleTitleByCategory.setText(
-                    "Δεν βρέθηκαν άρθρα στη κατηγορία: " + selectedCategory
-            );
-            return;
-        }
+        //δημιουργία μοντέλου JList
+        DefaultListModel<String> model = new DefaultListModel<>();
 
-        
-        //Δημιουργία κειμενου εμφάνισης
+        //δημιουργία κειμένου στο δεξί panel
         StringBuilder sb = new StringBuilder();
-        
         sb.append("Κατηγορία: ").append(selectedCategory).append("\n\n");
 
         
-        //Για κάθε άθρο περνουμε το τίτλο, τον ένα κατω απο τον άλλο 
         for (Article a : articles) {
-            sb.append("• ").append(a.getTitle()).append("\n");
+            model.addElement(a.getTitle());        //για το scrollDown
+            sb.append("• ").append(a.getTitle()).append("\n\n");  // για το δεξί πλαίσιο
         }
 
-        
-        //Βάζουμε το τελικο κειμενο στο panel
+        //Εμφάνιση δεδομένων
+        jList1.setModel(model);
         articleTitleByCategory.setText(sb.toString());
 
-    
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        articleTitleByCategory.setText("Σφάλμα κατά την ευρεση άρθρων!");
+    } catch (Exception e) {
+        e.printStackTrace();
     } finally {
-        em.close();
-    }
-}
+        em.close();//κλείσιμο συνδεσης με βάση
+    }  
+    }//GEN-LAST:event_showCategoryArticlesBtnActionPerformed
 
     
-    
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {// Διπλό κλικ σε ένα άθρο 
+
+        String selectedTitle = jList1.getSelectedValue();//πείρνει τον επιλεγμένο τίτλο
+
+        if (selectedTitle != null) {
+            
+            //βρίσκει το κύριο Frame
+            UITestFrame mf =
+                (UITestFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+
+            mf.updateViewAndSwitch(selectedTitle);//πάνε στο ViewFrame και φόρτωσε το άθρο με αυτό το τίτλο
+        }
+      }
+    }//GEN-LAST:event_jList1MouseClicked
+
+   
 
     public void updateCategories(List<Category> categoriesList){
         for (Category c : categoriesList) {
-            categorySearchBox.addItem(c.toString());
+            categorySearchBox.addItem(c.toString());//προσθεση κατηγοριών στο DropDown
         }
     }
 
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane articleTitleByCategory;
     private javax.swing.JComboBox<String> categorySearchBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton showCategoryArticlesBtn;
     // End of variables declaration//GEN-END:variables
+
 }
