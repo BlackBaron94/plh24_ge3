@@ -140,14 +140,10 @@ public class SearchPanel extends javax.swing.JPanel {
         WikiApiClient api = new WikiApiClient();
         try {
             String jsonResponse = api.searchWikipedia(input);
-            System.out.println("--- Raw JSON Response ---");
-            System.out.println(jsonResponse);
-            System.out.println("--------------------------\n");
             JSONObject obj = new JSONObject(jsonResponse);
             JSONObject query = obj.getJSONObject("query");
             JSONArray searchResults = query.getJSONArray("search");
 
-            System.out.println("Αποτελέσματα Αναζήτησης:");
             String output = "";
             for (int i = 0; i < searchResults.length(); i++) {
                 JSONObject item = searchResults.getJSONObject(i);
@@ -155,9 +151,7 @@ public class SearchPanel extends javax.swing.JPanel {
                 int wordCount = item.getInt("wordcount");
                 titleComboBox.addItem(title);
                 output += (i + 1) + ". " + title + " (" + wordCount + " λέξεις)";
-                System.out.println((i + 1) + ". " + title + " (" + wordCount + " λέξεις)");
                 output += "\n\tΤμήμα που ταιριάζει με την αναζήτηση: \"..." + stripSnippetHTMLTags(item.getString("snippet")) + "...\"";
-                System.out.println("\tΤμήμα που ταιριάζει με την αναζήτηση: \"..." + stripSnippetHTMLTags(item.getString("snippet")) + "...\"");
                 output += "\n\n";
             }
             searchResultOutput.setText(output);

@@ -28,6 +28,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "article")
+
+@NamedQueries({
+    @NamedQuery(name = "Article.findByTitle", query = "SELECT a FROM Article a WHERE a.title = :title")
+})
+
 public class Article {
 
     

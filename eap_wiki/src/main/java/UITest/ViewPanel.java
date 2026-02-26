@@ -19,6 +19,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import com.plh24.packageEntities.Category;
 import com.plh24.packageEntities.Article;
+import com.plh24.packageUtils.generalUtils;
 import jakarta.persistence.Query;
 /**
  *
@@ -157,36 +158,12 @@ public class ViewPanel extends javax.swing.JPanel {
                     );
             return;
         }
+        String title = articleTitle.getText();
         int rating = ratingComboBox.getSelectedIndex() + 1;
-        System.out.println("Rating: " + rating);
         String category = categoryComboBox.getSelectedItem().toString();
-        System.out.println("Category: " + category);
         String comments = commentsTextArea.getText();
-        System.out.println("Comments: " + comments);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
-        EntityManager em = emf.createEntityManager();
-        try {
-            Query findCategoryByName = em.createNamedQuery("Category.findByName");
-            findCategoryByName.setParameter("name", category);
-            Category category_obj = (Category) findCategoryByName.getSingleResult();
-            String title = articleTitle.getText();
-            // TODO Έλεγχος αν υπάρχει ήδη στη βάση. 
-            // TODO Μάλλον βγάζει νόημα αντί για category_id να κρατάμε το 
-            // TODO Ίσως να καλεί κάποιον controller αντί να είναι όλη η λογική
-            // στο frontend
-            // category_name στο Article, πιο καλό στο μάτι, αν γίνεται
-            em.getTransaction().begin();
-            Article article = new Article(title, rating, category_obj, comments);
-            em.persist(article);
-            em.getTransaction().commit();
-            System.out.println("Saving DONE");
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-        } finally {
-            em.close();
-            emf.close();
-        }
+        generalUtils.saveArticle(title, rating, category, comments);
+        
     }//GEN-LAST:event_saveArticleButtonActionPerformed
 
     public void showArticle(String title) {
@@ -200,7 +177,6 @@ public class ViewPanel extends javax.swing.JPanel {
                 JSONObject page = pages.getJSONObject(i);
                 if (!page.has("extract")) continue;
                 String cleanText = page.getString("extract");
-                System.out.println(cleanText);
                 articleTitle.setText(title);
                 articleBody.setText(cleanText);
                 commentsTextArea.setEditable(true);
