@@ -3,8 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package com.plh24.packageGUI;
-import static com.plh24.packageAPI.APIMain.parseAndPrintResults;
-import static com.plh24.packageAPI.APIMain.parsearticlefetch;
 import com.plh24.packageEntities.Category;
 import com.plh24.packageAPI.WikiApiClient;
 import java.io.IOException;
@@ -19,13 +17,15 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import com.plh24.packageEntities.Category;
 import com.plh24.packageEntities.Article;
-import com.plh24.packageUtils.generalUtils;
+import com.plh24.packageUtils.Utilities;
 import jakarta.persistence.Query;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import static com.plh24.packageUtils.Utilities.parseArticleFetch;
+import static com.plh24.packageUtils.Utilities.parseAndPrintResults;
 /**
  *
  * @author Equinox
@@ -167,7 +167,7 @@ public class ViewPanel extends javax.swing.JPanel {
         int rating = ratingComboBox.getSelectedIndex() + 1;
         String category = categoryComboBox.getSelectedItem().toString();
         String comments = commentsTextArea.getText();
-        generalUtils.saveArticle(title, rating, category, comments);
+        Utilities.saveArticle(title, rating, category, comments);
         
     }//GEN-LAST:event_saveArticleButtonActionPerformed
 

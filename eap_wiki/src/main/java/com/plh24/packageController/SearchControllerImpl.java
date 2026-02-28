@@ -17,7 +17,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static com.plh24.packageAPI.APIMain.stripSnippetHTMLTags;
+import static com.plh24.packageUtils.Utilities.stripSnippetHTMLTags;
 
 /**
  *
