@@ -42,7 +42,7 @@ public class Article {
     private String title; //Δε μπορεί να είναι null
 
     @Column(nullable = true)
-    private int rating;
+    private Integer rating;
 
     @Column(name = "saved_at", nullable = false)
     private LocalDateTime savedAt; //Ημερομηνία δημιουργίας
@@ -66,7 +66,13 @@ public class Article {
         this.savedAt = LocalDateTime.now();//η τρέχουσα ώρα και ημερομηνία
         this.comments = comments;
     }
-
+    public Article(String title, Category category, String comments) {
+        this.title = title;
+        this.rating = null;
+        this.category = category;
+        this.savedAt = LocalDateTime.now();
+        this.comments = comments; // μπορεί να είναι null
+    }
    
     // Getters
     public Long getId() {
@@ -77,7 +83,7 @@ public class Article {
         return title;
     }
 
-    public int getRating() {
+    public Integer getRating(){
         return rating;
     }
 
@@ -100,9 +106,9 @@ public class Article {
     
     
     // Setters
-    public void setRating(int rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
-    }
+}
 
     public void setCategory(Category category) {
         this.category = category;

@@ -1,24 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
+
 package UITest;
-import static com.plh24.packageAPI.APIMain.parseAndPrintResults;
-import static com.plh24.packageAPI.APIMain.parsearticlefetch;
-import UITest.ViewPanel;
-import static com.plh24.packageAPI.APIMain.stripSnippetHTMLTags;
-import com.plh24.packageAPI.WikiApiClient;
-import java.io.IOException;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import com.plh24.packageController.SearchController;
+import com.plh24.packageController.SearchControllerImpl;
+
 import java.awt.Color;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
 /**
  *
  * @author Equinox
  */
 public class SearchPanel extends javax.swing.JPanel {
-
+    
+    private final SearchController controller = new SearchControllerImpl();
     /**
      * Creates new form SearchPanel
      */
@@ -84,6 +85,11 @@ public class SearchPanel extends javax.swing.JPanel {
         });
 
         jButton3.setText("Αποθήκευση Άρθρου");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -136,43 +142,90 @@ public class SearchPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String input = searchInputField.getText();
-        WikiApiClient api = new WikiApiClient();
-        try {
-            String jsonResponse = api.searchWikipedia(input);
-            System.out.println("--- Raw JSON Response ---");
-            System.out.println(jsonResponse);
-            System.out.println("--------------------------\n");
-            JSONObject obj = new JSONObject(jsonResponse);
-            JSONObject query = obj.getJSONObject("query");
-            JSONArray searchResults = query.getJSONArray("search");
+       String keyword = (searchInputField.getText() == null) ? "" : searchInputField.getText().trim();
 
-            System.out.println("Αποτελέσματα Αναζήτησης:");
-            String output = "";
-            for (int i = 0; i < searchResults.length(); i++) {
-                JSONObject item = searchResults.getJSONObject(i);
-                String title = item.getString("title");
-                int wordCount = item.getInt("wordcount");
-                titleComboBox.addItem(title);
-                output += (i + 1) + ". " + title + " (" + wordCount + " λέξεις)";
-                System.out.println((i + 1) + ". " + title + " (" + wordCount + " λέξεις)");
-                output += "\n\tΤμήμα που ταιριάζει με την αναζήτηση: \"..." + stripSnippetHTMLTags(item.getString("snippet")) + "...\"";
-                System.out.println("\tΤμήμα που ταιριάζει με την αναζήτηση: \"..." + stripSnippetHTMLTags(item.getString("snippet")) + "...\"");
-                output += "\n\n";
-            }
-            searchResultOutput.setText(output);
-        } catch (IOException e) {
-            e.printStackTrace();
+    if (keyword.isEmpty() || "Αναζήτηση Εδώ".equalsIgnoreCase(keyword)) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Δώστε Πρώτα Λέξη / Φράση Κλείδί για Αναζήτηση",
+                "Κενή Αναζήτηση",
+                JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    titleComboBox.setModel(new DefaultComboBoxModel<>(new String[]{"--- Επιλέξτε ---"}));
+    searchResultOutput.setText("Αναζήτηση σε εξέλιξη...\n");
+
+    final String kwFinal = keyword;
+
+    new SwingWorker<SearchController.SearchResults, Void>() {
+
+        @Override
+        protected SearchController.SearchResults doInBackground() {
+            return controller.runSearch(kwFinal);
         }
+
+        @Override
+        protected void done() {
+            try {
+                SearchController.SearchResults res = get();
+
+                Set<String> mergedTitles = new LinkedHashSet<>();
+                if (res.dbTitles() != null) mergedTitles.addAll(res.dbTitles());
+
+                StringBuilder out = new StringBuilder();
+                out.append("Keyword: ").append(kwFinal).append("\n\n");
+
+                if (res.dbTitles() != null && !res.dbTitles().isEmpty()) {
+                    out.append("== Αποτελέσματα από Βάση (Saved Articles) ==\n");
+                    for (String t : res.dbTitles()) out.append("• ").append(t).append(" (DB)\n");
+                    out.append("\n");
+                }
+
+                out.append("== Αποτελέσματα από Wikipedia ==\n");
+                if (res.wikiHits() != null) {
+                    int i = 1;
+                    for (SearchController.WikiHit hit : res.wikiHits()) {
+                        mergedTitles.add(hit.title());
+                        out.append(i++).append(". ").append(hit.title())
+                          .append(" (").append(hit.wordCount()).append(" λέξεις)\n")
+                          .append("   ...").append(hit.snippet()).append("...\n\n");
+                    }
+                }
+
+                DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+                model.addElement("--- Επιλέξτε ---");
+                for (String t : mergedTitles) model.addElement(t);
+                titleComboBox.setModel(model);
+
+                searchResultOutput.setText(out.toString());
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                searchResultOutput.setText("Σφάλμα στην αναζήτηση: " + ex.getMessage());
+            }
+        }
+    }.execute();
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        String selectedTitle = titleComboBox.getSelectedItem().toString();
-//        javax.swing.JTabbedPane tabbedPanel = (javax.swing.JTabbedPane) this.getParent().getParent();
-//        tabbedPanel.setSelectedIndex(1);
-        UITestFrame mf = (UITestFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
-        mf.updateViewAndSwitch(selectedTitle);
+    String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());
+
+    if (selectedTitle == null || selectedTitle.isBlank() || "--- Επιλέξτε ---".equals(selectedTitle)) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Επιλέξτε πρώτα ένα άρθρο από τη λίστα.",
+                "Δεν έγινε επιλογή",
+                JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    UITestFrame mf = (UITestFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+    mf.updateViewAndSwitch(selectedTitle);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void searchInputFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchInputFieldFocusGained
@@ -192,6 +245,52 @@ public class SearchPanel extends javax.swing.JPanel {
             
     }//GEN-LAST:event_searchInputFieldFocusLost
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+
+    String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());
+
+    if (selectedTitle == null || selectedTitle.isBlank() || "--- Επιλέξτε ---".equals(selectedTitle)) {
+        JOptionPane.showMessageDialog(
+                this,
+                "Επιλέξτε πρώτα ένα άρθρο από τη λίστα.",
+                "Δεν έγινε επιλογή",
+                JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    try {
+        boolean saved = controller.saveDefaultArticleIfNotExists(selectedTitle);
+
+        if (saved) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Αποθηκεύτηκε με: rating=null, comments=null, category='Χωρίς Κατηγορία'.",
+                    "OK",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Το άρθρο υπάρχει ήδη στη βάση.",
+                    "Ήδη αποθηκευμένο",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(
+                this,
+                "Αποτυχία αποθήκευσης: " + ex.getMessage(),
+                "Σφάλμα",
+                JOptionPane.ERROR_MESSAGE
+        );
+    }      
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -205,4 +304,8 @@ public class SearchPanel extends javax.swing.JPanel {
     private javax.swing.JTextPane searchResultOutput;
     private javax.swing.JComboBox<String> titleComboBox;
     // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
+
+
 }
+

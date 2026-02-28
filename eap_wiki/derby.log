@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Fri Feb 27 22:36:45 EET 2026:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-019c-a0d1-6c64-000004f828a8 
+on database directory D:\ΕΑΠ\ΠΛΗ_24\ΠΛΗ24 2025-2026\DERBY\eap_wiki with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@105be200 
+Loaded from file:/C:/Users/Dimitris/.m2/repository/org/apache/derby/derby/10.15.2.0/derby-10.15.2.0.jar
+java.vendor=Azul Systems, Inc.
+java.runtime.version=25.0.2+10-LTS
+user.dir=D:\ΕΑΠ\ΠΛΗ_24\ΠΛΗ24 2025-2026\ChatGPT\plh24_ge3\eap_wiki
+os.name=Windows 11
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
