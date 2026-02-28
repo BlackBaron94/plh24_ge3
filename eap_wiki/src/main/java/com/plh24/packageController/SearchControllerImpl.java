@@ -25,10 +25,17 @@ import static com.plh24.packageAPI.APIMain.stripSnippetHTMLTags;
  */
 
 public class SearchControllerImpl implements SearchController {
+    private static EntityManagerFactory EMF = null;
 
-    // Καλύτερα ένα EMF για όλη την εφαρμογή (όχι create/close συνέχεια)
-    private static final EntityManagerFactory EMF =
-            Persistence.createEntityManagerFactory("EapWikiPU");
+    private static synchronized EntityManagerFactory getEMF() {
+        if (EMF == null) {
+            if (java.beans.Beans.isDesignTime()) {
+                return null;
+            }
+            EMF = Persistence.createEntityManagerFactory("EapWikiPU");
+        }
+        return EMF;
+    }
 
     private final WikiApiClient api = new WikiApiClient();
 
@@ -52,7 +59,10 @@ public class SearchControllerImpl implements SearchController {
 
     @Override
     public void logSearchEvent(String keyword) {
-        EntityManager em = EMF.createEntityManager();
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return; // design-time: skip logging
+
+        EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(new SearchLog(keyword)); // event log
@@ -67,7 +77,10 @@ public class SearchControllerImpl implements SearchController {
 
     @Override
     public Set<String> searchSavedArticleTitles(String keyword) {
-        EntityManager em = EMF.createEntityManager();
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return new LinkedHashSet<>(); // design-time: no DB
+
+        EntityManager em = emf.createEntityManager();
         try {
             List<String> titles = em.createQuery(
                     "SELECT a.title FROM Article a " +
@@ -84,7 +97,10 @@ public class SearchControllerImpl implements SearchController {
 
     @Override
     public boolean saveDefaultArticleIfNotExists(String title) {
-        EntityManager em = EMF.createEntityManager();
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return false; // design-time: cannot save
+
+        EntityManager em = emf.createEntityManager();
         try {
             Long cnt = em.createQuery(
                     "SELECT COUNT(a) FROM Article a WHERE a.title = :t",

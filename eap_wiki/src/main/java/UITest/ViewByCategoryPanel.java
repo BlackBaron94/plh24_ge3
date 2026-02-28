@@ -22,10 +22,15 @@ import javax.swing.DefaultListModel;
  * @author Equinox
  */
 public class ViewByCategoryPanel extends javax.swing.JPanel {
+    private EntityManagerFactory emf = null;
 
-    //δημιουργία συνδεσης με βαση
-    private final EntityManagerFactory emf =
-        Persistence.createEntityManagerFactory("EapWikiPU");
+    private synchronized EntityManagerFactory getEmf() {
+        if (emf == null) {
+            if (java.beans.Beans.isDesignTime()) return null;
+            emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        }
+        return emf;
+    }
     
     
     /**
@@ -125,7 +130,10 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
             categorySearchBox.getSelectedItem().toString(); //πέρνει την επιλεγμένη κατηγορία απο ComboBox
 
    
-    EntityManager em = emf.createEntityManager();//δημιουργεί σύνδεση με βάση
+    EntityManagerFactory localEmf = getEmf();
+    if (localEmf == null) return; // design-time or cannot create EMF
+
+    EntityManager em = localEmf.createEntityManager();//δημιουργεί σύνδεση με βάση
 
     try {
 
@@ -155,7 +163,7 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
-        em.close();//κλείσιμο συνδεσης με βάση
+        if (em != null && em.isOpen()) em.close();//κλείσιμο συνδεσης με βάση
     }  
     }//GEN-LAST:event_showCategoryArticlesBtnActionPerformed
 
