@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package UITest;
+package com.plh24.packageGUI;
 import com.plh24.packageEntities.Category;
 import java.util.List;
 import java.util.ArrayList;
@@ -15,14 +15,14 @@ import jakarta.persistence.Query;
  *
  * @author Equinox
  */
-public class UITestFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UITestFrame.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
     private List<Category> categoriesList;
     /**
      * Creates new form UITestFrame
      */
-    public UITestFrame() {
+    public MainFrame() {
         initComponents();
         // TODO Εδώ μάλλον πρέπει να δημιουργεί κατηγορίες στη βάση αν δεν
         // υπάρχουν αλλιώς όλη η εφαρμογή θα buggάρει
@@ -45,15 +45,15 @@ public class UITestFrame extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         mainFrameTabbedPanel = new javax.swing.JTabbedPane();
-        searchPanel1 = new UITest.SearchPanel();
-        searchPanel3 = new UITest.SearchPanel();
-        viewPanel = new UITest.ViewPanel();
-        statisticsPanel1 = new UITest.StatisticsPanel();
-        viewByCategoryPanel1 = new UITest.ViewByCategoryPanel();
-        viewByCategoryPanel = new UITest.ViewByCategoryPanel();
-        statisticsPanel2 = new UITest.StatisticsPanel();
-        statisticsPanel4 = new UITest.StatisticsPanel();
-        statisticsPanel3 = new UITest.StatisticsPanel();
+        searchPanel1 = new com.plh24.packageGUI.SearchPanel();
+        searchPanel3 = new com.plh24.packageGUI.SearchPanel();
+        viewPanel = new com.plh24.packageGUI.ViewPanel();
+        statisticsPanel1 = new com.plh24.packageGUI.StatisticsPanel();
+        viewByCategoryPanel1 = new com.plh24.packageGUI.ViewByCategoryPanel();
+        viewByCategoryPanel = new com.plh24.packageGUI.ViewByCategoryPanel();
+        statisticsPanel2 = new com.plh24.packageGUI.StatisticsPanel();
+        statisticsPanel4 = new com.plh24.packageGUI.StatisticsPanel();
+        statisticsPanel3 = new com.plh24.packageGUI.StatisticsPanel();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -202,7 +202,7 @@ public class UITestFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new UITestFrame().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new MainFrame().setVisible(true));
     }
     
     public void updateViewAndSwitch(String title) {
@@ -231,14 +231,14 @@ public class UITestFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane mainFrameTabbedPanel;
-    private UITest.SearchPanel searchPanel1;
-    private UITest.SearchPanel searchPanel3;
-    private UITest.StatisticsPanel statisticsPanel1;
-    private UITest.StatisticsPanel statisticsPanel2;
-    private UITest.StatisticsPanel statisticsPanel3;
-    private UITest.StatisticsPanel statisticsPanel4;
-    private UITest.ViewByCategoryPanel viewByCategoryPanel;
-    private UITest.ViewByCategoryPanel viewByCategoryPanel1;
-    private UITest.ViewPanel viewPanel;
+    private com.plh24.packageGUI.SearchPanel searchPanel1;
+    private com.plh24.packageGUI.SearchPanel searchPanel3;
+    private com.plh24.packageGUI.StatisticsPanel statisticsPanel1;
+    private com.plh24.packageGUI.StatisticsPanel statisticsPanel2;
+    private com.plh24.packageGUI.StatisticsPanel statisticsPanel3;
+    private com.plh24.packageGUI.StatisticsPanel statisticsPanel4;
+    private com.plh24.packageGUI.ViewByCategoryPanel viewByCategoryPanel;
+    private com.plh24.packageGUI.ViewByCategoryPanel viewByCategoryPanel1;
+    private com.plh24.packageGUI.ViewPanel viewPanel;
     // End of variables declaration//GEN-END:variables
 }

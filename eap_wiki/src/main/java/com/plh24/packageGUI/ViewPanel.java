@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package UITest;
+package com.plh24.packageGUI;
 import static com.plh24.packageAPI.APIMain.parseAndPrintResults;
 import static com.plh24.packageAPI.APIMain.parsearticlefetch;
 import com.plh24.packageEntities.Category;

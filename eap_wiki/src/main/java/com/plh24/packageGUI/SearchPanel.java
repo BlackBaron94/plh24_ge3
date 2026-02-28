@@ -1,6 +1,6 @@
 
 
-package UITest;
+package com.plh24.packageGUI;
 
 import com.plh24.packageController.SearchController;
 import com.plh24.packageController.SearchControllerImpl;
@@ -224,7 +224,7 @@ public class SearchPanel extends javax.swing.JPanel {
         return;
     }
 
-    UITestFrame mf = (UITestFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+    MainFrame mf = (MainFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
     mf.updateViewAndSwitch(selectedTitle);
     }//GEN-LAST:event_jButton2ActionPerformed
 

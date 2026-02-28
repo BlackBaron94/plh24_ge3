@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package UITest;
+package com.plh24.packageGUI;
 
 import com.plh24.packageEntities.Category;
 import java.util.List;
@@ -177,8 +177,8 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
         if (selectedTitle != null) {
             
             //βρίσκει το κύριο Frame
-            UITestFrame mf =
-                (UITestFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+            MainFrame mf =
+                (MainFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
 
             mf.updateViewAndSwitch(selectedTitle);//πάνε στο ViewFrame και φόρτωσε το άθρο με αυτό το τίτλο
         }
