@@ -217,15 +217,11 @@ public class UITestFrame extends javax.swing.JFrame {
             Query findAllCategories = em.createNamedQuery("Category.findAll");
 
             List<Category> categoryList = findAllCategories.getResultList();
-            for (Category c : categoryList) {
-                System.out.println(c);
-            }
             return categoryList;
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
         } finally {
-            System.out.println("GRABBED CATEGORIES, SUPPOSEDLY");
             em.close();
             emf.close();
         }

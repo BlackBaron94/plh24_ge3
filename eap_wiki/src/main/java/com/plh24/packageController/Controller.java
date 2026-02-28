@@ -248,5 +248,8 @@ public class Controller {
         private static String makeLongText(String title) {
             return "Long text for " + title + " (dummy)\n\nLorem ipsum...";
         }
+        
+        
     }
+    
 }
