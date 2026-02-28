@@ -21,6 +21,11 @@ import com.plh24.packageEntities.Category;
 import com.plh24.packageEntities.Article;
 import com.plh24.packageUtils.generalUtils;
 import jakarta.persistence.Query;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Insets;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 /**
  *
  * @author Equinox
@@ -191,6 +196,47 @@ public class ViewPanel extends javax.swing.JPanel {
     public void updateCategories(List<Category> categories){
         for (Category c : categories) {
             categoryComboBox.addItem(c.toString());
+        }
+    }
+    
+    // Simple star rater (0..max)
+    private static class StarRater extends JPanel {
+        private final int max;
+        private final List<JToggleButton> stars = new ArrayList<>();
+
+        StarRater(int max) {
+            super(new FlowLayout(FlowLayout.LEFT, 2, 0));
+            this.max = max;
+            setOpaque(false);
+            for (int i = 1; i <= max; i++) {
+                final int rating = i;
+                JToggleButton b = new JToggleButton("☆");
+                b.setMargin(new Insets(0, 2, 0, 2));
+                b.setFocusPainted(false);
+                b.setBorderPainted(false);
+                b.setContentAreaFilled(false);
+                b.setFont(b.getFont().deriveFont(Font.PLAIN, 18f));
+                b.addActionListener(e -> setRating(rating));
+                stars.add(b);
+                add(b);
+            }
+            setRating(0);
+        }
+
+        int getRating() {
+            int r = 0;
+            for (int i = 0; i < stars.size(); i++) {
+                if (stars.get(i).isSelected()) r = i + 1;
+            }
+            return r;
+        }
+
+        void setRating(int r) {
+            for (int i = 0; i < stars.size(); i++) {
+                boolean on = i < r;
+                stars.get(i).setSelected(on);
+                stars.get(i).setText(on ? "★" : "☆");
+            }
         }
     }
 
