@@ -10,14 +10,12 @@ public class StatisticsService {
     private EntityManagerFactory getEmf() {
         if (emf == null) {
             try {
-                // try the original unit name first, then fall back to the project's PU name
                 try {
                     emf = Persistence.createEntityManagerFactory("EapWikiPU");
                 } catch (PersistenceException pe1) {
                     emf = Persistence.createEntityManagerFactory("EapWikiPU");
                 }
             } catch (PersistenceException pe) {
-                // persistence not available in this runtime (e.g. running UI without persistence)
                 return null;
             }
         }
@@ -88,14 +86,25 @@ public class StatisticsService {
         EntityManager em = emfLocal.createEntityManager();
         try {
                 List<Object[]> rows = em.createQuery(
-                    "SELECT a.category.name, AVG(a.rating) FROM Article a GROUP BY a.category.name ORDER BY AVG(a.rating) DESC", Object[].class)
+                    "SELECT a.category.name, AVG(a.rating) FROM Article a WHERE a.rating IS NOT NULL GROUP BY a.category.name ORDER BY AVG(a.rating) DESC", Object[].class)
                     .getResultList();
             LinkedHashMap<String, Double> map = new LinkedHashMap<>();
             int i = 0;
             for (Object[] r : rows) {
                 if (limit > 0 && i++ >= limit) break;
                 String name = (r[0] == null) ? "Uncategorized" : r[0].toString();
-                Double avg = (r[1] instanceof Number) ? ((Number) r[1]).doubleValue() : Double.valueOf(String.valueOf(r[1]));
+                if (name == null || name.trim().isEmpty() || "null".equalsIgnoreCase(name.trim())) name = "Uncategorized";
+                if (r[1] == null) continue; // skip ean no rating
+                Double avg;
+                if (r[1] instanceof Number) {
+                    avg = ((Number) r[1]).doubleValue();
+                } else {
+                    try {
+                        avg = Double.valueOf(String.valueOf(r[1]));
+                    } catch (NumberFormatException nfe) {
+                        continue;
+                    }
+                }
                 map.put(name, avg);
             }
             return map;
