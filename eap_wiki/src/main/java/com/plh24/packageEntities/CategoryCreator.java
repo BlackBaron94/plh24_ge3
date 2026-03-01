@@ -19,6 +19,7 @@ public class CategoryCreator {
     /**
      * @param args the command line arguments
      */
+    // TODO move this to Utilities
     public static void main(String[] args) {
         System.out.println("KALHMERA KAI KALH VRADIA");
         // TODO code application logic here

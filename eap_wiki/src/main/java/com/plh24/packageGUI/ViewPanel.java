@@ -6,6 +6,7 @@ package com.plh24.packageGUI;
 import com.plh24.packageEntities.Category;
 import com.plh24.packageAPI.WikiApiClient;
 import java.io.IOException;
+import jakarta.persistence.NoResultException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -64,10 +65,12 @@ public class ViewPanel extends javax.swing.JPanel {
         categoryComboBox = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        ratingComboBox = new javax.swing.JComboBox<>();
         articleTitle = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         articleBody = new javax.swing.JTextPane();
+        statusText = new javax.swing.JLabel();
+        starRater = new StarRater(5);
+        resetRating = new javax.swing.JButton();
 
         popupMenu1.setLabel("popupMenu1");
 
@@ -87,19 +90,33 @@ public class ViewPanel extends javax.swing.JPanel {
         commentsTextArea.setFocusable(false);
         jScrollPane1.setViewportView(commentsTextArea);
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("Σχόλια:");
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Κατηγορία:");
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Βαθμολογία:");
 
-        ratingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1/5 ★", "2/5 ★★", "3/5 ★★★", "4/5 ★★★★", "5/5 ★★★★★" }));
-
+        articleTitle.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         articleTitle.setText("Τίτλος");
 
         articleBody.setEditable(false);
         articleBody.setFocusable(false);
         jScrollPane3.setViewportView(articleBody);
+
+        statusText.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        statusText.setText("Δε φορτώθηκε άρθρο...");
+
+        starRater.setPreferredSize(new java.awt.Dimension(234, 28));
+
+        resetRating.setText("Χωρίς Βαθμολογία");
+        resetRating.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetRatingActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -113,33 +130,33 @@ public class ViewPanel extends javax.swing.JPanel {
                         .addComponent(jLabel3)
                         .addComponent(jLabel2)
                         .addComponent(categoryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(ratingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1))
-                    .addComponent(saveArticleButton))
+                        .addComponent(jScrollPane1)
+                        .addComponent(saveArticleButton)
+                        .addComponent(statusText)
+                        .addComponent(starRater, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(resetRating)))
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(articleTitle)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(articleTitle))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 688, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(articleTitle))
+                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(ratingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(starRater, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resetRating)
+                        .addGap(11, 11, 11)
                         .addComponent(jLabel2)
                         .addGap(12, 12, 12)
                         .addComponent(categoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -148,66 +165,113 @@ public class ViewPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saveArticleButton)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                        .addComponent(saveArticleButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(statusText))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(articleTitle)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 22, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveArticleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveArticleButtonActionPerformed
         // TODO add your handling code here:
         if (articleTitle.getText().equals("Τίτλος")){
-            JOptionPane.showMessageDialog(this,
-                    "Δεν έχετε προβάλλει κάποιο άρθρο για αποθήκευση!",
-                    "Δεν υπάρχει άρθρο.",
-                    JOptionPane.WARNING_MESSAGE
-                    );
+            JOptionPane.showMessageDialog(
+                javax.swing.SwingUtilities.getWindowAncestor(this),
+                "Δεν έχετε προβάλλει κάποιο άρθρο για αποθήκευση!",
+                "Δεν υπάρχει άρθρο.",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+        Category category = (Category) categoryComboBox.getSelectedItem();
+        if (category == null) {
+            JOptionPane.showMessageDialog(
+                javax.swing.SwingUtilities.getWindowAncestor(this),
+                "Δεν έχετε επιλέξει κατηγορία. Παρακαλώ επιλέξτε κατηγορία άρθρου.",
+                "Επιλογή κατηγορίας",
+                JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
         String title = articleTitle.getText();
-        int rating = ratingComboBox.getSelectedIndex() + 1;
-        String category = categoryComboBox.getSelectedItem().toString();
+        Integer rating = ((StarRater)starRater).getRating();
         String comments = commentsTextArea.getText();
         Utilities.saveArticle(title, rating, category, comments);
-        
+        JOptionPane.showMessageDialog(
+            javax.swing.SwingUtilities.getWindowAncestor(this),
+            "Το άρθρο αποθηκεύτηκε με επιτυχία!", 
+            "Επιτυχής Αποθήκευση", 
+            JOptionPane.INFORMATION_MESSAGE
+        );
     }//GEN-LAST:event_saveArticleButtonActionPerformed
 
+    private void resetRatingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetRatingActionPerformed
+        // TODO add your handling code here:
+        ((StarRater)starRater).setRating(0);
+    }//GEN-LAST:event_resetRatingActionPerformed
+
     public void showArticle(String title) {
-        WikiApiClient api = new WikiApiClient();
+        articleTitle.setText("Τίτλος");
+        commentsTextArea.setText("");
+        ((StarRater)starRater).setRating(0);
+        categoryComboBox.setSelectedIndex(0);
         try {
-            String jsonResponse = api.fetchArticle(title);
-            JSONObject obj = new JSONObject(jsonResponse);
-            JSONObject query = obj.getJSONObject("query");
-            JSONArray pages = query.getJSONArray("pages");
-            for (int i = 0; i < pages.length(); i++) {
-                JSONObject page = pages.getJSONObject(i);
-                if (!page.has("extract")) continue;
-                String cleanText = page.getString("extract");
-                articleTitle.setText(title);
-                articleBody.setText(cleanText);
-                commentsTextArea.setEditable(true);
-                commentsTextArea.setFocusable(true);
-                commentsTextArea.setBackground(new Color (255,255,255));
-            }
+            String finalText = Utilities.fetchArticleCleanText(title);
+            articleTitle.setText(title);
+            articleBody.setText(finalText);
+            articleBody.setCaretPosition(0);
+            commentsTextArea.setEditable(true);
+            commentsTextArea.setFocusable(true);
+            commentsTextArea.setBackground(new Color (255,255,255));
+            
         } catch (IOException e) {
-            e.printStackTrace();
+            String errorMsg = "Κάτι πήγε στραβά στην επικοινωνία με τη Wikipedia ή/και την ενημέρωση των γραφικών. Αιτία: \n" + e.getMessage();
+            JOptionPane.showMessageDialog(
+                javax.swing.SwingUtilities.getWindowAncestor(this),
+                errorMsg,
+                "Σφάλμα.",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+        Article article = Utilities.getArticle(title);
+        if (article != null) {
+            statusText.setText("Φορτώθηκαν αποθηκευμένα δεδομένα!");
+            categoryComboBox.setSelectedItem(article.getCategory());
+            Integer rating = article.getRating();
+            if (rating == null){
+                rating = 0;
+            }
+            ((StarRater)starRater).setRating(rating);
+            String comments = article.getComments();
+            if (comments != null){
+                commentsTextArea.setText(comments);
+            }
+        } else {
+            statusText.setText("Φορτώθηκε το άρθρο από τη Wiki.");
         }
     }
     
     public void updateCategories(List<Category> categories){
+        categoryComboBox.addItem(null);
         for (Category c : categories) {
-            categoryComboBox.addItem(c.toString());
+            categoryComboBox.addItem(c);
         }
     }
     
-    // Simple star rater (0..max)
+    // Custom JPanel για προβολή αστεριών
     private static class StarRater extends JPanel {
+        // Μέχρι πόσα αστέρια πάει η βαθμολογία
         private final int max;
+        // Διατηρεί λίστα με ToggleButtons με σήμα αστέρι
         private final List<JToggleButton> stars = new ArrayList<>();
-
         StarRater(int max) {
             super(new FlowLayout(FlowLayout.LEFT, 2, 0));
             this.max = max;
-            setOpaque(false);
+            this.setOpaque(true);
             for (int i = 1; i <= max; i++) {
                 final int rating = i;
                 JToggleButton b = new JToggleButton("☆");
@@ -216,25 +280,43 @@ public class ViewPanel extends javax.swing.JPanel {
                 b.setBorderPainted(false);
                 b.setContentAreaFilled(false);
                 b.setFont(b.getFont().deriveFont(Font.PLAIN, 18f));
+                // Προσθήκη Listener για το click στο κάθε rating, δηλαδή το 
+                // πρώτο αστέρι έχει το Listener setRating(1), ενώ το 5ο το
+                // setRating(5). Όταν κάνω click στο πρώτο αστέρι καλώ 
+                // setRating(1).
                 b.addActionListener(e -> setRating(rating));
-                stars.add(b);
-                add(b);
+                this.stars.add(b);
+                this.add(b);
             }
+            // Αρχικοποίηση για 0 αστέρια
             setRating(0);
         }
-
-        int getRating() {
-            int r = 0;
-            for (int i = 0; i < stars.size(); i++) {
-                if (stars.get(i).isSelected()) r = i + 1;
+        
+        // Ελέγχει πόσα αστέρια είναι ToogledOn
+        Integer getRating() {
+            Integer r = 0;
+            for (Integer i = 0; i < stars.size(); i++) {
+                if (stars.get(i).isSelected()){
+                    r = i + 1;
+                // Αν βρει κάποιο να είναι off, δεν χρειάζεται να συνεχίσει
+                } else {
+                    break;
+                }
             }
             return r;
         }
 
-        void setRating(int r) {
-            for (int i = 0; i < stars.size(); i++) {
+        void setRating(Integer r) {
+            for (Integer i = 0; i < stars.size(); i++) {
+                // Το αν θα ενεργοποιηθεί εξαρτάται αν ο δείκτης είναι μικρότερος
+                // της βαθμολογίας που επιλέχθηκε. 
+                // Σημείωση: i ξεκινάει από 0 ενώ το μικρότερο r που μπορεί να
+                // μπει είναι 1 (από event Listener)
                 boolean on = i < r;
+                // Θέτει ό,τι μας έδωσε το on στο ToogleButton, δηλαδή false
+                // αν το setRating που δόθηκε είναι 3 για το i = 5 αστέρι.
                 stars.get(i).setSelected(on);
+                // Αν το on είναι true βάζει γεμάτο αστέρι αλλιώς άδειο.
                 stars.get(i).setText(on ? "★" : "☆");
             }
         }
@@ -243,7 +325,7 @@ public class ViewPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane articleBody;
     private javax.swing.JLabel articleTitle;
-    private javax.swing.JComboBox<String> categoryComboBox;
+    private javax.swing.JComboBox<Category> categoryComboBox;
     private javax.swing.JTextArea commentsTextArea;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -259,7 +341,9 @@ public class ViewPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane3;
     private java.awt.PopupMenu popupMenu1;
     private java.awt.PopupMenu popupMenu2;
-    private javax.swing.JComboBox<String> ratingComboBox;
+    private javax.swing.JButton resetRating;
     private javax.swing.JButton saveArticleButton;
+    private javax.swing.JPanel starRater;
+    private javax.swing.JLabel statusText;
     // End of variables declaration//GEN-END:variables
 }

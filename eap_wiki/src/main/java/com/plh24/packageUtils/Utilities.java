@@ -6,32 +6,40 @@ package com.plh24.packageUtils;
 
 import com.plh24.packageEntities.Article;
 import com.plh24.packageEntities.Category;
+import com.plh24.packageAPI.WikiApiClient;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.NoResultException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.io.IOException;
+import jakarta.persistence.NoResultException;
+import java.util.Arrays;
+import java.util.List;
 /**
  *
  * @author Equinox
  */
 public class Utilities {
-    public static void saveArticle(String title, int rating, String category, String comments){
+    public static void saveArticle(String title, Integer rating, Category category, String comments){
+        System.out.println("\n" + title);
+        System.out.println("\n" + rating);
+        System.out.println("\n" + category);
+        System.out.println("\n" + comments);
+        if (rating == 0){
+            rating = null;
+        }
+        if (comments.equals("")){
+            comments = null;
+        }
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
         EntityManager em = emf.createEntityManager();
         try {
-            Query findCategoryByName = em.createNamedQuery("Category.findByName");
-            findCategoryByName.setParameter("name", category);
-            Category category_obj = (Category) findCategoryByName.getSingleResult();
-            // TODO Έλεγχος αν υπάρχει ήδη στη βάση. 
-            // TODO Μάλλον βγάζει νόημα αντί για category_id να κρατάμε το 
-            // category_name στο Article, πιο καλό στο μάτι, αν γίνεται
             em.getTransaction().begin();
             Query findArticleByTitle = em.createNamedQuery("Article.findByTitle");
             findArticleByTitle.setParameter("title", title);
@@ -39,20 +47,15 @@ public class Utilities {
             try {
                 article = (Article) findArticleByTitle.getSingleResult();
                 System.out.println("Article already in DB");
-                article.setCategory(category_obj);
+                article.setCategory(category);
                 System.out.println("Setting new category...");
-                if (!(comments.equals(""))){
-                    article.setComments(comments);
-                    System.out.println("setting new comments...");
-                    System.out.println(comments);
-                }
-                if (rating != 0){
-                    article.setRating(rating);
-                    System.out.println("Setting new rating...");
-                }
+                article.setComments(comments);
+                System.out.println("setting new comments...");
+                System.out.println(comments);
+                article.setRating(rating);
                 
             } catch (NoResultException nre) {
-                article = new Article(title, rating, category_obj, comments);
+                article = new Article(title, rating, category, comments);
                 System.out.println("Not found exception");
             }
             System.out.println("Vrhka auto: " + article);
@@ -66,6 +69,30 @@ public class Utilities {
             em.close();
             emf.close();
         }
+    }
+    
+    public static Article getArticle(String title){
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Query findArticleByTitle = em.createNamedQuery("Article.findByTitle");
+            findArticleByTitle.setParameter("title", title);
+            Article article;
+            try {
+                article = (Article) findArticleByTitle.getSingleResult();
+                return article;
+            } catch (NoResultException nre) {
+                System.out.println("De to vrhka, epistrefw null");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+            emf.close();
+        }
+        return null;
     }
     
     public static void parseAndPrintResults(String jsonString) {
@@ -112,5 +139,72 @@ public class Utilities {
             String cleanText = page.getString("extract");
             System.out.println(cleanText);
         }
+    }
+    
+    public static String fetchArticleCleanText(String title) throws IOException {
+        WikiApiClient api = new WikiApiClient();
+        String cleanText = "";
+        String jsonResponse = api.fetchArticle(title);
+        JSONObject obj = new JSONObject(jsonResponse);
+        JSONObject query = obj.getJSONObject("query");
+        JSONArray pages = query.getJSONArray("pages");
+        for (int i = 0; i < pages.length(); i++) {
+            JSONObject page = pages.getJSONObject(i);
+            if (!page.has("extract")) continue;
+            cleanText += page.getString("extract");
+        }
+        return cleanText;
+    }
+    
+    public static void initializeCategories() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManager em = emf.createEntityManager();
+        List<String> listOfNames = Arrays.asList(
+            "Ιστορία",
+            "Φιλοσοφία",
+            "Λογοτεχνία",
+            "Επιστήμες",
+            "Πολιτική",
+            "Τέχνη",
+            "Γεωγραφία",
+            "Τεχνολογία"
+        );
+        try {
+            em.getTransaction().begin();
+            for (String name : listOfNames) {
+                Category c = new Category(name);
+                em.persist(c);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+            emf.close();
+        }
+    }
+    
+    public static boolean categoriesExist() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Query findByCategoryId = em.createNamedQuery("Category.findByCategoryId");
+            findByCategoryId.setParameter("categoryId", 1);
+            try {
+                Category category = (Category) findByCategoryId.getSingleResult();
+                return true;
+            } catch (NoResultException nre) {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+            emf.close();
+        }
+        return false;
     }
 }

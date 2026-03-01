@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
+import com.plh24.packageUtils.Utilities;
 
 /**
  *
@@ -26,6 +27,9 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         // TODO Εδώ μάλλον πρέπει να δημιουργεί κατηγορίες στη βάση αν δεν
         // υπάρχουν αλλιώς όλη η εφαρμογή θα buggάρει
+        if (!(Utilities.categoriesExist())){
+            Utilities.initializeCategories();
+        }
         List<Category> categoriesList = grabCategories();
         
         viewPanel.updateCategories(categoriesList);
@@ -75,15 +79,15 @@ public class MainFrame extends javax.swing.JFrame {
             searchPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(searchPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(926, Short.MAX_VALUE))
+                .addComponent(searchPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(1289, 1289, 1289))
         );
         searchPanel1Layout.setVerticalGroup(
             searchPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(searchPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(456, Short.MAX_VALUE))
+                .addComponent(searchPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(693, 693, 693))
         );
 
         mainFrameTabbedPanel.addTab("Αναζήτηση", searchPanel1);

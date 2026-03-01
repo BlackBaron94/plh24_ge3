@@ -42,7 +42,7 @@ public class Category implements Serializable {
     @Column(name = "CATEGORY_ID")//Στη DB η στήλη λέγεται CATEGORY_ID
     private Integer categoryId;
 
-    @Column(name = "CATEGORy_NAME", nullable = false, unique = true)//Όνομα κατηγορίας: not null και unique
+    @Column(name = "CATEGORY_NAME", nullable = false, unique = true)//Όνομα κατηγορίας: not null και unique
     private String name;
 
 

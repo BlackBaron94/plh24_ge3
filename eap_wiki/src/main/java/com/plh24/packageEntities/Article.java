@@ -64,7 +64,7 @@ public class Article {
     public Article() { //default constractor για JPA
     }
     
-    public Article(String title, int rating, Category category, String comments) {
+    public Article(String title, Integer rating, Category category, String comments) {
         this.title = title;
         this.rating = rating;
         this.category = category;
