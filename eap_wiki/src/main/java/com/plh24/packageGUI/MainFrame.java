@@ -3,38 +3,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.plh24.packageGUI;
-import com.plh24.packageEntities.Category;
-import java.util.List;
-import java.util.ArrayList;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
 import com.plh24.packageUtils.Utilities;
 
 /**
- *
- * @author Equinox
+ * Κλάση κυρίου παραθύρου που περιλαμβάνει τις καρτέλες των υπολοίπων JPanels.
+ * @author Γιώργος Τσολακίδης
  */
 public class MainFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
-    private List<Category> categoriesList;
     /**
      * Creates new form UITestFrame
      */
     public MainFrame() {
         initComponents();
-        // TODO Εδώ μάλλον πρέπει να δημιουργεί κατηγορίες στη βάση αν δεν
-        // υπάρχουν αλλιώς όλη η εφαρμογή θα buggάρει
+        // Εδώ, αν δεν υπάρχουν κατηγορίες τις δημιουργεί την πρώτη φορά που 
+        // δημιουργείται το παράθυρο
         if (!(Utilities.categoriesExist())){
             Utilities.initializeCategories();
         }
-        List<Category> categoriesList = grabCategories();
-        
-        viewPanel.updateCategories(categoriesList);
-        viewByCategoryPanel.updateCategories(categoriesList);
-        
     }
 
     /**
@@ -209,27 +196,21 @@ public class MainFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new MainFrame().setVisible(true));
     }
     
+    
+    /**
+     * Μέθοδος που ετοιμάζει το ViewPanel για προβολή άρθρου και εστιάζει στην
+     * καρτέλα.
+     * @param title: String με τον μοναδικό τίτλο άρθρου που θα αναζητηθεί στο
+     * ΑΡΙ της Wikipedia
+     */
     public void updateViewAndSwitch(String title) {
+        // Καλεί την showArticle που ψάχνει το άρθρο και το εμφανίζει
         viewPanel.showArticle(title);
+        // Εστιάζει στην καρτέλα «Προβολή»
         mainFrameTabbedPanel.setSelectedIndex(1);
     }
     
-    public static List<Category> grabCategories() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
-        EntityManager em = emf.createEntityManager();
-        try {
-            Query findAllCategories = em.createNamedQuery("Category.findAll");
-
-            List<Category> categoryList = findAllCategories.getResultList();
-            return categoryList;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } finally {
-            em.close();
-            emf.close();
-        }
-    }
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel2;
