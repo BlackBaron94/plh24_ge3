@@ -20,7 +20,7 @@ import javax.swing.SwingWorker;
 
 /** 
  *
- * @author Equinox
+ * @author Δημήτρης Κορολής
  */
 public class SearchPanel extends javax.swing.JPanel {
     

@@ -12,8 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -23,6 +21,7 @@ import java.time.LocalDateTime;
 /**
  * Η κλάση Article δείχνει ένα άρθρο στη ΒΔ
  * Σύνδεση με Category ManyToOne.
+ * @author Αντώνης Πιστέλας
  */
 
 

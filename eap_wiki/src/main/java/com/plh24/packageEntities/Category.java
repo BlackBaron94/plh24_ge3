@@ -11,13 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
-import java.util.List;
-import jakarta.persistence.*;
-import java.io.Serializable;
-import java.util.List;
 
 @Entity//η κλάση είναι JPA Entity και θα αντιστοιχηθεί σε πίνακα DB
 
