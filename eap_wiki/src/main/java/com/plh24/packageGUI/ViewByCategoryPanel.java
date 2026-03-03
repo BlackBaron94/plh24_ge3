@@ -4,12 +4,15 @@
  */
 package com.plh24.packageGUI;
 
-import com.plh24.packageEntities.Article;
-import com.plh24.packageUtils.Utilities;
+import com.plh24.packageEntities.Category;
 import java.util.List;
+
+
+import com.plh24.packageEntities.Article;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
 import javax.swing.DefaultListModel;
 
 
@@ -35,7 +38,6 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
      */
     public ViewByCategoryPanel() {
         initComponents();
-        Utilities.updateCategoriesComboBox(categorySearchBox, false);
     }
 
     /**
@@ -181,6 +183,13 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
       }
     }//GEN-LAST:event_jList1MouseClicked
 
+   
+
+    public void updateCategories(List<Category> categoriesList){
+        for (Category c : categoriesList) {
+            categorySearchBox.addItem(c.toString());//προσθεση κατηγοριών στο DropDown
+        }
+    }
 
   
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -3,24 +3,33 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package com.plh24.packageGUI;
+import com.plh24.packageEntities.Category;
+import com.plh24.packageAPI.WikiApiClient;
 import java.io.IOException;
-import org.json.JSONException;
+import jakarta.persistence.NoResultException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
 import javax.swing.JOptionPane;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import com.plh24.packageEntities.Category;
 import com.plh24.packageEntities.Article;
 import com.plh24.packageUtils.Utilities;
+import jakarta.persistence.Query;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import static com.plh24.packageUtils.Utilities.parseArticleFetch;
+import static com.plh24.packageUtils.Utilities.parseAndPrintResults;
 /**
- * Κλάση καρτέλας «Προβολή». Περιλαμβάνει τις λειτουργίες αναζήτησης και 
- * προβολής άρθρου, καταχώρησης επιπλέον πληροφοριών και αποθήκευσής τους.
- * @author Γιώργος Τσολακίδης
+ *
+ * @author Equinox
  */
 public class ViewPanel extends javax.swing.JPanel {
 
@@ -29,9 +38,6 @@ public class ViewPanel extends javax.swing.JPanel {
      */
     public ViewPanel() {
         initComponents();
-        // Καλεί τη συνάρτηση ανανέωσης comboBox για το categoryComboBox, με
-        // true στην παράμετρο προσθήκης επιλογής null
-        Utilities.updateCategoriesComboBox(categoryComboBox, true);
     }
 
     /**
@@ -170,16 +176,8 @@ public class ViewPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    /**
-    * Μέθοδος κουμπιού αποθήκευσης. Ελέγχει αν προβάλλεται άρθρο στην καρτέλα,
-    * ελέγχει αν έχει επιλεχθεί κατηγορία. Αν κάτι από τα δύο δεν ισχύει, 
-    * εμφανίζει το αντίστοιχο μήνυμα. Αν και τα δύο ισχύουν, αποθηκεύει το
-    * άρθρο
-    * @param evt: ActionEvent του click στο κουμπί
-    */
     private void saveArticleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveArticleButtonActionPerformed
-        // Ελέγχει αν προβάλλεται άρθρο
+        // TODO add your handling code here:
         if (articleTitle.getText().equals("Τίτλος")){
             JOptionPane.showMessageDialog(
                 javax.swing.SwingUtilities.getWindowAncestor(this),
@@ -189,7 +187,6 @@ public class ViewPanel extends javax.swing.JPanel {
             );
             return;
         }
-        // Ελέγχει αν έχει επιλεχθεί κατηγορία
         Category category = (Category) categoryComboBox.getSelectedItem();
         if (category == null) {
             JOptionPane.showMessageDialog(
@@ -200,13 +197,10 @@ public class ViewPanel extends javax.swing.JPanel {
             );
             return;
         }
-        // Παίρνει τα υπόλοιπα στοιχεία από τα διάφορα elements
         String title = articleTitle.getText();
         Integer rating = ((StarRater)starRater).getRating();
         String comments = commentsTextArea.getText();
-        // Καλεί την saveArticle για αποθήκευση του άρθρου
         Utilities.saveArticle(title, rating, category, comments);
-        // Εμφανίζει μήνυμα επιτυχούς αποθήκευσης
         JOptionPane.showMessageDialog(
             javax.swing.SwingUtilities.getWindowAncestor(this),
             "Το άρθρο αποθηκεύτηκε με επιτυχία!", 
@@ -215,62 +209,27 @@ public class ViewPanel extends javax.swing.JPanel {
         );
     }//GEN-LAST:event_saveArticleButtonActionPerformed
 
-    /**
-     * Κουμπί επαναφοράς βαθμολογίας του StarRater. Μηδενίζει τη βαθμολογία
-     * που έχει εισαχθεί στο Element.
-     * @param evt: ActionEvent του click στο κουμπί
-     */
     private void resetRatingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetRatingActionPerformed
-        // Κάνοντας typecast της κλάσης StarRater στο JPanel με όνομα starRater,
-        // καλεί τη μέθοδο setRating του StarRater με παράμετρο το 0.
+        // TODO add your handling code here:
         ((StarRater)starRater).setRating(0);
     }//GEN-LAST:event_resetRatingActionPerformed
 
-    /**
-     * Μέθοδος εμφάνισης άρθρου. Επαναρχικοποιεί τα elements (σε περίπτωη που
-     * είχαν τιμές από προηγούμενο άρθρου που προβλήθει), προσπαθεί να πάρει το
-     * άρθρο από τη Wikipedia και να ενημερώσει τα στοιχεία προβολής του 
-     * άρθρου. Έπειτα, ελέγχει αν το άρθρο υπάρχει στη Β.Δ. και αν υπάρχει,
-     * ενημερώνει τα Elements με τα στοιχεία της Β.Δ.
-     * @param title: String με τον μοναδικό τίτλο του άρθρου όπως καλείται από
-     * το API της Wikipedia.
-     */
     public void showArticle(String title) {
-        // Επαναρχικοποίηση των Elements
         articleTitle.setText("Τίτλος");
         commentsTextArea.setText("");
         ((StarRater)starRater).setRating(0);
         categoryComboBox.setSelectedIndex(0);
-        // Try-catch block για τα exceptions που κάνει throw η μέθοδος
-        // fetchArticleCleanText
         try {
-            // Λαμβάνει το String του σώματος του άρθρου σε parsed μορφή
             String finalText = Utilities.fetchArticleCleanText(title);
-            // Θέτει τον τίτλο και το σώμα του άρθρου
             articleTitle.setText(title);
             articleBody.setText(finalText);
-            // Επιστρέφει το scroll του σώματος του άρθρου στην αρχή
             articleBody.setCaretPosition(0);
-            // Επιτρέπει την επεξεργασία της περιοχής σχολίων και πάλι και 
-            // αλλάζει την εμφάνιση ώστε να είναι ξεκάθαρο στον χρήστη
             commentsTextArea.setEditable(true);
             commentsTextArea.setFocusable(true);
             commentsTextArea.setBackground(new Color (255,255,255));
             
         } catch (IOException e) {
-            // Το συγκεκριμένο catch θα τρέξει όταν υπάρχει πρόβλημα επικοινωνίας
-            // με το ΑΡΙ της Wikipedia, εμφανίζει μήνυμα
-            String errorMsg = "Κάτι πήγε στραβά στην επικοινωνία με τη Wikipedia. Αιτία: \n" + e.getMessage();
-            JOptionPane.showMessageDialog(
-                javax.swing.SwingUtilities.getWindowAncestor(this),
-                errorMsg,
-                "Σφάλμα.",
-                JOptionPane.ERROR_MESSAGE
-            );
-        } catch (JSONException je) {
-            // Το συγκεκριμένο catch θα τρέξει όταν υπάρχει πρόβλημα parsing
-            // της απάντησης του ΑΡΙ της Wikipedia, εμφανίζει μήνυμα
-            String errorMsg = "Κάτι πήγε στραβά στην επεξεργασία του αποτελέσματος. Αιτία: \n" + je.getMessage();
+            String errorMsg = "Κάτι πήγε στραβά στην επικοινωνία με τη Wikipedia ή/και την ενημέρωση των γραφικών. Αιτία: \n" + e.getMessage();
             JOptionPane.showMessageDialog(
                 javax.swing.SwingUtilities.getWindowAncestor(this),
                 errorMsg,
@@ -278,53 +237,42 @@ public class ViewPanel extends javax.swing.JPanel {
                 JOptionPane.ERROR_MESSAGE
             );
         }
-        // Προσπαθεί να πάρει το άρθρο από τη Β.Δ. Μπορεί να είναι null
         Article article = Utilities.getArticle(title);
         if (article != null) {
-            // Ενημερώνει το label κατάστασης με την επιτυχία φόρτωσης από Β.Δ.
             statusText.setText("Φορτώθηκαν αποθηκευμένα δεδομένα!");
-            // Ενημερώνει την κατηγορία του ComboBox
             categoryComboBox.setSelectedItem(article.getCategory());
-            // Ελέγχει αν είναι χωρίς βαθμολογία και ενημερώνει τον StarRater
-            // αναλόγως
             Integer rating = article.getRating();
             if (rating == null){
                 rating = 0;
             }
-            // Απαιτείται TypeCasting της κλάσης StarRater στο JPanel με όνομα
-            // starRater ώστε να είναι προσβάσιμη η μέθοδος setRating
             ((StarRater)starRater).setRating(rating);
-            // Ελέγχει αν υπάρχουν comments και τα εμφανίζει
             String comments = article.getComments();
             if (comments != null){
                 commentsTextArea.setText(comments);
             }
         } else {
-            // Σε περίπτωση που το άρθρο που επεστράφηκε είναι null άρα δεν
-            // υπάρχει στη Β.Δ.
             statusText.setText("Φορτώθηκε το άρθρο από τη Wiki.");
         }
     }
     
-    /**
-     * Κλάση εμφάνισης ενός JPanel που περιέχει μία λίστα από JToogleButtons με
-     * σήμα το αστέρι για καταχώρηση βαθμολογίας.
-     */
+    public void updateCategories(List<Category> categories){
+        categoryComboBox.addItem(null);
+        for (Category c : categories) {
+            categoryComboBox.addItem(c);
+        }
+    }
+    
+    // Custom JPanel για προβολή αστεριών
     private static class StarRater extends JPanel {
         // Μέχρι πόσα αστέρια πάει η βαθμολογία
         private final int max;
-        // Διατηρεί λίστα με JToggleButtons με σήμα αστέρι
+        // Διατηρεί λίστα με ToggleButtons με σήμα αστέρι
         private final List<JToggleButton> stars = new ArrayList<>();
-        // Constructor
         StarRater(int max) {
-            // Ακολουθεί FlowLayout
             super(new FlowLayout(FlowLayout.LEFT, 2, 0));
             this.max = max;
             this.setOpaque(true);
-            // Δημιουργεί τη λίστα αστεριών
             for (int i = 1; i <= max; i++) {
-                // Διατηρεί την τιμή του rating που θα λάβει το εκάστοτε αστέρι.
-                // Ξεκινάει από 1.
                 final int rating = i;
                 JToggleButton b = new JToggleButton("☆");
                 b.setMargin(new Insets(0, 2, 0, 2));
@@ -337,9 +285,7 @@ public class ViewPanel extends javax.swing.JPanel {
                 // setRating(5). Όταν κάνω click στο πρώτο αστέρι καλώ 
                 // setRating(1).
                 b.addActionListener(e -> setRating(rating));
-                // Προσθέτει το αστέρι στην λίστα αστεριών της κλάσης.
                 this.stars.add(b);
-                // Προσθέτει το αστέρι στο JPanel Layout
                 this.add(b);
             }
             // Αρχικοποίηση για 0 αστέρια
