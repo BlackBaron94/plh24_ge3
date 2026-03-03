@@ -28,14 +28,8 @@ import static com.plh24.packageUtils.Utilities.stripSnippetHTMLTags;
  */
 public class SearchControllerImpl implements SearchController {
 
-    private static EntityManagerFactory EMF = null;
-
     private static synchronized EntityManagerFactory getEMF() {
-        if (EMF == null) {
-            if (java.beans.Beans.isDesignTime()) return null;
-            EMF = Persistence.createEntityManagerFactory("EapWikiPU");
-        }
-        return EMF;
+        return com.plh24.packageUtils.Utilities.getEMF();
     }
 
     private final WikiApiClient api = new WikiApiClient();

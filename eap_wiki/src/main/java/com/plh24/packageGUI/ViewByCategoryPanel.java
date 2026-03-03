@@ -19,14 +19,8 @@ import javax.swing.DefaultListModel;
  * @author Equinox
  */
 public class ViewByCategoryPanel extends javax.swing.JPanel {
-    private EntityManagerFactory emf = null;
-
     private synchronized EntityManagerFactory getEmf() {
-        if (emf == null) {
-            if (java.beans.Beans.isDesignTime()) return null;
-            emf = Persistence.createEntityManagerFactory("EapWikiPU");
-        }
-        return emf;
+        return com.plh24.packageUtils.Utilities.getEMF();
     }
     
     

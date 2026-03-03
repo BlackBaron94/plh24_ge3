@@ -5,21 +5,8 @@ import jakarta.persistence.*;
 
 public class StatisticsService {
 
-    private EntityManagerFactory emf;
-
     private EntityManagerFactory getEmf() {
-        if (emf == null) {
-            try {
-                try {
-                    emf = Persistence.createEntityManagerFactory("EapWikiPU");
-                } catch (PersistenceException pe1) {
-                    emf = Persistence.createEntityManagerFactory("EapWikiPU");
-                }
-            } catch (PersistenceException pe) {
-                return null;
-            }
-        }
-        return emf;
+        return com.plh24.packageUtils.Utilities.getEMF();
     }
 
     public long getTotalSavedArticles() {
@@ -140,6 +127,6 @@ public class StatisticsService {
     }
 
     public void close() {
-        if (emf != null && emf.isOpen()) emf.close();
+        com.plh24.packageUtils.Utilities.closeEMF();
     }
 }

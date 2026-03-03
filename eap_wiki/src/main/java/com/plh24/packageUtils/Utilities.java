@@ -27,6 +27,22 @@ import javax.swing.JComboBox;
  * @author Παναγιώτης Σοφιανόπουλος
  */
 public class Utilities {
+    private static jakarta.persistence.EntityManagerFactory EMF = null;
+
+    public static synchronized jakarta.persistence.EntityManagerFactory getEMF() {
+        if (EMF == null) {
+            if (java.beans.Beans.isDesignTime()) return null;
+            EMF = Persistence.createEntityManagerFactory("EapWikiPU");
+        }
+        return EMF;
+    }
+
+    public static synchronized void closeEMF() {
+        if (EMF != null && EMF.isOpen()) {
+            EMF.close();
+            EMF = null;
+        }
+    }
     /**
     * Αποθηκεύει άρθρο ελέγχοντας αν το rating είναι μηδενικό ή τα comments
     * είναι άδειο String, τότε το αποθηκεύει με null σε αυτά τα πεδία.
@@ -50,7 +66,8 @@ public class Utilities {
         if (comments.equals("")){
             comments = null;
         }
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return;
         EntityManager em = emf.createEntityManager();
         // Try-catch block για περίπτωση αποτυχίας εγγραφής σε ΒΔ
         try {
@@ -86,9 +103,8 @@ public class Utilities {
             e.printStackTrace();
             em.getTransaction().rollback();
         } finally {
-            // Κλείνει πάντα τη σύνδεση για αποφυγή προβλημάτων
-            em.close();
-            emf.close();
+            // Κλείνει πάντα μόνο τη σύνδεση EntityManager
+            if (em != null && em.isOpen()) em.close();
         }
     }
     
@@ -99,7 +115,8 @@ public class Utilities {
     */
     public static Article getArticle(String title){
         
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return null;
         EntityManager em = emf.createEntityManager();
         // Try-catch block για αποτυχία επικοινωνίας με ΒΔ
         try {
@@ -121,9 +138,7 @@ public class Utilities {
             e.printStackTrace();
             em.getTransaction().rollback();
         } finally {
-            // Κλείσιμο της σύνδεσης όπως και νά'χει.
-            em.close();
-            emf.close();
+            if (em != null && em.isOpen()) em.close();
         }
         // Εάν δεν έχει βρει το άρθρο, επιστρέφει null εδώ.
         return null;
@@ -135,7 +150,8 @@ public class Utilities {
      * @return List<Category>: Λίστα με αντικείμενα POJOs τύπου Category.
      */
     public static List<Category> getCategories() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return new ArrayList<>();
         EntityManager em = emf.createEntityManager();
         try {
             // Χρησιμοποιεί το NamedQuery εύρεσης όλων των κατηγοριών
@@ -147,8 +163,7 @@ public class Utilities {
             // Σε περίπτωση εξαίρεσης, επιστρέφει κενή λίστα.
             return new ArrayList<>();
         } finally {
-            em.close();
-            emf.close();
+            if (em != null && em.isOpen()) em.close();
         }
     }
     
@@ -225,7 +240,8 @@ public class Utilities {
      * Δημιουργεί τις προεπιλεγμένες κατηγορίες στη Β.Δ.
      */
     public static void initializeCategories() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return;
         EntityManager em = emf.createEntityManager();
         // Λίστα με τα ονόματα κατηγοριών για εύκολη τροποποίηση
         List<String> listOfNames = Arrays.asList(
@@ -251,9 +267,7 @@ public class Utilities {
             e.printStackTrace();
             em.getTransaction().rollback();
         } finally {
-            // Κλείνει πάντα τη σύνδεση
-            em.close();
-            emf.close();
+            if (em != null && em.isOpen()) em.close();
         }
     }
     
@@ -262,7 +276,8 @@ public class Utilities {
      * @return boolean: True αν βρέθηκε έστω μία κατηγορία, αλλιώς false.
      */
     public static boolean categoriesExist() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return false;
         EntityManager em = emf.createEntityManager();
         // Try-catch block για τη σύνδεση με τη Β.Δ.
         try {
@@ -275,8 +290,7 @@ public class Utilities {
             e.printStackTrace();
             return false;
         } finally {
-            em.close();
-            emf.close();
+            if (em != null && em.isOpen()) em.close();
         }
     }
     
