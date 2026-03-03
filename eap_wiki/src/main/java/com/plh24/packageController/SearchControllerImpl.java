@@ -90,43 +90,6 @@ public class SearchControllerImpl implements SearchController {
     }
 
     /**
-     * Παλιό default save (κρατιέται για συμβατότητα).
-     * Αν θέλεις να το καταργήσουμε αργότερα, το κάνουμε.
-     */
-    @Override
-    public boolean saveDefaultArticleIfNotExists(String title) {
-        EntityManagerFactory emf = getEMF();
-        if (emf == null) return false;
-
-        EntityManager em = emf.createEntityManager();
-        try {
-            Long cnt = em.createQuery(
-                    "SELECT COUNT(a) FROM Article a WHERE a.title = :t",
-                    Long.class
-            ).setParameter("t", title)
-             .getSingleResult();
-
-            if (cnt != null && cnt > 0) return false;
-
-            Category uncategorized = em.createNamedQuery("Category.findByName", Category.class)
-                    .setParameter("name", "Χωρίς Κατηγορία")
-                    .getSingleResult();
-
-            em.getTransaction().begin();
-            Article a = new Article(title, uncategorized, null); // rating=null, comments=null
-            em.persist(a);
-            em.getTransaction().commit();
-            return true;
-
-        } catch (Exception ex) {
-            if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            throw ex;
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
      * ΝΕΟ: Αποθήκευση άρθρου με κατηγορία που επιλέγει ο χρήστης.
      */
     @Override

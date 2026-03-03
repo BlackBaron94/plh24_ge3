@@ -25,7 +25,5 @@ public interface SearchController {
 
     Set<String> searchSavedArticleTitles(String keyword);
 
-    boolean saveDefaultArticleIfNotExists(String title);
-
     boolean saveDefaultArticleIfNotExists(String title, Category category);
 }

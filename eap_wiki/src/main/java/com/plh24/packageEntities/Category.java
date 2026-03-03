@@ -20,9 +20,7 @@ import java.io.Serializable;
 @Table(name = "category")//Ονομα του πίνακας στη MySQL είναι "category"
 
 @NamedQueries({
-    @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c"),
-    @NamedQuery(name = "Category.findByCategoryId", query = "SELECT c FROM Category c WHERE c.categoryId = :categoryId"),
-    @NamedQuery(name = "Category.findByName", query = "SELECT c FROM Category c WHERE c.name = :name")
+    @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")
 })
 
 
