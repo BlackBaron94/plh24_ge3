@@ -8,12 +8,15 @@ import com.plh24.packageAPI.WikiApiClient;
 import com.plh24.packageEntities.Article;
 import com.plh24.packageEntities.Category;
 import com.plh24.packageEntities.SearchLog;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,15 +26,13 @@ import static com.plh24.packageUtils.Utilities.stripSnippetHTMLTags;
  *
  * @author Dimitris
  */
-
 public class SearchControllerImpl implements SearchController {
+
     private static EntityManagerFactory EMF = null;
 
     private static synchronized EntityManagerFactory getEMF() {
         if (EMF == null) {
-            if (java.beans.Beans.isDesignTime()) {
-                return null;
-            }
+            if (java.beans.Beans.isDesignTime()) return null;
             EMF = Persistence.createEntityManagerFactory("EapWikiPU");
         }
         return EMF;
@@ -42,9 +43,9 @@ public class SearchControllerImpl implements SearchController {
     @Override
     public SearchResults runSearch(String keyword) {
         logSearchEvent(keyword);
+
         Set<String> dbTitles = searchSavedArticleTitles(keyword);
 
-        // Wiki API
         String wikiJson;
         try {
             wikiJson = api.searchWikipedia(keyword);
@@ -60,12 +61,12 @@ public class SearchControllerImpl implements SearchController {
     @Override
     public void logSearchEvent(String keyword) {
         EntityManagerFactory emf = getEMF();
-        if (emf == null) return; // design-time: skip logging
+        if (emf == null) return;
 
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(new SearchLog(keyword)); // event log
+            em.persist(new SearchLog(keyword));
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
@@ -78,7 +79,7 @@ public class SearchControllerImpl implements SearchController {
     @Override
     public Set<String> searchSavedArticleTitles(String keyword) {
         EntityManagerFactory emf = getEMF();
-        if (emf == null) return new LinkedHashSet<>(); // design-time: no DB
+        if (emf == null) return new LinkedHashSet<>();
 
         EntityManager em = emf.createEntityManager();
         try {
@@ -95,10 +96,14 @@ public class SearchControllerImpl implements SearchController {
         }
     }
 
+    /**
+     * Παλιό default save (κρατιέται για συμβατότητα).
+     * Αν θέλεις να το καταργήσουμε αργότερα, το κάνουμε.
+     */
     @Override
     public boolean saveDefaultArticleIfNotExists(String title) {
         EntityManagerFactory emf = getEMF();
-        if (emf == null) return false; // design-time: cannot save
+        if (emf == null) return false;
 
         EntityManager em = emf.createEntityManager();
         try {
@@ -117,6 +122,64 @@ public class SearchControllerImpl implements SearchController {
             em.getTransaction().begin();
             Article a = new Article(title, uncategorized, null); // rating=null, comments=null
             em.persist(a);
+            em.getTransaction().commit();
+            return true;
+
+        } catch (Exception ex) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * ΝΕΟ: Φέρνει όλες τις κατηγορίες από DB αλφαβητικά (ORDER BY name).
+     */
+    @Override
+    public List<Category> getAllCategories() {
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return List.of();
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT c FROM Category c ORDER BY c.name", Category.class)
+                     .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * ΝΕΟ: Αποθήκευση άρθρου με κατηγορία που επιλέγει ο χρήστης.
+     */
+    @Override
+    public boolean saveDefaultArticleIfNotExists(String title, Category category) {
+        if (category == null) {
+            throw new IllegalArgumentException("category cannot be null");
+        }
+
+        EntityManagerFactory emf = getEMF();
+        if (emf == null) return false;
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            Long cnt = em.createQuery(
+                    "SELECT COUNT(a) FROM Article a WHERE a.title = :t",
+                    Long.class
+            ).setParameter("t", title)
+             .getSingleResult();
+
+            if (cnt != null && cnt > 0) return false;
+
+            em.getTransaction().begin();
+
+            // Αν το Category από το JComboBox είναι detached, το κάνουμε managed:
+            Category managedCat = em.contains(category) ? category : em.merge(category);
+
+            Article a = new Article(title, managedCat, null); // rating=null, comments=null
+            em.persist(a);
+
             em.getTransaction().commit();
             return true;
 

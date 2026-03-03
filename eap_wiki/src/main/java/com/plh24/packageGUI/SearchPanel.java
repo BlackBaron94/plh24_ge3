@@ -1,19 +1,24 @@
-
-
 package com.plh24.packageGUI;
 
 import com.plh24.packageController.SearchController;
 import com.plh24.packageController.SearchControllerImpl;
+import com.plh24.packageEntities.Category;
 
 import java.awt.Color;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
-/**
+
+
+
+
+/** 
  *
  * @author Equinox
  */
@@ -247,11 +252,10 @@ public class SearchPanel extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-
-    String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());
-
-    if (selectedTitle == null || selectedTitle.isBlank() || "--- Επιλέξτε ---".equals(selectedTitle)) {
-        JOptionPane.showMessageDialog(
+        String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());
+        
+        if (selectedTitle == null || selectedTitle.isBlank() || "--- Επιλέξτε ---".equals(selectedTitle)) {
+            JOptionPane.showMessageDialog(
                 this,
                 "Επιλέξτε πρώτα ένα άρθρο από τη λίστα.",
                 "Δεν έγινε επιλογή",
@@ -259,14 +263,51 @@ public class SearchPanel extends javax.swing.JPanel {
         );
         return;
     }
-
+        // 1) Φόρτωσε κατηγορίες από DB (αλφαβητικά από controller)
+        List<Category> categories = controller.getAllCategories();
+        if (categories == null || categories.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Δεν βρέθηκαν κατηγορίες στη βάση. Δημιουργήστε πρώτα κατηγορίες.",
+                    "Καμία κατηγορία",
+                JOptionPane.WARNING_MESSAGE );
+            return;
+       }
+        // 2) Popup με ComboBox
+        JComboBox<Category> cb = new JComboBox<>();
+        cb.addItem(null); // καμία επιλογή
+        for (Category c : categories) cb.addItem(c);
+        
+        int res = JOptionPane.showConfirmDialog(
+            this,
+            cb,
+            "Επιλογή Κατηγορίας",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+        
+        if (res != JOptionPane.OK_OPTION) {
+            return;
+        } // Ακύρωση
+    
+        Category chosen = (Category) cb.getSelectedItem();
+        if (chosen == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Για να αποθηκευτεί το Άρθρο πρέπει να επιλέξετε Κατηγορία.",
+                    "Δεν επιλέχθηκε κατηγορία",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+} 
+        // 3) Save με επιλεγμένη κατηγορία
     try {
-        boolean saved = controller.saveDefaultArticleIfNotExists(selectedTitle);
-
+    boolean saved = controller.saveDefaultArticleIfNotExists(selectedTitle, chosen);
+    
         if (saved) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Αποθηκεύτηκε με: rating=null, comments=null, category='Χωρίς Κατηγορία'.",
+                    "Το άρθρο αποθηκεύτηκε στην κατηγορία: " + chosen.getName(),
                     "OK",
                     JOptionPane.INFORMATION_MESSAGE
             );
@@ -287,7 +328,8 @@ public class SearchPanel extends javax.swing.JPanel {
                 "Σφάλμα",
                 JOptionPane.ERROR_MESSAGE
         );
-    }      
+    } 
+         
         
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -304,8 +346,10 @@ public class SearchPanel extends javax.swing.JPanel {
     private javax.swing.JTextPane searchResultOutput;
     private javax.swing.JComboBox<String> titleComboBox;
     // End of variables declaration//GEN-END:variables
-    // End of variables declaration                   
+    // End of variables declaration 
+} 
+                
 
 
-}
+
 
