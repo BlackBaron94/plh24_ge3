@@ -16,12 +16,16 @@ public class MainFrame extends javax.swing.JFrame {
      * Creates new form UITestFrame
      */
     public MainFrame() {
-        initComponents();
-        // Εδώ, αν δεν υπάρχουν κατηγορίες τις δημιουργεί την πρώτη φορά που 
-        // δημιουργείται το παράθυρο
+        /* Εδώ, αν δεν υπάρχουν κατηγορίες τις δημιουργεί την πρώτη φορά που 
+        * δημιουργείται το παράθυρο. Τρέχει πριν τo initComponents() γιατί τα
+        * components στον constructor τους γεμίζουν τα ComboBoxes τους με τις
+        * κατηγορίες.
+        */
         if (!(Utilities.categoriesExist())){
             Utilities.initializeCategories();
         }
+        initComponents();
+        
     }
 
     /**

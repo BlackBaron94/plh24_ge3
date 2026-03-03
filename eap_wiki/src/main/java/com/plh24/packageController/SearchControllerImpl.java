@@ -11,7 +11,6 @@ import com.plh24.packageEntities.SearchLog;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 
 import java.util.LinkedHashSet;
 import java.util.List;

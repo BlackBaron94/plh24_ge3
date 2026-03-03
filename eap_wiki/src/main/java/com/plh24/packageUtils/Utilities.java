@@ -285,6 +285,7 @@ public class Utilities {
             Query countQuery = em.createQuery("SELECT COUNT(c) FROM Category c");
             // Typecast σε Long για να μη γυρίσει object
             Long count = (Long) countQuery.getSingleResult();
+            System.out.println("Vrhka tosa:" + count);
             return count > 0;
         } catch (Exception e) {
             e.printStackTrace();
