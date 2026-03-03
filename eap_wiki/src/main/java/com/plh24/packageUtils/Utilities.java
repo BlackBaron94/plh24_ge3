@@ -29,6 +29,7 @@ import javax.swing.JComboBox;
 public class Utilities {
     private static jakarta.persistence.EntityManagerFactory EMF = null;
 
+    // TODO Add JavaDoc here
     public static synchronized jakarta.persistence.EntityManagerFactory getEMF() {
         if (EMF == null) {
             if (java.beans.Beans.isDesignTime()) return null;
@@ -36,7 +37,7 @@ public class Utilities {
         }
         return EMF;
     }
-
+    // TODO add javadoc Here
     public static synchronized void closeEMF() {
         if (EMF != null && EMF.isOpen()) {
             EMF.close();
@@ -187,23 +188,7 @@ public class Utilities {
         snippet = closingTagMatcher.replaceAll("");
         return snippet;
     }
-    
-    /**
-     * DEPRECATED TODO remove if dimitris doesn't wanna use this
-     * @param jsonString 
-     */
-    public static void parseArticleFetch(String jsonString) {
-        JSONObject obj = new JSONObject(jsonString);
-        JSONObject query = obj.getJSONObject("query");
-        JSONArray pages = query.getJSONArray("pages");
-        for (int i = 0; i < pages.length(); i++) {
-            JSONObject page = pages.getJSONObject(i);
-            if (!page.has("extract")) continue;
-            String cleanText = page.getString("extract");
-            System.out.println(cleanText);
-        }
-    }
-    
+       
     /**
      * Μέθοδος που αναζητά στη Wikipedia το πλήρες άρθρο με τον τίτλο που 
      * δίνεται. Λαμβάνει και καθαρίζει το JSON που επιστρέφει η αναζήτηση του 
@@ -285,7 +270,6 @@ public class Utilities {
             Query countQuery = em.createQuery("SELECT COUNT(c) FROM Category c");
             // Typecast σε Long για να μη γυρίσει object
             Long count = (Long) countQuery.getSingleResult();
-            System.out.println("Vrhka tosa:" + count);
             return count > 0;
         } catch (Exception e) {
             e.printStackTrace();

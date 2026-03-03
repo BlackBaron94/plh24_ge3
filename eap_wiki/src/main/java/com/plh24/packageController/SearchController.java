@@ -27,7 +27,5 @@ public interface SearchController {
 
     boolean saveDefaultArticleIfNotExists(String title);
 
-    List<Category> getAllCategories();
-
     boolean saveDefaultArticleIfNotExists(String title, Category category);
 }

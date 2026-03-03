@@ -373,7 +373,6 @@ public class StatisticsPanel extends javax.swing.JPanel {
             jLabel1.setText("Total Searches: " + totalSearches);
             jLabel2.setText("Total Articles: " + totalArticles);
             jLabel3.setText("Total Categories: " + totalCategories);
-            System.out.println("Stats refreshed: " + totalArticles + " articles, " + totalCategories + " categories, " + totalSearches + " searches");
             if (perCat == null) perCat = new java.util.LinkedHashMap<>();
             DefaultTableModel m1 = new DefaultTableModel(new Object[]{"Category","Articles"}, 0) {
                 @Override public boolean isCellEditable(int row, int col) { return false; }

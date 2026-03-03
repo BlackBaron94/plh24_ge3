@@ -127,23 +127,6 @@ public class SearchControllerImpl implements SearchController {
     }
 
     /**
-     * ΝΕΟ: Φέρνει όλες τις κατηγορίες από DB αλφαβητικά (ORDER BY name).
-     */
-    @Override
-    public List<Category> getAllCategories() {
-        EntityManagerFactory emf = getEMF();
-        if (emf == null) return List.of();
-
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.createQuery("SELECT c FROM Category c ORDER BY c.name", Category.class)
-                     .getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    /**
      * ΝΕΟ: Αποθήκευση άρθρου με κατηγορία που επιλέγει ο χρήστης.
      */
     @Override

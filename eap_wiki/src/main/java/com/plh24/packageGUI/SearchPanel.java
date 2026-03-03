@@ -3,6 +3,7 @@ package com.plh24.packageGUI;
 import com.plh24.packageController.SearchController;
 import com.plh24.packageController.SearchControllerImpl;
 import com.plh24.packageEntities.Category;
+import com.plh24.packageUtils.Utilities;
 
 import java.awt.Color;
 import java.util.LinkedHashSet;
@@ -264,19 +265,11 @@ public class SearchPanel extends javax.swing.JPanel {
         return;
     }
         // 1) Φόρτωσε κατηγορίες από DB (αλφαβητικά από controller)
-        List<Category> categories = controller.getAllCategories();
-        if (categories == null || categories.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Δεν βρέθηκαν κατηγορίες στη βάση. Δημιουργήστε πρώτα κατηγορίες.",
-                    "Καμία κατηγορία",
-                JOptionPane.WARNING_MESSAGE );
-            return;
-       }
+        List<Category> categories = Utilities.getCategories();
+        
         // 2) Popup με ComboBox
         JComboBox<Category> cb = new JComboBox<>();
-        cb.addItem(null); // καμία επιλογή
-        for (Category c : categories) cb.addItem(c);
+        Utilities.updateCategoriesComboBox(cb, true);
         
         int res = JOptionPane.showConfirmDialog(
             this,

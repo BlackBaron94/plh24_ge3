@@ -40,7 +40,7 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         mainFrameTabbedPanel = new javax.swing.JTabbedPane();
-        searchPanel1 = new com.plh24.packageGUI.SearchPanel();
+        searchPanel = new com.plh24.packageGUI.SearchPanel();
         searchPanel3 = new com.plh24.packageGUI.SearchPanel();
         viewPanel = new com.plh24.packageGUI.ViewPanel();
         statisticsPanel1 = new com.plh24.packageGUI.StatisticsPanel();
@@ -64,24 +64,24 @@ public class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Wiki Viewer App");
 
-        javax.swing.GroupLayout searchPanel1Layout = new javax.swing.GroupLayout(searchPanel1);
-        searchPanel1.setLayout(searchPanel1Layout);
-        searchPanel1Layout.setHorizontalGroup(
-            searchPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
+        searchPanel.setLayout(searchPanelLayout);
+        searchPanelLayout.setHorizontalGroup(
+            searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(searchPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(1289, 1289, 1289))
         );
-        searchPanel1Layout.setVerticalGroup(
-            searchPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchPanel1Layout.createSequentialGroup()
+        searchPanelLayout.setVerticalGroup(
+            searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(searchPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(693, 693, 693))
         );
 
-        mainFrameTabbedPanel.addTab("Αναζήτηση", searchPanel1);
+        mainFrameTabbedPanel.addTab("Αναζήτηση", searchPanel);
         mainFrameTabbedPanel.addTab("Προβολή", viewPanel);
 
         javax.swing.GroupLayout viewByCategoryPanel1Layout = new javax.swing.GroupLayout(viewByCategoryPanel1);
@@ -174,31 +174,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new MainFrame().setVisible(true));
-    }
     
     /**
      * Μέθοδος που ετοιμάζει το ViewPanel για προβολή άρθρου και εστιάζει στην
@@ -218,7 +193,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane mainFrameTabbedPanel;
-    private com.plh24.packageGUI.SearchPanel searchPanel1;
+    private com.plh24.packageGUI.SearchPanel searchPanel;
     private com.plh24.packageGUI.SearchPanel searchPanel3;
     private com.plh24.packageGUI.StatisticsPanel statisticsPanel1;
     private com.plh24.packageGUI.StatisticsPanel statisticsPanel2;
