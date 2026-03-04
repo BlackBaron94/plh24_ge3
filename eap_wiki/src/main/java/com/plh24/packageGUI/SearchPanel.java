@@ -58,7 +58,10 @@ public class SearchPanel extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         jLabel1.setText("Αναζήτηση:");
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
 
         searchInputField.setForeground(new java.awt.Color(153, 153, 153));
         searchInputField.setText("Αναζήτηση Εδώ");
@@ -70,6 +73,7 @@ public class SearchPanel extends javax.swing.JPanel {
                 searchInputFieldFocusLost(evt);
             }
         });
+        add(searchInputField, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 28, 191, -1));
 
         jButton1.setText("Αναζήτηση");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -77,16 +81,22 @@ public class SearchPanel extends javax.swing.JPanel {
                 jButton1ActionPerformed(evt);
             }
         });
+        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 68, 191, -1));
 
         searchResultOutput.setEditable(false);
         searchResultOutput.setFocusable(false);
         jScrollPane1.setViewportView(searchResultOutput);
 
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 28, 606, 426));
+
         jLabel2.setText("Αποτελέσματα:");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 6, -1, -1));
 
         jLabel3.setText("Επιλογή Άρθρου:");
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 109, -1, -1));
 
         titleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--- Επιλέξτε ---" }));
+        add(titleComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 131, 191, -1));
 
         jButton2.setText("Προβολή Άρθρου");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -94,6 +104,7 @@ public class SearchPanel extends javax.swing.JPanel {
                 jButton2ActionPerformed(evt);
             }
         });
+        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 171, 191, -1));
 
         jButton3.setText("Αποθήκευση Άρθρου");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -101,54 +112,7 @@ public class SearchPanel extends javax.swing.JPanel {
                 jButton3ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(titleComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                    .addComponent(searchInputField)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(19, 19, 19))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchInputField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
-        );
+        add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 212, 191, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     /**
