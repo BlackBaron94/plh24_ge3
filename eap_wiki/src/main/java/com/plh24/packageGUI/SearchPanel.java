@@ -18,11 +18,16 @@ import javax.swing.SwingWorker;
 
 
 
-
-/** 
+/**
+ * Panel Αναζήτησης άρθρων.
+ * <p>
+ * Παρέχει UI για εισαγωγή keyword, εκτέλεση αναζήτησης (ΒΔ + Wikipedia μέσω controller),
+ * εμφάνιση αποτελεσμάτων και επιλογές προβολής/αποθήκευσης άρθρου.
+ * </p>
  *
- * @author Δημήτρης Κορολής
+ * @author Dimitrios Korolis: UI logic, events, και σύνδεση με SearchController.
  */
+
 public class SearchPanel extends javax.swing.JPanel {
     
     private final SearchController controller = new SearchControllerImpl();
@@ -146,6 +151,23 @@ public class SearchPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+ * Event: Click στο κουμπί "Αναζήτηση".
+ * <p>
+ * Κάνει έλεγχο εγκυρότητας του keyword (να μην είναι κενό/placeholder),
+ * αρχικοποιεί το UI (καθαρίζει ComboBox)
+ * και εκτελεί αναζήτηση σε background thread με {@link javax.swing.SwingWorker}
+ * καλώντας {@code controller.runSearch(keyword)}.
+ * </p>
+ * <p>
+ * Στο {@code done()} συγχωνεύει τίτλους από ΒΔ και Wikipedia, ενημερώνει το TextPane
+ * και γεμίζει το ComboBox με τους τίτλους.
+ * </p>
+ *
+ * @author Dimitrios Korolis: υλοποίηση event + SwingWorker + ενημέρωση UI.
+ * @param evt το ActionEvent του JButton.
+ * @see com.plh24.packageController.SearchController#runSearch(String)
+ */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
        String keyword = (searchInputField.getText() == null) ? "" : searchInputField.getText().trim();
@@ -216,6 +238,20 @@ public class SearchPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    /**
+ * Event: Click στο κουμπί "Προβολή Άρθρου".
+ * <p>
+ * Ελέγχει ότι έχει επιλεγεί έγκυρος τίτλος από το ComboBox και, αν ναι,
+ * βρίσκει το {@link com.plh24.packageGUI.MainFrame} (window ancestor) και καλεί
+ * {@code updateViewAndSwitch(title)} ώστε να φορτωθεί το άρθρο στο ViewPanel
+ * και να μεταβεί η εφαρμογή στην καρτέλα "Προβολή".
+ * </p>
+ *
+ * @author Dimitrios Korolis: validation επιλογής + μετάβαση σε ViewPanel μέσω MainFrame.
+ * @param evt το ActionEvent του JButton.
+ * @see com.plh24.packageGUI.MainFrame#updateViewAndSwitch(String)
+ */
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());
@@ -234,6 +270,17 @@ public class SearchPanel extends javax.swing.JPanel {
     mf.updateViewAndSwitch(selectedTitle);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+/**
+ * Event: Focus gained στο πεδίο αναζήτησης.
+ * <p>
+ * Αν το πεδίο περιέχει το placeholder "Αναζήτηση Εδώ", το καθαρίζει και
+ * αλλάζει το χρώμα γραμματοσειράς σε μαύρο.
+ * </p>
+ *
+ * @author Dimitrios Korolis: UX χειρισμός placeholder κατά το focus.
+ * @param evt το FocusEvent του JTextField.
+ */
+    
     private void searchInputFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchInputFieldFocusGained
         // TODO add your handling code here:
         if (searchInputField.getText().equals("Αναζήτηση Εδώ")){
@@ -242,6 +289,17 @@ public class SearchPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_searchInputFieldFocusGained
 
+/**
+ * Event: Focus lost στο πεδίο αναζήτησης.
+ * <p>
+ * Αν το πεδίο είναι κενό, επαναφέρει το placeholder "Αναζήτηση Εδώ" και
+ * αλλάζει το χρώμα γραμματοσειράς σε γκρι.
+ * </p>
+ *
+ * @author Dimitrios Korolis: UX χειρισμός placeholder όταν χάνεται το focus.
+ * @param evt το FocusEvent του JTextField.
+ */
+    
     private void searchInputFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchInputFieldFocusLost
         // TODO add your handling code here:
         if (searchInputField.getText().equals("")){
@@ -251,6 +309,27 @@ public class SearchPanel extends javax.swing.JPanel {
             
     }//GEN-LAST:event_searchInputFieldFocusLost
 
+    /**
+ * Event: Click στο κουμπί "Αποθήκευση Άρθρου".
+ * <p>
+ * Ελέγχει ότι έχει επιλεγεί έγκυρος τίτλος από το ComboBox. Έπειτα εμφανίζει
+ * dialog επιλογής κατηγορίας (JComboBox με Categories από DB). Αν ο χρήστης
+ * επιβεβαιώσει, καλεί {@code controller.saveDefaultArticleIfNotExists(title, category)}.
+ * </p>
+ * <p>
+ * Εμφανίζει μήνυμα:
+ * <ul>
+ *   <li>Επιτυχίας, όταν αποθηκευτεί.</li>
+ *   <li>Πληροφορίας, όταν υπάρχει ήδη στη ΒΔ.</li>
+ *   <li>Σφάλματος, αν αποτύχει η αποθήκευση.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Dimitrios Korolis: ροή αποθήκευσης με επιλογή κατηγορίας + feedback χρήστη.
+ * @param evt το ActionEvent του JButton.
+ * @see com.plh24.packageController.SearchController#saveDefaultArticleIfNotExists(String, com.plh24.packageEntities.Category)
+ */
+    
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());

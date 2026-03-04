@@ -148,7 +148,7 @@ public class Utilities {
     /**
      * Μέθοδος που παίρνει τις κατηγορίες της Β.Δ. και επιστρέφει Λίστα με 
      * POJOs τύπου Category.
-     * @return List<Category>: Λίστα με αντικείμενα POJOs τύπου Category.
+     * @return {@code List<Category>} Λίστα με αντικείμενα POJOs τύπου Category.
      */
     public static List<Category> getCategories() {
         EntityManagerFactory emf = getEMF();
@@ -169,7 +169,7 @@ public class Utilities {
     }
     
     /**
-    * Μέθοδος που αφαιρεί τα HTML Tags που εμφανίζονται στο snippet (opening & 
+    * Μέθοδος που αφαιρεί τα HTML Tags που εμφανίζονται στο snippet (opening &amp; 
     * closing tags για span με class searchmatch μέσα τους)
     * @param snippet: Snippet string που επιστρέφει η αναζήτηση με keyword που 
     * περιέχει τα HTML Tags στο σημείο που βρέθηκε το keyword.
@@ -196,8 +196,8 @@ public class Utilities {
      * @param title: Τίτλος του άρθρου με βάση τον οποίο αναζητείται στη 
      * Wikipedia.
      * @return String: Βελτιστοποιημένο οπτικά άρθρο για προβολή.
-     * @throws IOException: Αποτυχία επικοινωνίας με το API.
-     * @throws JSONException: Αποτυχία parsing του JSON.
+     * @throws IOException Αποτυχία επικοινωνίας με το API.
+     * @throws JSONException Αποτυχία parsing του JSON.
      */
     public static String fetchArticleCleanText(String title) throws IOException, JSONException {
         // Δημιουργία WikiApiClient για κλήση API
