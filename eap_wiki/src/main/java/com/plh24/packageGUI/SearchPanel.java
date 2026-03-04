@@ -60,6 +60,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("Αναζήτηση:");
         add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
 
@@ -89,9 +90,11 @@ public class SearchPanel extends javax.swing.JPanel {
 
         add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 28, 606, 426));
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Αποτελέσματα:");
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 6, -1, -1));
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Επιλογή Άρθρου:");
         add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 109, -1, -1));
 

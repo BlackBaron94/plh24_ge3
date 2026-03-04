@@ -50,7 +50,8 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
 
-        jLabel1.setText("Κατηγορίες");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel1.setText("Κατηγορίες:");
 
         showCategoryArticlesBtn.setText("Εμφάνιση Άρθρων");
         showCategoryArticlesBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -63,6 +64,7 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
         articleTitleByCategory.setFocusable(false);
         jScrollPane1.setViewportView(articleTitleByCategory);
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("Τίτλοι Άρθρων Ανά Κατηγορία");
 
         jList1.setToolTipText("");

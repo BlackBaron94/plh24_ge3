@@ -103,45 +103,50 @@ public class StatisticsPanel extends javax.swing.JPanel {
         });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jLabel1.setText("Total Searches: x");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Σύνολο Αναζητήσεων: x");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jLabel2.setText("Total Articles: x");
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Σύνολο Άρθρων: x");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jLabel3.setText("Total Categories: x");
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("Σύνολο Κατηγοριών: x");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 1024, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(262, 262, 262)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 1024, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(215, 215, 215)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(121, 121, 121)
+                .addGap(86, 86, 86)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGap(74, 74, 74)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(145, 145, 145))
         );
 
-        jTabbedPane1.addTab("Overview", jPanel1);
+        jTabbedPane1.addTab("Συνολικά", jPanel1);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -156,7 +161,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("Export");
+        jButton1.setText("Εξαγωγή σε PDF");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -173,8 +178,8 @@ public class StatisticsPanel extends javax.swing.JPanel {
                         .addGap(60, 60, 60)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 717, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(380, 380, 380)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(330, 330, 330)
+                        .addComponent(jButton1)))
                 .addContainerGap(259, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -187,7 +192,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
                 .addContainerGap(103, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Articles Per Category", jPanel2);
+        jTabbedPane1.addTab("Άρθρα Ανά Κατηγορία", jPanel2);
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -202,7 +207,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
         ));
         jScrollPane3.setViewportView(jTable3);
 
-        jButton2.setText("Export");
+        jButton2.setText("Εξαγωγή σε PDF");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -219,8 +224,8 @@ public class StatisticsPanel extends javax.swing.JPanel {
                         .addGap(60, 60, 60)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 717, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(380, 380, 380)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(331, 331, 331)
+                        .addComponent(jButton2)))
                 .addGap(259, 259, 259))
         );
         jPanel3Layout.setVerticalGroup(
@@ -233,7 +238,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
                 .addContainerGap(103, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Top Rated Categories", jPanel3);
+        jTabbedPane1.addTab("Υψηλότερα Βαθμολογημένες Κατηγορίες", jPanel3);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -248,7 +253,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
         ));
         jScrollPane2.setViewportView(jTable2);
 
-        jButton3.setText("Export");
+        jButton3.setText("Εξαγωγή σε PDF");
         jButton3.setAlignmentY(0.0F);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -266,8 +271,8 @@ public class StatisticsPanel extends javax.swing.JPanel {
                         .addGap(60, 60, 60)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 717, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(380, 380, 380)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(349, 349, 349)
+                        .addComponent(jButton3)))
                 .addContainerGap(259, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -280,7 +285,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
                 .addContainerGap(103, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Top Searched Keywords", jPanel4);
+        jTabbedPane1.addTab("Πιο Συχνά Αναζητούμενες Λέξεις-Κλειδιά", jPanel4);
 
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -370,11 +375,11 @@ public class StatisticsPanel extends javax.swing.JPanel {
                     if (v != null) totalSearches += v.longValue();
                 }
             }
-            jLabel1.setText("Total Searches: " + totalSearches);
-            jLabel2.setText("Total Articles: " + totalArticles);
-            jLabel3.setText("Total Categories: " + totalCategories);
+            jLabel1.setText("Σύνολο Αναζητήσεων: " + totalSearches);
+            jLabel2.setText("Σύνολο Άρθρων: " + totalArticles);
+            jLabel3.setText("Σύνολο Κατηγοριών: " + totalCategories);
             if (perCat == null) perCat = new java.util.LinkedHashMap<>();
-            DefaultTableModel m1 = new DefaultTableModel(new Object[]{"Category","Articles"}, 0) {
+            DefaultTableModel m1 = new DefaultTableModel(new Object[]{"Κατηγορία","Άρθρα"}, 0) {
                 @Override public boolean isCellEditable(int row, int col) { return false; }
             };
             for (java.util.Map.Entry<String, Long> e : perCat.entrySet()) {
@@ -382,7 +387,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
             }
             jTable1.setModel(m1);
             if (topRated == null) topRated = new java.util.LinkedHashMap<>();
-            DefaultTableModel m2 = new DefaultTableModel(new Object[]{"Category","Avg Rating"}, 0) {
+            DefaultTableModel m2 = new DefaultTableModel(new Object[]{"Κατηγορία","Μέση Βαθμολογία"}, 0) {
                 @Override public boolean isCellEditable(int row, int col) { return false; }
             };
             for (java.util.Map.Entry<String, Double> e : topRated.entrySet()) {
@@ -392,7 +397,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
             }
             jTable3.setModel(m2);
             if (topKeywords == null) topKeywords = new java.util.LinkedHashMap<>();
-            DefaultTableModel m3 = new DefaultTableModel(new Object[]{"Keyword","Searches"}, 0) {
+            DefaultTableModel m3 = new DefaultTableModel(new Object[]{"Λέξεις-Κλειδιά","Αναζητήσεις"}, 0) {
                 @Override public boolean isCellEditable(int row, int col) { return false; }
             };
             for (java.util.Map.Entry<String, Long> e : topKeywords.entrySet()) {
@@ -400,14 +405,14 @@ public class StatisticsPanel extends javax.swing.JPanel {
             }
             jTable2.setModel(m3);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Failed to load statistics: " + ex.getMessage(), "Statistics Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Αποτυχία φόρτωσης στατιστικών: " + ex.getMessage(), "Σφάλμα Στατιστικών", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private boolean confirmExport() {
         int res = JOptionPane.showConfirmDialog(this,
-                "Είστε σίγουροι πως θέλετε να κάνετε Export σε PDF?",
-                "Confirm Export",
+                "Είστε σίγουροι πως θέλετε να κάνετε Εξαγωγή σε PDF?",
+                "Επιβεβαίωση Εξαγωγής",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
         return res == JOptionPane.YES_OPTION;
@@ -415,7 +420,7 @@ public class StatisticsPanel extends javax.swing.JPanel {
 
     private File choosePdfFile() {
         JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Save PDF");
+        chooser.setDialogTitle("Αποθήκευση PDF");
         if (chooser.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) return null;
         File f = chooser.getSelectedFile();
         if (!f.getName().toLowerCase().endsWith(".pdf")) {
