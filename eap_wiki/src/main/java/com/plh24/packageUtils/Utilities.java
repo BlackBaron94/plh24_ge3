@@ -21,15 +21,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JComboBox;
+
 /**
  * Κλάση με διάφορες χρήσιμες μεθόδους που χρησιμοποιούνται σε όλη την εφαρμογή.
  * @author Γιώργος Τσολακίδης
  * @author Παναγιώτης Σοφιανόπουλος
  */
 public class Utilities {
+    /* Lazy αρχικοποίηση πεδίου διατήρησης EMF για επικοινωνία με Β.Δ.
+    * Στην αρχή είναι null και μετά παίρνει όντως EMF.
+    */
     private static jakarta.persistence.EntityManagerFactory EMF = null;
 
-    // TODO Add JavaDoc here
+    /**
+     * Μέθοδος που δίνει στην κλάσση τον EMF της. Ελέγχει αν υπάρχει, και αν
+     * δεν υπάρχει τον αρχικοποιεί.
+     * @return EntityManagerFactor: EMF για επικοινωνία με Β.Δ.
+     */
     public static synchronized jakarta.persistence.EntityManagerFactory getEMF() {
         if (EMF == null) {
             if (java.beans.Beans.isDesignTime()) return null;
@@ -37,13 +45,18 @@ public class Utilities {
         }
         return EMF;
     }
-    // TODO add javadoc Here
+    
+    /**
+     * Μέθοδος που κλείνει τη σύνδεση του EMF αφότου ελέγξει πως υπάρχει για να 
+     * μη μένουν επιπλέον αχρείαστες συνδέσεις με Β.Δ.
+     */
     public static synchronized void closeEMF() {
         if (EMF != null && EMF.isOpen()) {
             EMF.close();
             EMF = null;
         }
     }
+    
     /**
     * Αποθηκεύει άρθρο ελέγχοντας αν το rating είναι μηδενικό ή τα comments
     * είναι άδειο String, τότε το αποθηκεύει με null σε αυτά τα πεδία.
@@ -67,6 +80,7 @@ public class Utilities {
         if (comments.equals("")){
             comments = null;
         }
+        // Καλεί την getEMF για να πάρει EMF και να επικοινωνήσει με τη Β.Δ.
         EntityManagerFactory emf = getEMF();
         if (emf == null) return;
         EntityManager em = emf.createEntityManager();

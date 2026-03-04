@@ -17,6 +17,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+
 /**
  * Κλάση καρτέλας «Προβολή». Περιλαμβάνει τις λειτουργίες αναζήτησης και 
  * προβολής άρθρου, καταχώρησης επιπλέον πληροφοριών και αποθήκευσής τους.
@@ -25,7 +26,7 @@ import javax.swing.JToggleButton;
 public class ViewPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ViewPanel
+     * Constructor της καρτέλας «Προβολή»
      */
     public ViewPanel() {
         initComponents();
