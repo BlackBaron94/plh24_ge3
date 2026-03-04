@@ -3,19 +3,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.plh24.packageGUI;
+import com.plh24.packageUtils.Utilities;
 
 /**
- *
- * @author Equinox
+ * Κλάση κυρίου παραθύρου που περιλαμβάνει τις καρτέλες των υπολοίπων JPanels.
+ * @author Γιώργος Τσολακίδης
  */
 public class MainFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
 
     /**
-     * Creates new form patata
+     * Constructor του κυρίως παραθύρου. Ελέγχει αν υπάρχουν κατηγορίες στη Β.Δ.
+     * αν δεν υπάρχουν τις δημιουργεί και έπειτα εμφανίζεται.
      */
     public MainFrame() {
+        /* Εδώ, αν δεν υπάρχουν κατηγορίες τις δημιουργεί την πρώτη φορά που 
+        * δημιουργείται το παράθυρο. Τρέχει πριν τo initComponents() γιατί τα
+        * components στον constructor τους γεμίζουν τα ComboBoxes τους με τις
+        * κατηγορίες.
+        */
+        if (!(Utilities.categoriesExist())){
+            Utilities.initializeCategories();
+        }
         initComponents();
     }
 
