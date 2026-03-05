@@ -4,30 +4,10 @@
  */
 package com.plh24.packageGUI;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Arc2D;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -36,7 +16,6 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import com.plh24.packageUtils.StatisticsCalc;
 import com.plh24.packageService.StatisticsService;
 
 /**
@@ -361,6 +340,10 @@ public class StatisticsPanel extends javax.swing.JPanel {
 
     private StatisticsService statsService;
 
+    /**
+     * Ενημερώνει τα στατιστικά που εμφανίζονται στο panel (ανανεώνει τις τιμές και τους πίνακες).
+     * Καλείται όταν ανοίγει ή κάνουμε κλικ οπουδήποτε στα στατιστικά.
+     */
     private void refreshStats() {
         if (statsService == null) return;
         try {
@@ -409,6 +392,11 @@ public class StatisticsPanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Εμφανίζει διάλογο επιβεβαίωσης πριν την εξαγωγή σε PDF.
+     *
+     * @return true εάν ο χρήστης επιβεβαιώνει, false αλλιώς
+     */
     private boolean confirmExport() {
         int res = JOptionPane.showConfirmDialog(this,
                 "Είστε σίγουροι πως θέλετε να κάνετε Εξαγωγή σε PDF?",
@@ -418,6 +406,11 @@ public class StatisticsPanel extends javax.swing.JPanel {
         return res == JOptionPane.YES_OPTION;
     }
 
+    /**
+     * Ανοίγει έναν JFileChooser για επιλογή αρχείου PDF εξόδου.
+     *
+     * @return Το επιλεγμένο αρχείο ή null αν ο χρήστης ακυρώσει
+     */
     private File choosePdfFile() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Αποθήκευση PDF");
@@ -429,6 +422,13 @@ public class StatisticsPanel extends javax.swing.JPanel {
         return f;
     }
 
+    /**
+     * Εξάγει το περιεχόμενο ενός Table σε PDF αρχείο.
+     *
+     * @param table Ο πίνακας που θα γίνει exported
+     * @param outFile Το αρχείο εξόδου PDF
+     * @throws IOException Σε περίπτωση σφάλματος δημιουργίας PDF
+     */
     private void exportTableToPdf(javax.swing.JTable table, File outFile) throws IOException {
         try (PDDocument doc = new PDDocument()) {
             PDPage page = new PDPage(PDRectangle.LETTER);

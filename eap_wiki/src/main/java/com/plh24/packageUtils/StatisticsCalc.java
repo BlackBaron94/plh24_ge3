@@ -7,8 +7,24 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * StatisticsCalc
+ *
+ * Βοηθητική κλάση για τον υπολογισμό στατιστικών εκτός της βάσης δεδομένων.
+ * Παρέχει μεθόδους για καταμέτρηση άρθρων, υπολογισμό μέσων όρων, και
+ * παραγωγή JSON με συνοπτικά στατιστικά.
+ */
 public class StatisticsCalc {
 
+    /**
+     * Υπολογίζει στατιστικά από τη λίστα άρθρων και τις αναζητήσεις.
+     *
+     * @param articles Λίστα αντικειμένων άρθρων (getters getCategories() και getRating())
+     * @param searchKeywords Λίστα όρων αναζήτησης (κεφαλαιοποίηση γίνεται εσωτερικά)
+     * @param topCategories Πόσες κορυφαίες κατηγορίες να επιστραφούν
+     * @param topKeywords Πόσα κορυφαία keywords να επιστραφούν
+     * @return Map με διάφορα στατιστικά (totalSavedArticles, articlesPerCategory, averageRating, topRatedCategories, topSearchKeywords)
+     */
     public static Map<String, Object> calcStatistics(List<?> articles, List<String> searchKeywords, int topCategories, int topKeywords) {
         Map<String, Object> stats = new LinkedHashMap<>();
 
@@ -80,12 +96,23 @@ public class StatisticsCalc {
         return stats;
     }
 
+    /**
+     * Γράφει τα στατιστικά σε αρχείο JSON.
+     *
+     * @param stats Το map στατιστικών που θα μετατραπεί σε JSON
+     * @param out Το μονοπάτι εξόδου
+     * @throws IOException Σε περίπτωση σφάλματος
+     */
     public static void writeStatisticsJson(Map<String, Object> stats, Path out) throws IOException {
         String json = toJson(stats);
         if (out.getParent() != null) Files.createDirectories(out.getParent());
         Files.write(out, json.getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * Εξάγει το όνομα της πρώτης κατηγορίας από ένα αντικείμενο άρθρου.
+     * Χρησιμοποιεί reflect για να υποστηρίξει απλά POJOs.
+     */
     private static String getFirstCategoryName(Object a) {
         if (a == null) return "Uncategorized";
         try {
@@ -113,6 +140,10 @@ public class StatisticsCalc {
         return "Uncategorized";
     }
 
+    /**
+     * Επιστρέφει την τιμή rating ενός άρθρου (αν υπάρχει), αλλιώς 0.
+     * Χρησιμοποιεί reflect για να καλέσει getRating() αν υπάρχει.
+     */
     private static int getRating(Object a) {
         if (a == null) return 0;
         try {
@@ -133,6 +164,10 @@ public class StatisticsCalc {
         }
     }
 
+    /**
+     * Απλή μετατροπή αντικειμένων σε JSON string,
+     * Υποστηρίζει Map, Collection, String, Number, Boolean και toString().
+     */
     private static String toJson(Object o) {
         if (o == null) return "null";
         if (o instanceof Map) {
