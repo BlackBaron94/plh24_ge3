@@ -10,6 +10,7 @@ import jakarta.persistence.*;
  * μέσω JPA EntityManager. Παρέχει μεθόδους για συνολικούς μετρητές,
  * κατανομή άρθρων ανά κατηγορία, μέσους όρους βαθμολογιών και
  * τα πιο συχνά αναζητούμενα keywords.
+ * @author Παναγιώτης Σοφιανόπουλος
  */
 public class StatisticsService {
 

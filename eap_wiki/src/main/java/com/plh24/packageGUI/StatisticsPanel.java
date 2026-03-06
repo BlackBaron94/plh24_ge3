@@ -20,7 +20,8 @@ import com.plh24.packageService.StatisticsService;
 
 /**
  *
- * @author Equinox
+ * @author Παναγιώτης Σοφιανόπουλος
+ * @author Γιώργος Τσολακίδης
  */
 public class StatisticsPanel extends javax.swing.JPanel {
 
