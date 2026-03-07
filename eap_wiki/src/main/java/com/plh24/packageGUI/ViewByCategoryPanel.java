@@ -14,10 +14,15 @@ import javax.swing.DefaultListModel;
 
 
 /**
- *
- * @author Equinox
+ * Panel του GUI που επιτρέπει στον χρήστη να βλέπει άρθρα
+ * με βάση την κατηγορία τους.
+ * @author Αντώνιος Πιστέλας
  */
+
+
 public class ViewByCategoryPanel extends javax.swing.JPanel {
+    
+    
     private synchronized EntityManagerFactory getEmf() {
         return com.plh24.packageUtils.Utilities.getEMF();
     }
