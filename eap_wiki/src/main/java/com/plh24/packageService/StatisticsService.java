@@ -3,27 +3,26 @@ package com.plh24.packageService;
 import java.util.*;
 import jakarta.persistence.*;
 
+/**
+ * StatisticsService
+ *
+ * Υπηρεσία που συλλέγει στατιστικά στοιχεία από τη βάση δεδομένων
+ * μέσω JPA EntityManager. Παρέχει μεθόδους για συνολικούς μετρητές,
+ * κατανομή άρθρων ανά κατηγορία, μέσους όρους βαθμολογιών και
+ * τα πιο συχνά αναζητούμενα keywords.
+ * @author Παναγιώτης Σοφιανόπουλος
+ */
 public class StatisticsService {
 
-    private EntityManagerFactory emf;
-
     private EntityManagerFactory getEmf() {
-        if (emf == null) {
-            try {
-                // try the original unit name first, then fall back to the project's PU name
-                try {
-                    emf = Persistence.createEntityManagerFactory("EapWikiPU");
-                } catch (PersistenceException pe1) {
-                    emf = Persistence.createEntityManagerFactory("EapWikiPU");
-                }
-            } catch (PersistenceException pe) {
-                // persistence not available in this runtime (e.g. running UI without persistence)
-                return null;
-            }
-        }
-        return emf;
+        return com.plh24.packageUtils.Utilities.getEMF();
     }
 
+    /**
+     * Επιστρέφει το συνολικό πλήθος αποθηκευμένων άρθρων στη βάση.
+     *
+     * @return Ο αριθμός των άρθρων (0 εάν δεν είναι διαθέσιμη η EMF)
+     */
     public long getTotalSavedArticles() {
         EntityManagerFactory emfLocal = getEmf();
         if (emfLocal == null) return 0L;
@@ -36,6 +35,13 @@ public class StatisticsService {
         }
     }
 
+    /**
+     * Επιστρέφει ένα map με το πλήθος άρθρων ανά κατηγορία, ταξινομημένο
+     * κατά φθίνουσα σειρά.
+     *
+     * @param limit Ο μέγιστος αριθμός καταχωρήσεων που θα επιστραφούν (0 = χωρίς όριο)
+     * @return LinkedHashMap όπου το κλειδί είναι το όνομα της κατηγορίας και η τιμή το πλήθος
+     */
     public Map<String, Long> getArticlesPerCategory(int limit) {
         EntityManagerFactory emfLocal = getEmf();
         if (emfLocal == null) return Collections.emptyMap();
@@ -58,6 +64,11 @@ public class StatisticsService {
         }
     }
 
+    /**
+     * Επιστρέφει τον μέσο όρο των βαθμολογιών όλων των άρθρων.
+     *
+     * @return Ο μέσος όρος βαθμολογίας (0.0 εάν δεν υπάρχουν)
+     */
     public double getAverageRating() {
         EntityManagerFactory emfLocal = getEmf();
         if (emfLocal == null) return 0.0;
@@ -70,6 +81,11 @@ public class StatisticsService {
         }
     }
 
+    /**
+     * Επιστρέφει το συνολικό πλήθος καταχωρημένων κατηγοριών.
+     *
+     * @return Ο αριθμός των κατηγοριών (0 εάν δεν είναι διαθέσιμη η EMF)
+     */
     public long getTotalCategories() {
         EntityManagerFactory emfLocal = getEmf();
         if (emfLocal == null) return 0L;
@@ -82,20 +98,37 @@ public class StatisticsService {
         }
     }
 
+    /**
+     * Επιστρέφει τις κατηγορίες με τον υψηλότερο μέσο όρο βαθμολογίας.
+     *
+     * @param limit Ο μέγιστος αριθμός κατηγοριών που θα επιστραφούν (0 = χωρίς όριο)
+     * @return LinkedHashMap με όνομα κατηγορίας -> μέσος όρος βαθμολογίας
+     */
     public Map<String, Double> getTopRatedCategories(int limit) {
         EntityManagerFactory emfLocal = getEmf();
         if (emfLocal == null) return Collections.emptyMap();
         EntityManager em = emfLocal.createEntityManager();
         try {
                 List<Object[]> rows = em.createQuery(
-                    "SELECT a.category.name, AVG(a.rating) FROM Article a GROUP BY a.category.name ORDER BY AVG(a.rating) DESC", Object[].class)
+                    "SELECT a.category.name, AVG(a.rating) FROM Article a WHERE a.rating IS NOT NULL GROUP BY a.category.name ORDER BY AVG(a.rating) DESC", Object[].class)
                     .getResultList();
             LinkedHashMap<String, Double> map = new LinkedHashMap<>();
             int i = 0;
             for (Object[] r : rows) {
                 if (limit > 0 && i++ >= limit) break;
                 String name = (r[0] == null) ? "Uncategorized" : r[0].toString();
-                Double avg = (r[1] instanceof Number) ? ((Number) r[1]).doubleValue() : Double.valueOf(String.valueOf(r[1]));
+                if (name == null || name.trim().isEmpty() || "null".equalsIgnoreCase(name.trim())) name = "Uncategorized";
+                if (r[1] == null) continue; // skip ean no rating
+                Double avg;
+                if (r[1] instanceof Number) {
+                    avg = ((Number) r[1]).doubleValue();
+                } else {
+                    try {
+                        avg = Double.valueOf(String.valueOf(r[1]));
+                    } catch (NumberFormatException nfe) {
+                        continue;
+                    }
+                }
                 map.put(name, avg);
             }
             return map;
@@ -104,6 +137,12 @@ public class StatisticsService {
         }
     }
 
+    /**
+     * Επιστρέφει τις πιο συχνά αναζητούμενες λέξεις-κλειδιά (search terms).
+     *
+     * @param limit Ο μέγιστος αριθμός λέξεων-κλειδιών που θα επιστραφούν (0 = χωρίς όριο)
+     * @return LinkedHashMap με λέξη-κλειδί -> πλήθος εμφανίσεων
+     */
     public Map<String, Long> getTopSearchKeywords(int limit) {
         EntityManagerFactory emfLocal = getEmf();
         if (emfLocal == null) return Collections.emptyMap();
@@ -130,7 +169,11 @@ public class StatisticsService {
         }
     }
 
+    /**
+     * Κλείνει την κοινόχρηστη EMF της εφαρμογής.
+     * Καλό είναι να καλείται όταν η εφαρμογή τερματίζει.
+     */
     public void close() {
-        if (emf != null && emf.isOpen()) emf.close();
+        com.plh24.packageUtils.Utilities.closeEMF();
     }
 }

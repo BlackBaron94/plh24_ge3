@@ -1,22 +1,33 @@
-
-
 package com.plh24.packageGUI;
 
 import com.plh24.packageController.SearchController;
 import com.plh24.packageController.SearchControllerImpl;
+import com.plh24.packageEntities.Category;
+import com.plh24.packageUtils.Utilities;
 
 import java.awt.Color;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
+
+
+
 /**
+ * Panel Αναζήτησης άρθρων.
+ * <p>
+ * Παρέχει UI για εισαγωγή keyword, εκτέλεση αναζήτησης (ΒΔ + Wikipedia μέσω controller),
+ * εμφάνιση αποτελεσμάτων και επιλογές προβολής/αποθήκευσης άρθρου.
+ * </p>
  *
- * @author Equinox
+ * @author Dimitrios Korolis: UI logic, events, και σύνδεση με SearchController.
  */
+
 public class SearchPanel extends javax.swing.JPanel {
     
     private final SearchController controller = new SearchControllerImpl();
@@ -47,7 +58,11 @@ public class SearchPanel extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("Αναζήτηση:");
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, -1));
 
         searchInputField.setForeground(new java.awt.Color(153, 153, 153));
         searchInputField.setText("Αναζήτηση Εδώ");
@@ -59,6 +74,7 @@ public class SearchPanel extends javax.swing.JPanel {
                 searchInputFieldFocusLost(evt);
             }
         });
+        add(searchInputField, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 28, 191, -1));
 
         jButton1.setText("Αναζήτηση");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -66,16 +82,24 @@ public class SearchPanel extends javax.swing.JPanel {
                 jButton1ActionPerformed(evt);
             }
         });
+        add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 68, 191, -1));
 
         searchResultOutput.setEditable(false);
         searchResultOutput.setFocusable(false);
         jScrollPane1.setViewportView(searchResultOutput);
 
-        jLabel2.setText("Αποτελέσματα:");
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 28, 606, 426));
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel2.setText("Αποτελέσματα:");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(209, 6, -1, -1));
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("Επιλογή Άρθρου:");
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 109, -1, -1));
 
         titleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--- Επιλέξτε ---" }));
+        add(titleComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 131, 191, -1));
 
         jButton2.setText("Προβολή Άρθρου");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -83,6 +107,7 @@ public class SearchPanel extends javax.swing.JPanel {
                 jButton2ActionPerformed(evt);
             }
         });
+        add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 171, 191, -1));
 
         jButton3.setText("Αποθήκευση Άρθρου");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -90,56 +115,26 @@ public class SearchPanel extends javax.swing.JPanel {
                 jButton3ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(titleComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                    .addComponent(searchInputField)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 606, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(19, 19, 19))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(searchInputField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
-        );
+        add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 212, 191, -1));
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+ * Event: Click στο κουμπί "Αναζήτηση".
+ * <p>
+ * Κάνει έλεγχο εγκυρότητας του keyword (να μην είναι κενό/placeholder),
+ * αρχικοποιεί το UI (καθαρίζει ComboBox)
+ * και εκτελεί αναζήτηση σε background thread με {@link javax.swing.SwingWorker}
+ * καλώντας {@code controller.runSearch(keyword)}.
+ * </p>
+ * <p>
+ * Στο {@code done()} συγχωνεύει τίτλους από ΒΔ και Wikipedia, ενημερώνει το TextPane
+ * και γεμίζει το ComboBox με τους τίτλους.
+ * </p>
+ *
+ * @author Dimitrios Korolis: υλοποίηση event + SwingWorker + ενημέρωση UI.
+ * @param evt το ActionEvent του JButton.
+ * @see com.plh24.packageController.SearchController#runSearch(String)
+ */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
        String keyword = (searchInputField.getText() == null) ? "" : searchInputField.getText().trim();
@@ -210,6 +205,20 @@ public class SearchPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    /**
+ * Event: Click στο κουμπί "Προβολή Άρθρου".
+ * <p>
+ * Ελέγχει ότι έχει επιλεγεί έγκυρος τίτλος από το ComboBox και, αν ναι,
+ * βρίσκει το {@link com.plh24.packageGUI.MainFrame} (window ancestor) και καλεί
+ * {@code updateViewAndSwitch(title)} ώστε να φορτωθεί το άρθρο στο ViewPanel
+ * και να μεταβεί η εφαρμογή στην καρτέλα "Προβολή".
+ * </p>
+ *
+ * @author Dimitrios Korolis: validation επιλογής + μετάβαση σε ViewPanel μέσω MainFrame.
+ * @param evt το ActionEvent του JButton.
+ * @see com.plh24.packageGUI.MainFrame#updateViewAndSwitch(String)
+ */
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());
@@ -228,6 +237,17 @@ public class SearchPanel extends javax.swing.JPanel {
     mf.updateViewAndSwitch(selectedTitle);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+/**
+ * Event: Focus gained στο πεδίο αναζήτησης.
+ * <p>
+ * Αν το πεδίο περιέχει το placeholder "Αναζήτηση Εδώ", το καθαρίζει και
+ * αλλάζει το χρώμα γραμματοσειράς σε μαύρο.
+ * </p>
+ *
+ * @author Dimitrios Korolis: UX χειρισμός placeholder κατά το focus.
+ * @param evt το FocusEvent του JTextField.
+ */
+    
     private void searchInputFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchInputFieldFocusGained
         // TODO add your handling code here:
         if (searchInputField.getText().equals("Αναζήτηση Εδώ")){
@@ -236,6 +256,17 @@ public class SearchPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_searchInputFieldFocusGained
 
+/**
+ * Event: Focus lost στο πεδίο αναζήτησης.
+ * <p>
+ * Αν το πεδίο είναι κενό, επαναφέρει το placeholder "Αναζήτηση Εδώ" και
+ * αλλάζει το χρώμα γραμματοσειράς σε γκρι.
+ * </p>
+ *
+ * @author Dimitrios Korolis: UX χειρισμός placeholder όταν χάνεται το focus.
+ * @param evt το FocusEvent του JTextField.
+ */
+    
     private void searchInputFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchInputFieldFocusLost
         // TODO add your handling code here:
         if (searchInputField.getText().equals("")){
@@ -245,13 +276,33 @@ public class SearchPanel extends javax.swing.JPanel {
             
     }//GEN-LAST:event_searchInputFieldFocusLost
 
+    /**
+ * Event: Click στο κουμπί "Αποθήκευση Άρθρου".
+ * <p>
+ * Ελέγχει ότι έχει επιλεγεί έγκυρος τίτλος από το ComboBox. Έπειτα εμφανίζει
+ * dialog επιλογής κατηγορίας (JComboBox με Categories από DB). Αν ο χρήστης
+ * επιβεβαιώσει, καλεί {@code controller.saveDefaultArticleIfNotExists(title, category)}.
+ * </p>
+ * <p>
+ * Εμφανίζει μήνυμα:
+ * <ul>
+ *   <li>Επιτυχίας, όταν αποθηκευτεί.</li>
+ *   <li>Πληροφορίας, όταν υπάρχει ήδη στη ΒΔ.</li>
+ *   <li>Σφάλματος, αν αποτύχει η αποθήκευση.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Dimitrios Korolis: ροή αποθήκευσης με επιλογή κατηγορίας + feedback χρήστη.
+ * @param evt το ActionEvent του JButton.
+ * @see com.plh24.packageController.SearchController#saveDefaultArticleIfNotExists(String, com.plh24.packageEntities.Category)
+ */
+    
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-
-    String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());
-
-    if (selectedTitle == null || selectedTitle.isBlank() || "--- Επιλέξτε ---".equals(selectedTitle)) {
-        JOptionPane.showMessageDialog(
+        String selectedTitle = String.valueOf(titleComboBox.getSelectedItem());
+        
+        if (selectedTitle == null || selectedTitle.isBlank() || "--- Επιλέξτε ---".equals(selectedTitle)) {
+            JOptionPane.showMessageDialog(
                 this,
                 "Επιλέξτε πρώτα ένα άρθρο από τη λίστα.",
                 "Δεν έγινε επιλογή",
@@ -259,14 +310,43 @@ public class SearchPanel extends javax.swing.JPanel {
         );
         return;
     }
-
+        // 1) Φόρτωσε κατηγορίες από DB (αλφαβητικά από controller)
+        List<Category> categories = Utilities.getCategories();
+        
+        // 2) Popup με ComboBox
+        JComboBox<Category> cb = new JComboBox<>();
+        Utilities.updateCategoriesComboBox(cb, true);
+        
+        int res = JOptionPane.showConfirmDialog(
+            this,
+            cb,
+            "Επιλογή Κατηγορίας",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+        
+        if (res != JOptionPane.OK_OPTION) {
+            return;
+        } // Ακύρωση
+    
+        Category chosen = (Category) cb.getSelectedItem();
+        if (chosen == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Για να αποθηκευτεί το Άρθρο πρέπει να επιλέξετε Κατηγορία.",
+                    "Δεν επιλέχθηκε κατηγορία",
+                JOptionPane.WARNING_MESSAGE
+            );
+            return;
+} 
+        // 3) Save με επιλεγμένη κατηγορία
     try {
-        boolean saved = controller.saveDefaultArticleIfNotExists(selectedTitle);
-
+    boolean saved = controller.saveDefaultArticleIfNotExists(selectedTitle, chosen);
+    
         if (saved) {
             JOptionPane.showMessageDialog(
                     this,
-                    "Αποθηκεύτηκε με: rating=null, comments=null, category='Χωρίς Κατηγορία'.",
+                    "Το άρθρο αποθηκεύτηκε στην κατηγορία: " + chosen.getName(),
                     "OK",
                     JOptionPane.INFORMATION_MESSAGE
             );
@@ -287,7 +367,8 @@ public class SearchPanel extends javax.swing.JPanel {
                 "Σφάλμα",
                 JOptionPane.ERROR_MESSAGE
         );
-    }      
+    } 
+         
         
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -304,8 +385,10 @@ public class SearchPanel extends javax.swing.JPanel {
     private javax.swing.JTextPane searchResultOutput;
     private javax.swing.JComboBox<String> titleComboBox;
     // End of variables declaration//GEN-END:variables
-    // End of variables declaration                   
+    // End of variables declaration 
+} 
+                
 
 
-}
+
 

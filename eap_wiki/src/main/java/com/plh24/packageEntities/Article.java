@@ -12,8 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -23,7 +21,7 @@ import java.time.LocalDateTime;
 /**
  * Η κλάση Article δείχνει ένα άρθρο στη Βάση Δεδομένων
  * Σύνδεση με Category ManyToOne.
- * @author Αντώνιος Πιστέλας
+ * @author Αντώνης Πιστέλας
  */
 
 
@@ -91,6 +89,7 @@ public class Article {
     public Article() { //default constractor για JPA
     }
 
+
     /**
      * Constructor δημιουργίας άρθρου με βαθμολογία.
      *
@@ -100,7 +99,8 @@ public class Article {
      * @param category κατηγορία άρθρου
      * @param comments σχόλια άρθρου
      */
-    public Article(String title, int rating, Category category, String comments) {
+
+    public Article(String title, Integer rating, Category category, String comments) {
         this.title = title;
         this.rating = rating;
         this.category = category;

@@ -11,13 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
-import java.util.List;
-import jakarta.persistence.*;
-import java.io.Serializable;
-import java.util.List;
 
 
 /**
@@ -67,11 +62,14 @@ public class Category implements Serializable {
     @Column(name = "CATEGORY_ID")//Στη DB η στήλη λέγεται CATEGORY_ID
     private Integer categoryId;
 
+
      /**
      * 
      * Μοναδικό όνομα κατηγορίας το οποίο δε πρέπει να είναι null.
      */
-    @Column(name = "CATEGORy_NAME", nullable = false, unique = true)//Όνομα κατηγορίας: not null και unique
+    
+    @Column(name = "NAME", nullable = false, unique = true)//Όνομα κατηγορίας: not null και unique
+
     private String name;
 
 

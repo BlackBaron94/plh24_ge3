@@ -3,34 +3,30 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.plh24.packageGUI;
-import com.plh24.packageEntities.Category;
-import java.util.List;
-import java.util.ArrayList;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
+import com.plh24.packageUtils.Utilities;
 
 /**
- *
- * @author Equinox
+ * Κλάση κυρίου παραθύρου που περιλαμβάνει τις καρτέλες των υπολοίπων JPanels.
+ * @author Γιώργος Τσολακίδης
  */
 public class MainFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
-    private List<Category> categoriesList;
+
     /**
-     * Creates new form UITestFrame
+     * Constructor του κυρίως παραθύρου. Ελέγχει αν υπάρχουν κατηγορίες στη Β.Δ.
+     * αν δεν υπάρχουν τις δημιουργεί και έπειτα εμφανίζεται.
      */
     public MainFrame() {
+        /* Εδώ, αν δεν υπάρχουν κατηγορίες τις δημιουργεί την πρώτη φορά που 
+        * δημιουργείται το παράθυρο. Τρέχει πριν τo initComponents() γιατί τα
+        * components στον constructor τους γεμίζουν τα ComboBoxes τους με τις
+        * κατηγορίες.
+        */
+        if (!(Utilities.categoriesExist())){
+            Utilities.initializeCategories();
+        }
         initComponents();
-        // TODO Εδώ μάλλον πρέπει να δημιουργεί κατηγορίες στη βάση αν δεν
-        // υπάρχουν αλλιώς όλη η εφαρμογή θα buggάρει
-        List<Category> categoriesList = grabCategories();
-        
-        viewPanel.updateCategories(categoriesList);
-        viewByCategoryPanel.updateCategories(categoriesList);
-        
     }
 
     /**
@@ -42,203 +38,55 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
         mainFrameTabbedPanel = new javax.swing.JTabbedPane();
-        searchPanel1 = new com.plh24.packageGUI.SearchPanel();
-        searchPanel3 = new com.plh24.packageGUI.SearchPanel();
+        searchPanel = new com.plh24.packageGUI.SearchPanel();
         viewPanel = new com.plh24.packageGUI.ViewPanel();
-        statisticsPanel1 = new com.plh24.packageGUI.StatisticsPanel();
-        viewByCategoryPanel1 = new com.plh24.packageGUI.ViewByCategoryPanel();
         viewByCategoryPanel = new com.plh24.packageGUI.ViewByCategoryPanel();
-        statisticsPanel2 = new com.plh24.packageGUI.StatisticsPanel();
-        statisticsPanel4 = new com.plh24.packageGUI.StatisticsPanel();
-        statisticsPanel3 = new com.plh24.packageGUI.StatisticsPanel();
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+        statisticsPanel = new com.plh24.packageGUI.StatisticsPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Wiki Viewer App");
+        setTitle("WikiViewer App");
+        setMinimumSize(new java.awt.Dimension(1036, 660));
 
-        javax.swing.GroupLayout searchPanel1Layout = new javax.swing.GroupLayout(searchPanel1);
-        searchPanel1.setLayout(searchPanel1Layout);
-        searchPanel1Layout.setHorizontalGroup(
-            searchPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(searchPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(926, Short.MAX_VALUE))
-        );
-        searchPanel1Layout.setVerticalGroup(
-            searchPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(searchPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(456, Short.MAX_VALUE))
-        );
-
-        mainFrameTabbedPanel.addTab("Αναζήτηση", searchPanel1);
+        mainFrameTabbedPanel.setMinimumSize(new java.awt.Dimension(1036, 660));
+        mainFrameTabbedPanel.setPreferredSize(new java.awt.Dimension(1036, 660));
+        mainFrameTabbedPanel.addTab("Αναζήτηση", searchPanel);
         mainFrameTabbedPanel.addTab("Προβολή", viewPanel);
-
-        javax.swing.GroupLayout viewByCategoryPanel1Layout = new javax.swing.GroupLayout(viewByCategoryPanel1);
-        viewByCategoryPanel1.setLayout(viewByCategoryPanel1Layout);
-        viewByCategoryPanel1Layout.setHorizontalGroup(
-            viewByCategoryPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 831, Short.MAX_VALUE)
-        );
-        viewByCategoryPanel1Layout.setVerticalGroup(
-            viewByCategoryPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 326, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout statisticsPanel1Layout = new javax.swing.GroupLayout(statisticsPanel1);
-        statisticsPanel1.setLayout(statisticsPanel1Layout);
-        statisticsPanel1Layout.setHorizontalGroup(
-            statisticsPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statisticsPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(viewByCategoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(viewByCategoryPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        statisticsPanel1Layout.setVerticalGroup(
-            statisticsPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statisticsPanel1Layout.createSequentialGroup()
-                .addContainerGap(160, Short.MAX_VALUE)
-                .addComponent(viewByCategoryPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(467, 467, 467))
-            .addGroup(statisticsPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(viewByCategoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        mainFrameTabbedPanel.addTab("Προβολή Άρθρων Ανά Κατηγορία", statisticsPanel1);
-
-        javax.swing.GroupLayout statisticsPanel4Layout = new javax.swing.GroupLayout(statisticsPanel4);
-        statisticsPanel4.setLayout(statisticsPanel4Layout);
-        statisticsPanel4Layout.setHorizontalGroup(
-            statisticsPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statisticsPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(statisticsPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        statisticsPanel4Layout.setVerticalGroup(
-            statisticsPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statisticsPanel4Layout.createSequentialGroup()
-                .addComponent(statisticsPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout statisticsPanel2Layout = new javax.swing.GroupLayout(statisticsPanel2);
-        statisticsPanel2.setLayout(statisticsPanel2Layout);
-        statisticsPanel2Layout.setHorizontalGroup(
-            statisticsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statisticsPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(statisticsPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1075, Short.MAX_VALUE))
-        );
-        statisticsPanel2Layout.setVerticalGroup(
-            statisticsPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statisticsPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(statisticsPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(568, Short.MAX_VALUE))
-        );
-
-        mainFrameTabbedPanel.addTab("Στατιστικά", statisticsPanel2);
-
-        jScrollPane1.setViewportView(mainFrameTabbedPanel);
+        mainFrameTabbedPanel.addTab("Προβολή Άρθρων Ανά Κατηγορία", viewByCategoryPanel);
+        mainFrameTabbedPanel.addTab("Στατιστικά", statisticsPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1031, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(mainFrameTabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1045, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 833, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(mainFrameTabbedPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * @param args the command line arguments
+     * Μέθοδος που ετοιμάζει το ViewPanel για προβολή άρθρου και εστιάζει στην
+     * καρτέλα.
+     * @param title: String με τον μοναδικό τίτλο άρθρου που θα αναζητηθεί στο
+     * ΑΡΙ της Wikipedia
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new MainFrame().setVisible(true));
-    }
-    
     public void updateViewAndSwitch(String title) {
+        // Καλεί την showArticle που ψάχνει το άρθρο και το εμφανίζει
         viewPanel.showArticle(title);
+        // Εστιάζει στην καρτέλα «Προβολή»
         mainFrameTabbedPanel.setSelectedIndex(1);
     }
-    
-    public static List<Category> grabCategories() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EapWikiPU");
-        EntityManager em = emf.createEntityManager();
-        try {
-            Query findAllCategories = em.createNamedQuery("Category.findAll");
 
-            List<Category> categoryList = findAllCategories.getResultList();
-            return categoryList;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } finally {
-            em.close();
-            emf.close();
-        }
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane mainFrameTabbedPanel;
-    private com.plh24.packageGUI.SearchPanel searchPanel1;
-    private com.plh24.packageGUI.SearchPanel searchPanel3;
-    private com.plh24.packageGUI.StatisticsPanel statisticsPanel1;
-    private com.plh24.packageGUI.StatisticsPanel statisticsPanel2;
-    private com.plh24.packageGUI.StatisticsPanel statisticsPanel3;
-    private com.plh24.packageGUI.StatisticsPanel statisticsPanel4;
+    private com.plh24.packageGUI.SearchPanel searchPanel;
+    private com.plh24.packageGUI.StatisticsPanel statisticsPanel;
     private com.plh24.packageGUI.ViewByCategoryPanel viewByCategoryPanel;
-    private com.plh24.packageGUI.ViewByCategoryPanel viewByCategoryPanel1;
     private com.plh24.packageGUI.ViewPanel viewPanel;
     // End of variables declaration//GEN-END:variables
 }
