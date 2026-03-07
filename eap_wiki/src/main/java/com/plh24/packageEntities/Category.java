@@ -68,7 +68,7 @@ public class Category implements Serializable {
      * Μοναδικό όνομα κατηγορίας το οποίο δε πρέπει να είναι null.
      */
     
-    @Column(name = "NAME", nullable = false, unique = true)//Όνομα κατηγορίας: not null και unique
+    @Column(name = "CATEGORY_NAME", nullable = false, unique = true)//Όνομα κατηγορίας: not null και unique
 
     private String name;
 
