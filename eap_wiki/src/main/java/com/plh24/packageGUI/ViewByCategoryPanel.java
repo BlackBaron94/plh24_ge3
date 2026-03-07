@@ -23,13 +23,18 @@ import javax.swing.DefaultListModel;
 public class ViewByCategoryPanel extends javax.swing.JPanel {
     
     
+     /**
+     *Δημιυργία EntityManager που απαιτείται για επικοινωνία
+     * με τη Βάση Δεδομένων.
+     * @return EntityManagerFactory αντικείμενο για JPA σύνδεση
+     */
     private synchronized EntityManagerFactory getEmf() {
         return com.plh24.packageUtils.Utilities.getEMF();
     }
     
     
     /**
-     * Creates new form ViewByCategoryPanel
+     * Αρχικοποιεί τα GUI components και ορτώνει τις διαθέσιμες κατηγορίες στο ComboBox.
      */
     public ViewByCategoryPanel() {
         initComponents();
@@ -120,7 +125,13 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
 
     
     
-    //Όταν πατηθεί το κουμπί καλείται
+   
+    
+    /**
+     * Καλείται όταν ο χρήστης πατήσει το κουμπί "Εμφάνιση Άρθρων"
+     * @param evt event που δημιουργείται όταν πατηθεί το κουμπί
+     */
+    
     private void showCategoryArticlesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showCategoryArticlesBtnActionPerformed
     String selectedCategory =
             categorySearchBox.getSelectedItem().toString(); //πέρνει την επιλεγμένη κατηγορία απο ComboBox
@@ -164,6 +175,12 @@ public class ViewByCategoryPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_showCategoryArticlesBtnActionPerformed
 
     
+    
+    /**
+     * Καλείται όταν ο χρήστης κάνει διπλό κλικ σε στοιχείο του JList.
+     *
+     * @param evt MouseEvent από το JList
+     */
     private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() == 2) {// Διπλό κλικ σε ένα άθρο 
