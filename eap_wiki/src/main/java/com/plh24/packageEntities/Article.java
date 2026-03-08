@@ -29,6 +29,9 @@ import java.time.LocalDateTime;
 @Table(name = "article")
 
 @NamedQueries({
+    /**
+     * NamedQuery για αναζήτηση άρθρου βάση τον τίτλο.
+     */
     @NamedQuery(name = "Article.findByTitle", query = "SELECT a FROM Article a WHERE a.title = :title")
 })
 
@@ -40,7 +43,7 @@ public class Article {
      * Primary Key
      * Δημιουργείται αυτόματα στη Βάση Δεδομένων.
      */
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ARTICLE_ID")//Στη DB η στήλη λέγεται ARTICLE_ID
@@ -83,16 +86,20 @@ public class Article {
      */
     @Column(name = "comments", nullable = true)
     private String comments;
+    
+    
     // Κατασκευαστες
 
-
+    /**
+     * Προεπιλεγμένος constructor.
+     * Απαιτείται από το JPA framework.
+     */
     public Article() { //default constractor για JPA
     }
 
 
     /**
      * Constructor δημιουργίας άρθρου με βαθμολογία.
-     *
      *
      * @param title τίτλος άρθρου
      * @param rating βαθμολογία άρθρου
@@ -129,7 +136,8 @@ public class Article {
 
 
     /**
-     * @return μοναδικό ID άρθρου
+     * Επιστρέφει το μοναδικό ID του άρθρου.
+     * @return article_id μοναδικό ID άρθρου
      */
     public Long getId() {
         return article_id;
@@ -137,6 +145,7 @@ public class Article {
 
 
      /**
+     * Επιστρέφει το τίτλο του άρθρου
      * @return title τίτλο άρθρου.
      */
     public String getTitle() {
@@ -144,6 +153,7 @@ public class Article {
     }
 
     /**
+     * Επιστρέφει τη βαθμολογία του άρθρου
      * @return rating βαθμολογία άρθρου
      */
     public Integer getRating(){
@@ -151,6 +161,7 @@ public class Article {
     }
 
      /**
+     * Επιστρέφει την ημερομηνία αποθήκευσης του άρθρου
      * @return savedAt ημερομηνία αποθήκευσης του άθρου.
      */
     public LocalDateTime getSavedAt() {
@@ -159,6 +170,7 @@ public class Article {
 
 
     /**
+     * Επιστρέφει τη κατηγορία του άρθρου
      * @return category κατηγορία του άρθρου
      */
     public Category getCategory() {
@@ -167,7 +179,7 @@ public class Article {
 
 
     /**
-     *
+     * Επιστρέφει το όνομα της κατηγορίας του άρθρου
      * @return category όνομα κατηγορίας, κενό string αν δεν υπάρχει
      */
     public String getCategoryName() {
@@ -175,6 +187,7 @@ public class Article {
     }
 
     /**
+     * Επιστρέφει τα σχόλια του άρθρου
      * @return comments σχόλια άρθρου
      */
     public String getComments() {
@@ -196,7 +209,7 @@ public class Article {
 
 
     /**
-     *
+     * Ορίζει κατηγορία για το άρθρο
      * @param category νέα κατηγορία
      */
     public void setCategory(Category category) {
@@ -205,8 +218,8 @@ public class Article {
 
 
     /**
-
-     * @param comments νέα σχόλια
+     * Ορίζει σχόλια για το άρθρο.
+     * @param comments σχόλια
      */
     public void setComments(String comments) {
         this.comments = comments;
@@ -218,7 +231,8 @@ public class Article {
 
 
     /**
-     * @return hash code υπολοσγισμός hash code βάση το ID του άρθρου.
+     * Υπολογίζει hash code βάση το ID του άρθρου
+     * @return hash code υπολοσγισμός hash code βάση το ID του άρθρου
      */
 
     @Override
@@ -240,7 +254,8 @@ public class Article {
     }
 
 
- /**
+    /**
+     * Επιστρέφει τον τίτλο του άρθρου ως String
      * @return τίτλος άρθρου ως String
      */
     @Override
