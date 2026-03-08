@@ -19,6 +19,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import com.plh24.packageService.StatisticsService;
 
 /**
+ * Εμφανίζει τα στατιστικά της εφαρμογής και παρέχει ενέργειες εξαγωγής σε PDF.
  *
  * @author Παναγιώτης Σοφιανόπουλος
  * @author Γιώργος Τσολακίδης
@@ -26,7 +27,11 @@ import com.plh24.packageService.StatisticsService;
 public class StatisticsPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form StatisticsPanel
+     * Δημιουργεί νέο {@code StatisticsPanel}.
+     * <p>
+     * Αρχικοποιεί τα Swing components, δημιουργεί την υπηρεσία στατιστικών
+     * και καλεί {@link #refreshStats()} για να φορτωθούν τα τρέχοντα δεδομένα.
+     * </p>
      */
     public StatisticsPanel() {
         initComponents();
@@ -270,11 +275,23 @@ public class StatisticsPanel extends javax.swing.JPanel {
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Χειριστής {@code jTabbedPane1}.
+     * Επανεφορτώνει τα στατιστικά όταν ο χρήστης κάνει κλικ στις καρτέλες.
+     *
+     * @param evt το mouse event
+     */
     private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-        // TODO add your handling code here:
         refreshStats();
     }//GEN-LAST:event_jTabbedPane1MouseClicked
 
+    /**
+     * Action handler του κουμπιού εξαγωγής για τον πίνακα "Άρθρα Ανά Κατηγορία".
+     * Επιβεβαιώνει τη δράση, ανοίγει διάλογο επιλογής αρχείου και εξάγει το
+     * περιεχόμενο του {@code jTable1} σε PDF.
+     *
+     * @param evt
+     */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (confirmExport()) {
             File out = choosePdfFile();
@@ -289,6 +306,13 @@ public class StatisticsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    /**
+     * Action handler του κουμπιού εξαγωγής για τον πίνακα "Υψηλότερα Βαθμολογημένες Κατηγορίες".
+     * Επιβεβαιώνει τη δράση, ανοίγει διάλογο επιλογής αρχείου και εξάγει το
+     * περιεχόμενο του {@code jTable3} σε PDF.
+     *
+     * @param evt
+     */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (confirmExport()) {
             File out = choosePdfFile();
@@ -303,6 +327,13 @@ public class StatisticsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    /**
+     * Action handler του κουμπιού εξαγωγής για τον πίνακα "Πιο Συχνά Αναζητούμενες Λέξεις-Κλειδιά".
+     * Επιβεβαιώνει τη δράση, ανοίγει διάλογο επιλογής αρχείου και εξάγει το
+     * περιεχόμενο του {@code jTable2} σε PDF.
+     *
+     * @param evt το event της ενέργειας (αχρησιμοποίητο)
+     */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (confirmExport()) {
             File out = choosePdfFile();
