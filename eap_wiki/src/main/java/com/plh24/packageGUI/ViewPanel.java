@@ -81,6 +81,7 @@ public class ViewPanel extends javax.swing.JPanel {
         commentsTextArea.setEditable(false);
         commentsTextArea.setBackground(new java.awt.Color(63, 63, 63));
         commentsTextArea.setColumns(20);
+        commentsTextArea.setLineWrap(true);
         commentsTextArea.setRows(5);
         commentsTextArea.setFocusable(false);
         jScrollPane1.setViewportView(commentsTextArea);
